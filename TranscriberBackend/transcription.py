@@ -2,8 +2,6 @@ import time
 import math
 import logging
 import os
-import zipfile
-import shutil
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -15,54 +13,9 @@ from cachetools import TTLCache
 logger = logging.getLogger(__name__)
 
 # Flat model directory: TranscriberBackend/model/
-# Expected contents after extraction: model.bin, config.json,
+# Expected contents: model.bin, config.json,
 # tokenizer.json, vocabulary.json, preprocessor_config.json
-_MODELS_DIR = Path(__file__).parent / "model"
-_MODEL_ZIP = Path(__file__).parent / "model.zip"
-
-
-def ensure_model_extracted() -> None:
-    """
-    Extract model.zip into TranscriberBackend/model/ on first run.
-
-    Zip must contain a top-level 'model/' folder with all model files.
-    Example zip structure:
-        model/model.bin
-        model/config.json
-        model/tokenizer.json
-        model/vocabulary.json
-        model/preprocessor_config.json
-
-    - If model/model.bin already exists  →  skip extraction (fast path).
-    - If model.zip is missing            →  raise a clear error.
-    - On extraction failure, partial dir is removed so next run can retry.
-    """
-    if (_MODELS_DIR / "model.bin").exists():
-        logger.info("Model already extracted at '%s', skipping.", _MODELS_DIR)
-        return
-
-    if not _MODEL_ZIP.exists():
-        raise FileNotFoundError(
-            f"Model not found. Expected either:\n"
-            f"  Extracted: '{_MODELS_DIR / 'model.bin'}'\n"
-            f"  Archive:   '{_MODEL_ZIP}'\n"
-            "Please place model.zip inside TranscriberBackend/."
-        )
-
-    logger.info("Extracting model from '%s' → '%s' …", _MODEL_ZIP, _MODELS_DIR.parent)
-    try:
-        with zipfile.ZipFile(_MODEL_ZIP, "r") as zf:
-            bad = zf.testzip()
-            if bad:
-                raise zipfile.BadZipFile(f"Corrupt file in zip: {bad}")
-            zf.extractall(_MODELS_DIR.parent)
-        logger.info("Extraction complete. Model directory: '%s'", _MODELS_DIR)
-    except Exception as exc:
-        logger.error("Extraction failed: %s", exc)
-        # Remove partial extraction so the next run retries cleanly.
-        if _MODELS_DIR.exists():
-            shutil.rmtree(_MODELS_DIR, ignore_errors=True)
-        raise
+_MODEL_DIR = Path(__file__).parent / "model"
 
 
 class ModelManager:
@@ -78,15 +31,22 @@ class ModelManager:
         if model_key in self.model_cache:
             return self.model_cache[model_key]
 
-        # Ensure flat model dir exists (extracts zip on first run)
-        ensure_model_extracted()
-
-        model_path = str(_MODELS_DIR)
-        if not (_MODELS_DIR / "model.bin").exists():
-            raise RuntimeError(
-                f"model.bin not found in '{_MODELS_DIR}' after extraction. "
-                "Ensure model.zip contains a top-level 'model/' folder with model.bin inside."
+        # Verify model directory and model.bin exist before attempting load
+        if not _MODEL_DIR.exists():
+            raise FileNotFoundError(
+                f"Model directory not found: '{_MODEL_DIR}'\n"
+                "Place all model files (model.bin, config.json, tokenizer.json, "
+                "vocabulary.json, preprocessor_config.json) inside "
+                "TranscriberBackend/model/"
             )
+
+        if not (_MODEL_DIR / "model.bin").exists():
+            raise FileNotFoundError(
+                f"model.bin not found in '{_MODEL_DIR}'.\n"
+                "Ensure TranscriberBackend/model/model.bin exists."
+            )
+
+        model_path = str(_MODEL_DIR)
 
         try:
             device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -97,15 +57,16 @@ class ModelManager:
             os.environ["HF_HUB_OFFLINE"] = "1"
             os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
-            logger.info("[MODEL] Loading from: %s  |  device=%s  compute_type=%s",
-                        model_path, device, compute_type)
+            logger.info(
+                "[MODEL] Loading from: %s  |  device=%s  compute_type=%s",
+                model_path, device, compute_type,
+            )
 
             model = WhisperModel(
                 model_path,
                 device=device,
                 compute_type=compute_type,
                 local_files_only=True,
-                # num_workers controls parallel decoding threads (default=1 is fine)
                 # cpu_threads=0 lets CTranslate2 auto-select optimal thread count
                 cpu_threads=0,
             )

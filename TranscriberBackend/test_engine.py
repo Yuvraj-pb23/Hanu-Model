@@ -11,7 +11,7 @@ from translation import TranslationEngine
 
 logging.basicConfig(level=logging.INFO)
 print("Loading Transcription Engine...")
-transcriber = TranscriptionEngine("small")
+transcriber = TranscriptionEngine("large-v3-turbo")
 
 print("Loading Translation Engine...")
 translation_engine = TranslationEngine()

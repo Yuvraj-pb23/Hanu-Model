@@ -24,10 +24,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-_k6@9nh9w2p^&^24#-o-g-@32*p$w#xpdn!h7kc&b*#^5gl#p0"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','hanuai.com','www.hanuai.com',]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://hanuai.com',
+    'https://www.hanuai.com',
+]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
@@ -40,20 +48,22 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'tailwind',
     'theme',   # we will create this
-    # 'django_browser_reload',  # DISABLED - causing service worker cache errors and freezing
+    'django_browser_reload',  # DISABLED - causing service worker cache errors and freezing
     "Website",
+    'captcha',
 ]
 TAILWIND_APP_NAME = "theme"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Must be right after SecurityMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "django_browser_reload.middleware.BrowserReloadMiddleware",  # DISABLED - causing freezing
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",  # Only works with DEBUG=True
 ]
 CAPTCHA_SECRET_KEY = "6LefOjcsAAAAAIZUc2kDG0B7Vi3nJCaKIzbbPeD8"
 
@@ -76,7 +86,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Hanuai.wsgi.application"
-NPM_BIN_PATH = r"C:/Program Files/nodejs/npm.cmd"
+NPM_BIN_PATH = r"/usr/bin/npm"
+#"C:/Program Files/nodejs/npm.cmd"  --for windows--
 
 
 
@@ -131,8 +142,19 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "Website/Static",
     BASE_DIR / "theme" / "static",
+    BASE_DIR / "static",  # Project root static folder
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# WhiteNoise storage for serving static files with DEBUG=False
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",  # Without manifest
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -151,3 +173,24 @@ DEFAULT_FROM_EMAIL = 'HanuAI <info@hanuai.com>'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+'''
+# Logging to see errors when DEBUG=False
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+        },
+    },
+}
+
+'''
+ATTENDANCE_SECRET_KEY = os.getenv('ATTENDANCE_SECRET_KEY', 'hanuai-attendance-secret-shared-key')
