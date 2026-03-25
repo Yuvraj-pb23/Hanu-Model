@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}HanuAi -Blogs{%endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/services.css' %}" />
+
+<style>
+  .blog-card-container {
+    position: relative;
+    display: block !important;
+  }
+
+  .blog-card {
+    min-height: 18rem;
+    position: relative;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    background: #23272f;
+    transition: transform 0.4s cubic-bezier(.23, 1, .32, 1), box-shadow 0.4s ease;
+  }
+
+  .blog-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 32px 64px 0 rgba(37, 99, 235, 0.2);
+  }
+
+  .blog-card-img {
+    width: 100%;
+    height: 100%;
+    /* object-fit: contain; */
+    transition: transform 0.7s ease, filter 0.5s ease;
+  }
+
+  .blog-card:hover .blog-card-img {
+    transform: scale(1.1);
+    filter: brightness(0.4);
+  }
+
+  .blog-card-content {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    /* Gradient starts transparent and turns solid black behind the text */
+    background: linear-gradient(to top,
+        rgba(22, 24, 29, 1) 0%,
+        rgba(22, 24, 29, 0.95) 80%,
+        transparent 100%);
+    padding: 3rem 1.5rem 1.5rem 1.5rem;
+    /* Increased top padding for the gradient fade */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 2;
+    /* Remove the translateY(120px) to keep title visible */
+    transform: translateY(0);
+    transition: transform 0.4s ease;
+  }
+
+  /* Container for hidden description and button */
+  .hover-reveal-section {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+  }
+
+  .blog-card:hover .hover-reveal-section {
+    max-height: 250px;
+    /* Adjust based on content height */
+    opacity: 1;
+    margin-top: 10px;
+  }
+
+  .read-more-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #60a5fa;
+    font-weight: 700;
+    text-decoration: none;
+    /* Button slide-up animation */
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(.23, 1, .32, 1);
+  }
+
+  .blog-card:hover .read-more-link {
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 768px) {
+    .blog-card-container {
+      padding: 0 1rem 0 1rem !important;
+      margin: 24px auto !important;
+    }
+
+    .blog-card-container > div {
+      grid-template-columns: repeat(2, minmax(0, 150px)) !important;
+      gap: 0.75rem !important;
+      justify-content: center !important;
+    }
+    .outer {
+      height: 225px;
+    }
+    .topl {
+      top: 6%;
+    }
+    .bottoml {
+      bottom: 6%;
+    }
+    .blog-card {
+      min-height: 12rem !important;
+      width: 150px !important;
+      aspect-ratio: unset !important;
+      max-width: 100% !important;
+    }
+
+    .blog-card-img {
+      object-fit: cover !important;
+    }
+
+    /* Blog card content responsive styles */
+    .blog-card-content {
+      padding: 1.5rem 0.5rem 0.5rem 0.5rem !important;
+    }
+
+    .blog-card-content h3 {
+      font-size: 0.7rem !important;
+      margin-top: 2px !important;
+      line-height: 1.2 !important;
+    }
+
+    .blog-card-content span {
+      font-size: 0.5rem !important;
+    }
+
+    .blog-description {
+      font-size: 0.75rem !important;
+      -webkit-line-clamp: 2 !important;
+    }
+
+    .read-more-link {
+      font-size: 0.75rem !important;
+      margin-top: 8px !important;
+    }
+    
+    /* Pagination responsive styles */
+    .pagination-container {
+      padding: 0 1rem !important;
+    }
+    
+    .pagination-container > div {
+      gap: 0.5rem !important;
+      flex-wrap: wrap !important;
+    }
+    
+    .pagination-btn,
+    .pagination-btn-disabled {
+      padding: 0.4rem 0.8rem !important;
+      font-size: 0.75rem !important;
+      gap: 0.3rem !important;
+    }
+    
+    .pagination-btn span,
+    .pagination-btn-disabled span {
+      font-size: 0.85rem !important;
+    }
+    
+    .page-indicator {
+      padding: 0.4rem 0.8rem !important;
+      font-size: 0.75rem !important;
+      gap: 0.3rem !important;
+    }
+    
+    .page-indicator > span {
+      font-size: 0.75rem !important;
+    }
+    
+    .page-number-badge {
+      min-width: 1.3rem !important;
+      height: 1.3rem !important;
+      font-size: 0.7rem !important;
+      padding: 0 0.3rem !important;
+    }
+  }
+</style>
+
+<div class="section flex justify-center items-center w-full px-8">
+  <div class="outer">
+    <div class="dot"></div>
+    <div class="card">
+      <div class="ray"></div>
+      <div class="line topl"></div>
+      <div class="line leftl"></div>
+      <div class="line bottoml"></div>
+      <div class="line rightl"></div>
+
+      <div class="flex items-center justify-center gap-3 text-white text-xl mb-3">
+        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors" style="font-family: 'Manrope', sans-serif; font-weight: 600;">
+          Home
+        </a>
+        <span class="text-blue-400 text-2xl">›</span>
+        <span class="text-blue-400" style="font-family: 'Manrope', sans-serif">Blogs</span>
+      </div>
+      <div class="para">
+        <p>Explore ideas that move the future. Stay ahead with expert insights, news, and case studies in road and AI
+          technology.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Blog Cards Grid -->
+<div class="blog-card-container" style="max-width: 1305px; margin: 32px auto; padding: 0 2rem 0rem 2rem;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem">
+    {% for blog in blogs %}
+    <div class="blog-card">
+      <div style="height: 100%; width: 100%; position: relative;">
+
+        {% if blog.cover_image %}
+        <img src="{{ blog.cover_image.url }}" alt="{{ blog.title }}" class="blog-card-img">
+        {% else %}
+        <div style="height: 100%; background: #23272f;"></div>
+        {% endif %}
+
+        <div class="blog-card-content">
+          <span
+            style="color: #60a5fa; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">
+            {{ blog.category }}
+          </span>
+          <h3
+            style="font-size: 1.3rem; font-weight: bold; color: white; font-family: 'Manrope', sans-serif; margin-top: 5px;">
+            {{ blog.title }}
+          </h3>
+
+          <div class="hover-reveal-section">
+            <p class="blog-description"
+              style="font-size: 0.875rem; color: #9ca3af; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+              {{ blog.short_description|truncatechars:150 }}
+            </p>
+            <a href="{% url 'blog_detail' blog.slug %}" class="read-more-link">
+              Read More →
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Pagination Controls -->
+{% if blogs.has_other_pages %}
+<div class="pagination-container" style="max-width: 1305px; margin: 0 auto 3rem auto; padding: 0 2rem;">
+  <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
+    
+    {% if blogs.has_previous %}
+    <a href="?page={{ blogs.previous_page_number }}" class="pagination-btn prev-btn" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      border: none;
+      border-radius: 2rem;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(37, 99, 235, 0.5)';" 
+       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(37, 99, 235, 0.3)';">
+      <span style="font-size: 1.1rem;">←</span>
+      <span>Previous</span>
+    </a>
+    {% else %}
+    <span class="pagination-btn-disabled" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      background: rgba(100, 116, 139, 0.2);
+      border: none;
+      border-radius: 2rem;
+      color: rgba(148, 163, 184, 0.5);
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.9rem;
+      cursor: not-allowed;
+    ">
+      <span style="font-size: 1.1rem;">←</span>
+      <span>Previous</span>
+    </span>
+    {% endif %}
+
+    <div class="page-indicator" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, rgba(20, 24, 35, 0.8), rgba(30, 35, 50, 0.8));
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: 2rem;
+      color: #60a5fa;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    ">
+      <span style="color: white;">Page</span>
+      <span class="page-number-badge" style="
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.75rem;
+        height: 1.75rem;
+        padding: 0 0.5rem;
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        border-radius: 1rem;
+        color: white;
+        font-weight: 800;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+      ">{{ blogs.number }}</span>
+      <span style="color: rgba(148, 163, 184, 0.7);">of</span>
+      <span style="color: white; font-weight: 800;">{{ blogs.paginator.num_pages }}</span>
+    </div>
+
+    {% if blogs.has_next %}
+    <a href="?page={{ blogs.next_page_number }}" class="pagination-btn next-btn" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      border: none;
+      border-radius: 2rem;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(37, 99, 235, 0.5)';" 
+       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(37, 99, 235, 0.3)';">
+      <span>Next</span>
+      <span style="font-size: 1.1rem;">→</span>
+    </a>
+    {% else %}
+    <span class="pagination-btn-disabled" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      background: rgba(100, 116, 139, 0.2);
+      border: none;
+      border-radius: 2rem;
+      color: rgba(148, 163, 184, 0.5);
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.9rem;
+      cursor: not-allowed;
+    ">
+      <span>Next</span>
+      <span style="font-size: 1.1rem;">→</span>
+    </span>
+    {% endif %}
+
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

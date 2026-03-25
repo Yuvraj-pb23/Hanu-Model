@@ -1,0 +1,2221 @@
+{% extends "base.html" %} {% load static %} {% block title %}HanuAi -
+Home{%endblock %} {% block content %}
+<link rel="stylesheet" href="{% static 'CSS/home.css' %}" />
+
+<div class="hero-wrapper" style="
+    max-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 6.5rem 2.5rem 0;
+  ">
+  <!-- 🔹 Left: Laptop with Video -->
+  <div class="hero-laptop" style="width: 67%; max-width: none; margin-left: 2rem">
+    <!-- Glow -->
+    <div
+      class="absolute -inset-16 bg-gradient-to-tr from-sky-300/25 via-transparent to-teal-200/25 rounded-full blur-[100px] animate-rotate-slow">
+    </div>
+
+    <div class="relative animate-gentle-float" style="width: 100%">
+      <img src="/static/assets/img/lap.png" alt="Laptop frame" class="w-full h-auto drop-shadow-2xl" />
+
+      <div class="absolute" style="
+          top: 3.5%;
+          left: 11.5%;
+          width: 77%;
+          height: 87%;
+          overflow: hidden;
+          border-radius: 0.5rem;
+        ">
+        <video id="video1" class="hero-video" autoplay muted playsinline style="
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 1;
+            z-index: 2;
+            transition: opacity 1s ease-in-out;
+          "></video>
+        <video id="video2" class="hero-video" autoplay muted playsinline style="
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            z-index: 1;
+            transition: opacity 1s ease-in-out;
+          "></video>
+      </div>
+    </div>
+  </div>
+  <!-- 🔹 Right: Smooth Scrolling Headings -->
+  <div class="hero-headings" style="
+      width: 33%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+    <div id="headingContainer" style="
+        position: relative;
+        height: 175px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      "></div>
+  </div>
+</div>
+
+<!-- Marquee Section -->
+<div class="marquee-container" style="
+    background: linear-gradient(135deg, rgba(6, 20, 50, 0.95), rgba(15, 23, 42, 0.95), rgba(17, 24, 39, 0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, transparent, #06b6d4, #3b82f6, #06b6d4, transparent) 1;
+    padding: 0.4rem 0;
+    overflow: hidden;
+    margin-top: 9px;
+    position: relative;
+    box-shadow: 
+      0 0 30px rgba(6, 182, 212, 0.3),
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(6, 182, 212, 0.2);
+    animation: tech-pulse 2s ease-in-out infinite;
+  ">
+  <!-- Neon glow borders -->
+  <div
+    style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #06b6d4, #3b82f6, #06b6d4, transparent); animation: border-flow 3s linear infinite;">
+  </div>
+  <div
+    style="position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #06b6d4, #3b82f6, transparent); animation: border-flow-reverse 3s linear infinite;">
+  </div>
+  <!-- Tech grid pattern -->
+  <div style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(6, 182, 212, 0.03) 2px, rgba(6, 182, 212, 0.03) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.03) 2px, rgba(59, 130, 246, 0.03) 4px);
+      pointer-events: none;
+    "></div>
+  <!-- Holographic shimmer -->
+  <div style="
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(6, 182, 212, 0.15), 
+        rgba(59, 130, 246, 0.15),
+        rgba(139, 92, 246, 0.1),
+        transparent);
+      animation: shimmer 4s infinite;
+      pointer-events: none;
+    "></div>
+  <!-- Scan line effect -->
+  <div style="
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.1) 50%, transparent 100%);
+      animation: scan-line 3s ease-in-out infinite;
+      pointer-events: none;
+    "></div>
+  <div class="marquee-content" style="
+      display: flex;
+      animation: marquee 5s linear infinite;
+      white-space: nowrap;
+    ">
+    <a href="{% url 'gallery' %}" class="marquee-link" style="
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, sans-serif;
+        padding: 0 4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 0.3px;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="
+          font-size: 1.2rem; 
+          animation: float 3s ease-in-out infinite; 
+          filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+        ">⚡</span>
+      <span style="
+          background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-flow 3s linear infinite;
+          font-weight: 800;
+          text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        ">
+        Peruse the GALLERY, for HanuAI Participation!
+      </span>
+      <span style="
+          font-size: 1.1rem; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+        " onmouseover="this.style.transform='translateX(8px) scale(1.2)'"
+        onmouseout="this.style.transform='translateX(0) scale(1)'">➤</span>
+    </a>
+    <a href="{% url 'gallery' %}" class="marquee-link" style="
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, sans-serif;
+        padding: 0 4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 0.3px;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="
+          font-size: 1.2rem; 
+          animation: float 3s ease-in-out infinite 1s; 
+          filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+        ">⚡</span>
+      <span style="
+          background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-flow 3s linear infinite;
+          font-weight: 800;
+          text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        ">
+        Peruse the GALLERY, for HanuAI Participation!
+      </span>
+      <span style="
+          font-size: 1.1rem; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+        " onmouseover="this.style.transform='translateX(8px) scale(1.2)'"
+        onmouseout="this.style.transform='translateX(0) scale(1)'">➤</span>
+    </a>
+    <a href="{% url 'gallery' %}" class="marquee-link" style="
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, sans-serif;
+        padding: 0 4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 0.3px;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="
+          font-size: 1.2rem; 
+          animation: float 3s ease-in-out infinite 2s; 
+          filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+        ">⚡</span>
+      <span style="
+          background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-flow 3s linear infinite;
+          font-weight: 800;
+          text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        ">
+        Peruse the GALLERY, for HanuAI Participation!
+      </span>
+      <span style="
+          font-size: 1.1rem; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+        " onmouseover="this.style.transform='translateX(8px) scale(1.2)'"
+        onmouseout="this.style.transform='translateX(0) scale(1)'">➤</span>
+    </a>
+    <a href="{% url 'gallery' %}" class="marquee-link" style="
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, sans-serif;
+        padding: 0 4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 0.3px;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="
+          font-size: 1.2rem; 
+          animation: float 3s ease-in-out infinite; 
+          filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+        ">⚡</span>
+      <span style="
+          background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-flow 3s linear infinite;
+          font-weight: 800;
+          text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        ">
+        Peruse the GALLERY, for HanuAI Participation!
+      </span>
+      <span style="
+          font-size: 1.1rem; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+        " onmouseover="this.style.transform='translateX(8px) scale(1.2)'"
+        onmouseout="this.style.transform='translateX(0) scale(1)'">➤</span>
+    </a>
+    <a href="{% url 'gallery' %}" class="marquee-link" style="
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, sans-serif;
+        padding: 0 4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 0.3px;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="
+          font-size: 1.2rem; 
+          animation: float 3s ease-in-out infinite 1s; 
+          filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+        ">⚡</span>
+      <span style="
+          background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-flow 3s linear infinite;
+          font-weight: 800;
+          text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        ">
+        Peruse the GALLERY, for HanuAI Participation!
+      </span>
+      <span style="
+          font-size: 1.1rem; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+        " onmouseover="this.style.transform='translateX(8px) scale(1.2)'"
+        onmouseout="this.style.transform='translateX(0) scale(1)'">➤</span>
+    </a>
+    <a href="{% url 'gallery' %}" class="marquee-link" style="
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        font-family: 'Manrope', -apple-system, sans-serif;
+        padding: 0 4rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        z-index: 1;
+        letter-spacing: 0.3px;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+      <span style="
+          font-size: 1.2rem; 
+          animation: float 3s ease-in-out infinite 2s; 
+          filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+        ">⚡</span>
+      <span style="
+          background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradient-flow 3s linear infinite;
+          font-weight: 800;
+          text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        ">
+        Peruse the GALLERY, for HanuAI Participation!
+      </span>
+      <span style="
+          font-size: 1.1rem; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+          filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.7));
+        " onmouseover="this.style.transform='translateX(8px) scale(1.2)'"
+        onmouseout="this.style.transform='translateX(0) scale(1)'">➤</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes shimmer {
+
+    0%,
+    100% {
+      left: -100%;
+    }
+
+    50% {
+      left: 100%;
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+      transform: translateY(-3px) rotate(-5deg);
+    }
+
+    75% {
+      transform: translateY(3px) rotate(5deg);
+    }
+  }
+
+  @keyframes tech-pulse {
+
+    0%,
+    100% {
+      box-shadow:
+        0 0 30px rgba(6, 182, 212, 0.3),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(6, 182, 212, 0.2);
+    }
+
+    50% {
+      box-shadow:
+        0 0 40px rgba(6, 182, 212, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(6, 182, 212, 0.4);
+    }
+  }
+
+  @keyframes gradient-flow {
+    0% {
+      background-position: 0% center;
+    }
+
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  @keyframes border-flow {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes border-flow-reverse {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes scan-line {
+    0% {
+      top: -100%;
+    }
+
+    100% {
+      top: 100%;
+    }
+  }
+
+  .marquee-container:hover .marquee-content {
+    animation-play-state: paused;
+  }
+</style>
+
+<!-- Presence Section -->
+<section id="impact" class="  relative bg-white py-10 overflow-hidden">
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
+    <div class="presence">
+      <div class="section-title">
+        <h2>Our <span>Global </span>Presence</h2>
+        <p>"Expanding Across Regions, Growing With Trust"</p>
+      </div>
+      <!-- LEFT: Map with Floating Buttons -->
+      <div id="globe-parent" class="relative flex justify-center items-center globe-wrapper">
+        <div id="globeViz" class="globe-canvas"></div>
+      </div>
+    </div>
+    <div class=" ">
+      <div class="section-title">
+        <h2>Our <span>Domestic </span>Presence</h2>
+      </div>
+      <div class="flex flex-row justify-center items-center w-full presence-map-wrapper"
+        style="min-height: 800px; padding: 1.3rem 0">
+        <div class="flex flex-col gap-3 items-end pr-4" style="flex: 1; max-width: 175px">
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Jammu & Kashmir.png' %}">
+            <p class="text-xl font-semibold">Jammu & Kashmir</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Himachal Pradesh.png' %}">
+            <p class="text-xl font-semibold">Himachal Pradesh</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Punjab.png' %}">
+            <p class="text-xl font-semibold">Punjab</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Haryana.png' %}">
+            <p class="text-xl font-semibold">Haryana</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Delhi.png' %}">
+            <p class="text-xl font-semibold">Delhi</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Uttar Pradesh.png' %}">
+            <p class="text-xl font-semibold">Uttar Pradesh</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Bihar.png' %}">
+            <p class="text-xl font-semibold">Bihar</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Jharkhand.png' %}">
+            <p class="text-xl font-semibold">Jharkhand</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/West Bengal.png' %}">
+            <p class="text-xl font-semibold">West Bengal</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Assam.png' %}">
+            <p class="text-xl font-semibold">Assam</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Meghalaya.png' %}">
+            <p class="text-xl font-semibold">Meghalaya</p>
+          </div>
+        </div>
+
+        <!-- Replace the map center section with this -->
+        <div class="base-map-wrapper flex items-center justify-center relative"
+          style="flex: 2; height: 750px; width: 100%; overflow: hidden">
+          <div class="base-map" style="
+              position: relative;
+              width: 800px;
+              height: 600px;
+              margin: 0 auto;
+              overflow: visible;
+            ">
+            <!-- Base map -->
+            <img id="indiaBaseMap" src="{% static 'Media/presence/india/India.png' %}" alt="India Map" style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                z-index: 1;
+              " />
+
+            <!-- State overlay - centered at exact center of map container -->
+            <div id="stateOverlayContainer" style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 0;
+                height: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+                pointer-events: none;
+                margin: 0;
+                padding: 0;
+              ">
+              <img id="indiaMapDisplay" src="{% static 'Media/presence/india/transparent.png' %}" alt="" style="
+                  opacity: 0;
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%) scale(1);
+                  transform-origin: center center;
+                  width: auto;
+                  height: auto;
+                  max-width: 800px;
+                  max-height: 600px;
+                  object-fit: contain;
+                  margin: 0;
+                  padding: 0;
+                  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                  display: block;
+                " />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3 items-start pl-4" style="flex: 1; max-width: 175px">
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Rajasthan.png' %}">
+            <p class="text-xl font-semibold">Rajasthan</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Madhya Pradesh.png' %}">
+            <p class="text-xl font-semibold">Madhya Pradesh</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Chhattisgarh.png' %}">
+            <p class="text-xl font-semibold">Chhattisgarh</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Odisha.png' %}">
+            <p class="text-xl font-semibold">Odisha</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Gujarat.png' %}">
+            <p class="text-xl font-semibold">Gujarat</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Maharashtra.png' %}">
+            <p class="text-xl font-semibold">Maharashtra</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Telangana.png' %}">
+            <p class="text-xl font-semibold">Telangana</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Andhra Pradesh.png' %}">
+            <p class="text-xl font-semibold">Andhra Pradesh</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Karnataka.png' %}">
+            <p class="text-xl font-semibold">Karnataka</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Kerala.png' %}">
+            <p class="text-xl font-semibold">Kerala</p>
+          </div>
+          <div class="glowbutton state-card group" role="button" tabindex="0"
+            data-map="{% static 'Media/presence/india/Tamil Nadu.png' %}">
+            <p class="text-xl font-semibold">Tamil Nadu</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Section -->
+    <div class=" ">
+      <div class="flex justify-center items-center w-full py-8">
+        <div class="services flex gap-12 flex-wrap justify-center max-w-[920px]">
+          <div class="section-title">
+            <h2>Our <span>Services </span></h2>
+            <p>
+              Empower your business with HanuAI’s AI-driven solutions for real-world impact and digital transformation.
+            </p>
+          </div>
+          <!-- Card 1: Web & App Development -->
+          <div class="service-card serv-section">
+            <div class="service-content">
+              <div class="back">
+                <div class="back-content">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16" fill="#ff9966" viewBox="0 0 24 24">
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                  </svg>
+                  <div class="title" style="font-family: 'Manrope', sans-serif; text-align:center; display: flex;">
+                    <div>Web</div>
+                    <div>&amp;</div>
+                    <div>App Development</div>
+                  </div>
+                </div>
+              </div>
+              <div class="front front1">
+                <div class="front-content">
+                  <div class="description">
+                    <p class="title" style="font-family: 'Manrope', sans-serif">
+                      <strong>Web & App Development</strong>
+                    </p>
+                    <p class="card-footer" style="font-family: 'Manrope', sans-serif">
+                      Build modern, responsive websites with cutting-edge
+                      technologies.
+                    </p>
+                  </div>
+                  <a href="{% url 'webDev' %}" class="mt-4 ml-auto">
+                    <button
+                      class="group relative flex items-center h-11 px-5 pr-16 bg-[#3b82f6] text-white font-medium text-[15px] tracking-wide rounded-xl shadow-[inset_0_0_1.6em_-0.6em_#1e40af] cursor-pointer overflow-hidden"
+                      style="font-family: 'Manrope', sans-serif">
+                      Read More
+                      <span
+                        class="absolute right-[0.3em] ml-4 flex items-center justify-center h-[2.2em] w-[2.2em] rounded-lg bg-white shadow-[0.1em_0.1em_0.6em_0.2em_#3b82f6] transition-all duration-300 group-hover:w-[calc(100%-0.6em)]">
+                        <svg
+                          class="w-4 text-[#3b82f6] transition-transform duration-300 group-hover:translate-x-[0.1em]"
+                          viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" />
+                        </svg>
+                      </span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Computer Vision -->
+          <div class="service-card serv-section">
+            <div class="service-content">
+              <div class="back">
+                <div class="back-content">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16" fill="#ff9966" viewBox="0 0 24 24">
+                    <path
+                      d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm0-4h2v2h-2z" />
+                  </svg>
+                  <div class="title" style="font-family: 'Manrope', sans-serif; text-align:center;">
+                    <div>Computer Vision</div>
+                    <div>&amp;</div>
+                    <div>Annotation</div>
+                  </div>
+                </div>
+              </div>
+              <div class="front front2">
+                <div class="front-content">
+                  <div class="description">
+                    <p class="title" style="font-family: 'Manrope', sans-serif">
+                      <strong>Computer Vision & Annotation</strong>
+                    </p>
+                    <p class="card-footer" style="font-family: 'Manrope', sans-serif">
+                      Intelligent automation and machine learning
+                      implementations.
+                    </p>
+                  </div>
+                  <a href="{% url 'compVision' %}" class="mt-4 ml-auto">
+                    <button
+                      class="group relative flex items-center h-11 px-5 pr-16 bg-[#3b82f6] text-white font-medium text-[15px] tracking-wide rounded-xl shadow-[inset_0_0_1.6em_-0.6em_#1e40af] cursor-pointer overflow-hidden"
+                      style="font-family: 'Manrope', sans-serif">
+                      Read More
+                      <span
+                        class="absolute right-[0.3em] ml-4 flex items-center justify-center h-[2.2em] w-[2.2em] rounded-lg bg-white shadow-[0.1em_0.1em_0.6em_0.2em_#3b82f6] transition-all duration-300 group-hover:w-[calc(100%-0.6em)]">
+                        <svg
+                          class="w-4 text-[#3b82f6] transition-transform duration-300 group-hover:translate-x-[0.1em]"
+                          viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" />
+                        </svg>
+                      </span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Ai Powered Chatbots -->
+          <div class="service-card serv-section">
+            <div class="service-content">
+              <div class="back">
+                <div class="back-content">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16" fill="#ff9966" viewBox="0 0 24 24">
+                    <path
+                      d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 18H7V5h10v14z" />
+                  </svg>
+                  <div class="title" style="font-family: 'Manrope', sans-serif; text-align:center;">
+                    <div>AI-Powered Chatbots</div>
+                    <div>&amp;</div>
+                    <div>Predictive Analytics</div>
+                  </div>
+                </div>
+              </div>
+              <div class="front front3">
+                <div class="front-content">
+                  <div class="description">
+                    <p class="title" style="font-family: 'Manrope', sans-serif">
+                      <strong>AI-Powered Chatbots & Predictive Analytics</strong>
+                    </p>
+                    <p class="card-footer" style="font-family: 'Manrope', sans-serif">
+                      Conversational AI fused with predictive analytics for
+                      proactive user engagement.
+                    </p>
+                  </div>
+                  <a href="{% url 'aiChat' %}" class="mt-4 ml-auto">
+                    <button
+                      class="group relative flex items-center h-11 px-5 pr-16 bg-[#3b82f6] text-white font-medium text-[15px] tracking-wide rounded-xl shadow-[inset_0_0_1.6em_-0.6em_#1e40af] cursor-pointer overflow-hidden"
+                      style="font-family: 'Manrope', sans-serif">
+                      Read More
+                      <span
+                        class="absolute right-[0.3em] ml-4 flex items-center justify-center h-[2.2em] w-[2.2em] rounded-lg bg-white shadow-[0.1em_0.1em_0.6em_0.2em_#3b82f6] transition-all duration-300 group-hover:w-[calc(100%-0.6em)]">
+                        <svg
+                          class="w-4 text-[#3b82f6] transition-transform duration-300 group-hover:translate-x-[0.1em]"
+                          viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" />
+                        </svg>
+                      </span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: GIS & Data Intelligence -->
+          <div class="service-card serv-section">
+            <div class="service-content">
+              <div class="back">
+                <div class="back-content">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16" fill="#ff9966" viewBox="0 0 24 24">
+                    <path
+                      d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+                  </svg>
+                  <div class="title" style="font-family: 'Manrope', sans-serif; text-align:center;">
+                    <div>GIS</div>
+                    <div>&amp;</div>
+                    <div>Data Intelligence</div>
+                  </div>
+                </div>
+              </div>
+              <div class="front front4">
+                <div class="front-content">
+                  <div class="description">
+                    <p class="title" style="font-family: 'Manrope', sans-serif">
+                      <strong>GIS & Data Intelligence</strong>
+                    </p>
+                    <p class="card-footer" style="font-family: 'Manrope', sans-serif">
+                      Integrating spatial analytics with advanced computational
+                      intelligence.
+                    </p>
+                  </div>
+                  <a href="{% url 'gis' %}" class="mt-4 ml-auto">
+                    <button
+                      class="group relative flex items-center h-11 px-5 pr-16 bg-[#3b82f6] text-white font-medium text-[15px] tracking-wide rounded-xl shadow-[inset_0_0_1.6em_-0.6em_#1e40af] cursor-pointer overflow-hidden"
+                      style="font-family: 'Manrope', sans-serif">
+                      Read More
+                      <span
+                        class="absolute right-[0.3em] ml-4 flex items-center justify-center h-[2.2em] w-[2.2em] rounded-lg bg-white shadow-[0.1em_0.1em_0.6em_0.2em_#3b82f6] transition-all duration-300 group-hover:w-[calc(100%-0.6em)]">
+                        <svg
+                          class="w-4 text-[#3b82f6] transition-transform duration-300 group-hover:translate-x-[0.1em]"
+                          viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" />
+                        </svg>
+                      </span>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Awards Section -->
+    <div class="  presence">
+      <div class="section-title">
+        <h2 class="awards-animated-heading">
+          <span>Recognized </span>for Commitment
+        </h2>
+        <p class="awards-animated-desc">
+          "Recognized and honored for excellence in innovation, technology, and
+          business impact by prestigious organizations."
+        </p>
+      </div>
+      <div class="awards-grid" style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1rem 0rem;
+          justify-items: center;
+          align-items: center;
+          margin-top: 3rem;
+          margin-bottom: 1rem;
+          padding: 0 65px;
+        ">
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c1.png' %}" alt="ESC"
+            style="max-width: 95px; max-height: 140px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c2.png' %}" alt="Nasscom"
+            style="max-width: 150px; max-height: 140px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c3.png' %}" alt="SPH"
+            style="max-width: 150px; max-height: 110px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c4.png' %}" alt="CSIR India"
+            style="max-width: 100px; max-height: 140px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c5.png' %}" alt="TiE Con 2024"
+            style="max-width: 150px; max-height: 140px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c6.png' %}" alt="Innovation Mission Punjab"
+            style="max-width: 150px; max-height: 140px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c7.png' %}" alt="IndiaSoft"
+            style="max-width: 150px; max-height: 140px; object-fit: contain" />
+        </div>
+        <div class="award-card-white">
+          <img src="{% static 'assets/img/clients/c8.png' %}" alt="Startup Punjab"
+            style="max-width: 150px; max-height: 140px; object-fit: contain" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .globe-canvas {
+    width: 100%;
+    height: 500px;
+  }
+
+  /* 📱 Mobile */
+  @media (max-width: 768px) {
+    .globe-canvas {
+      height: 300px;
+      /* 🔥 smaller globe */
+    }
+
+    #globe-parent {
+      margin-top: 15px;
+    }
+  }
+
+  .hero-wrapper {
+    display: flex;
+  }
+
+  /* Desktop stays same */
+  .hero-laptop {
+    width: 70%;
+  }
+
+  .hero-headings {
+    width: 30%;
+  }
+
+  /* 🔥 Mobile fix */
+  @media (max-width: 768px) {
+    .hero-wrapper {
+      flex-direction: column;
+    }
+
+    .hero-laptop {
+      order: 1;
+      margin: 2rem 0 !important;
+      max-width: 60%;
+      width: 105% !important;
+    }
+
+    .hero-headings {
+      order: 2;
+      /* Headings below */
+      width: 90% !important;
+    }
+
+    * h2 {
+      font-size: 2rem !important;
+    }
+
+    * p {
+      font-size: 1.1rem !important;
+    }
+
+    .serv-section {
+      padding: 1.5rem 1rem;
+    }
+
+    .services {
+      gap : 0rem !important;
+    }
+
+    .awards-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      padding: 0 !important;
+    }
+
+    .award-card-white {
+      width: 145px !important;
+      height: 90px !important;
+    }
+
+    .award-card-white img {
+      width: 80px !important;
+      height: 80px !important;
+    }
+  }
+
+  /* ==========================================================================
+   VARIABLES & GLOBAL DEFAULTS
+   ========================================================================== */
+  :root {
+    --glow-color: #3b82f6;
+    --enhanced-glow-color: #2563eb;
+    --btn-color: #1e293b;
+    --primary-orange: #f4883d;
+  }
+
+
+
+  /* ==========================================================================
+   KEYFRAMES / ANIMATIONS
+   ========================================================================== */
+  @keyframes gentle-float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes smoothSlideUp {
+    0% {
+      transform: translateY(40%);
+      opacity: 0;
+    }
+
+    20% {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+
+    80% {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(-40%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes awardsHeadingFadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+
+    60% {
+      opacity: 1;
+      transform: translateY(-6px) scale(1.04);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes awardsSpanGlow {
+    0% {
+      text-shadow: 0 0 0 var(--primary-orange);
+    }
+
+    100% {
+      text-shadow: 0 0 7px var(--primary-orange), 0 0 3px #fff2e0;
+    }
+  }
+
+  @keyframes awardsDescFadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes cardFloat {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes cardGlow {
+
+    0%,
+    100% {
+      box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.07), 0 0 0 0 #3b82f6;
+    }
+
+    50% {
+      box-shadow: 0 4px 32px 0 #3b82f6cc, 0 0 24px 4px #f4883d55;
+    }
+  }
+
+  /* ==========================================================================
+   HERO SECTION & LAPTOP
+   ========================================================================== */
+  .animate-gentle-float {
+    animation: gentle-float 10s ease-in-out infinite;
+  }
+
+  .animate-rotate-slow {
+    animation: rotate-slow 40s linear infinite;
+  }
+
+  .heading-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    transition: all 1s ease-in-out;
+    animation: smoothSlideUp 6s ease-in-out forwards;
+    /* Changed from 4.5s to 6s */
+    will-change: transform, opacity;
+    font-size: 2.3rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    padding-top: 1.1em;
+    padding-bottom: 1.1em;
+    line-height: 1.18;
+    box-sizing: border-box;
+    background: linear-gradient(90deg, #4fd1ff 10%, #fff 50%, #ff914d 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-video {
+    will-change: opacity;
+    backface-visibility: hidden;
+  }
+
+  .active-gradient {
+    background: linear-gradient(148deg,
+        rgba(0, 152, 212, 1) 13%,
+        rgba(129, 118, 105, 0.87) 46%,
+        rgba(255, 85, 0, 1) 79%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 14px rgba(0, 115, 150, 0.3);
+  }
+
+  .inactive-text {
+    color: rgba(100, 116, 139, 0.6);
+  }
+
+  /* ==========================================================================
+   PRESENCE / IMPACT SECTION
+   ========================================================================== */
+  #impact {
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .presence {
+    box-shadow: 0px 0px 10px 5px #d3d3d388;
+    width: 100%;
+    padding: 35px 0;
+    margin: 45px 0;
+    background: rgba(0, 0, 0, 1);
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+  }
+
+  #impact .section-title {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #impact .section-title h2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1.08;
+    font-family: "Manrope", sans-serif;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #impact .section-title span {
+    color: var(--primary-orange);
+  }
+
+  #impact .section-title p {
+    font-size: 1.5rem !important;
+    font-weight: 500;
+    margin-top: 0.8rem;
+    line-height: 1.3;
+    color: #b7b7b7;
+    font-family: "Manrope", sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ==========================================================================
+   INDIA MAP & STATE OVERLAYS
+   ========================================================================== */
+  .map-container {
+    position: relative;
+    flex: 2;
+    height: 750px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #impact img#mapDisplay {
+    margin-top: 14px;
+    width: 700px;
+    height: 480px;
+    max-width: 100vw;
+    max-height: 480px;
+  }
+
+  #stateOverlayContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    z-index: 10;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #indiaMapDisplay {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    transform-origin: center center;
+    transition: opacity 0.5s ease-in-out;
+    will-change: opacity;
+    pointer-events: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 800px;
+    max-height: 600px;
+    object-fit: contain;
+  }
+
+  #indiaBaseMap {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1;
+  }
+
+  .state-overlay-img {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+    transform: scale(1);
+    will-change: transform, opacity;
+    pointer-events: none;
+  }
+
+  .state-active {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    transform-origin: center center !important;
+    filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.9));
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 800px !important;
+    max-height: 600px !important;
+    object-fit: contain !important;
+    display: block !important;
+    transition: opacity 0.5s ease-in-out !important;
+  }
+
+  .state-hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+
+  /* Hide base map completely when state is hovered */
+  .base-map-hidden {
+    opacity: 0 !important;
+    transition: opacity 0.5s ease-in-out !important;
+  }
+
+  /* Ensure the map container is properly centered */
+  .map-center-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ==========================================================================
+   STATE BUTTONS (GLOW & INTERACTION)
+   ========================================================================== */
+  #impact .glowbutton {
+    border: 0.15em solid var(--glow-color);
+    padding: 0.7em 1.5em;
+    color: var(--glow-color);
+    font-size: 1rem;
+    font-weight: 700;
+    background-color: var(--btn-color);
+    border-radius: 0.8em;
+    outline: none;
+    box-shadow: 0 0 1em 0.1em var(--glow-color),
+      0 0 2em 0.5em var(--glow-spread-color),
+      inset 0 0 0.5em 0.1em var(--glow-color);
+    text-shadow: 0 0 0.5em var(--glow-color);
+    position: relative;
+    transition: all 0.3s;
+    max-width: 180px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  #impact .glowbutton::after {
+    pointer-events: none;
+    content: "";
+    position: absolute;
+    top: 120%;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--glow-spread-color);
+    filter: blur(2em);
+    opacity: 0.7;
+    transform: perspective(1.5em) rotateX(35deg) scale(1, 0.6);
+  }
+
+  #impact .glowbutton:hover {
+    color: var(--btn-color);
+    background-color: var(--glow-color);
+    box-shadow: 0 0 1.5em 0.2em var(--enhanced-glow-color),
+      0 0 3em 1em var(--glow-spread-color),
+      inset 0 0 1em 0.2em var(--enhanced-glow-color);
+  }
+
+  #impact .state-card {
+    width: 180px;
+    min-height: 52px;
+    box-shadow: none;
+    text-shadow: none;
+    background: linear-gradient(to bottom right,
+        #2e8eff 0%,
+        rgba(46, 142, 255, 0) 30%);
+    background-color: rgba(46, 142, 255, 0.2);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0.2rem;
+  }
+
+  #impact .state-card:hover,
+  #impact .state-card:focus {
+    background-color: rgba(46, 142, 255, 0.7);
+    box-shadow: 0 0 10px rgba(46, 142, 255, 0.55);
+    outline: none;
+    width: 100% !important;
+    max-width: 100vw;
+    transition: width 0.35s cubic-bezier(0.4, 2, 0.6, 1), background 0.3s,
+      box-shadow 0.3s;
+    z-index: 3;
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  #impact .state-card p {
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    transition: color 0.3s ease;
+  }
+
+
+  @media (max-width: 768px) {
+
+    /* Keep cards exactly as-is */
+    .presence-map-wrapper {
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    /* LEFT state column */
+    .presence-map-wrapper>div:first-child {
+      order: 1;
+    }
+
+    /* RIGHT state column */
+    .presence-map-wrapper>div:last-child {
+      order: 1;
+    }
+
+    .base-map-wrapper {
+      height: 320px !important;
+    }
+
+    .base-map {
+      height: 320px !important;
+    }
+
+    /* MAP always LAST */
+    .presence-map-wrapper>div:nth-child(2) {
+      order: 2;
+      flex: 0 0 100% !important;
+      width: 100%;
+      margin-top: 1.5rem;
+      height: 320px;
+    }
+
+    /* Reduce map size */
+    .presence-map-wrapper img:not(#indiaMapDisplay) {
+      max-width: 100% !important;
+      max-height: 280px !important;
+    }
+
+    #indiaMapDisplay {
+      max-width: 90vw !important;
+      max-height: 300px !important;
+      width: auto !important;
+      height: auto !important;
+      display: block !important;
+      z-index: 20 !important;
+    }
+
+    #stateOverlayContainer {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .state-card {
+      width: 162px !important;
+    }
+
+    .state-card p {
+      font-size: 0.9rem !important;
+    }
+  }
+
+
+
+  /* ==========================================================================
+   SERVICES SECTION
+   ========================================================================== */
+
+  .services-title {
+    text-align: center;
+  }
+
+  /* 
+  .services-title h2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1.08;
+    font-family: "Manrope", sans-serif;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--primary-orange);
+  }
+
+  .services-title p {
+    font-size: 1.5rem !important;
+    font-weight: 500;
+    margin-top: 0.8rem;
+    line-height: 1.3;
+    color: #b7b7b7;
+    font-family: "Manrope", sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+  } */
+
+  .service-card {
+    overflow: visible;
+    width: 380px;
+    height: 365px;
+  }
+
+  .service-content {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 300ms;
+    box-shadow: 0px 0px 10px 1px #000000ee;
+    border-radius: 5px;
+    transition: transform 1.5s ease-in-out;
+  }
+
+  .front,
+  .back {
+    background-color: #151515;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .back::before {
+    position: absolute;
+    content: " ";
+    display: block;
+    width: 160px;
+    height: 160%;
+    background: linear-gradient(90deg,
+        transparent,
+        #3b82f6,
+        #3b82f6,
+        #3b82f6,
+        #3b82f6,
+        transparent);
+    animation: rotation_481 8000ms infinite linear;
+  }
+
+  .back {
+    /* Positioning & Stability */
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    /* THE GRADIENT BASE */
+    /* Using a deep dark foundation so the colors don't look washed out */
+    background-color: #0b0f1a;
+    background-image: radial-gradient(at 0% 0%,
+        rgba(59, 130, 246, 0.2) 0px,
+        transparent 50%),
+      radial-gradient(at 100% 100%,
+        rgba(255, 153, 102, 0.2) 0px,
+        transparent 50%);
+
+    border-radius: 15px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .back-content {
+    z-index: 2;
+    animation: backFloat 4s ease-in-out infinite;
+    position: absolute;
+    width: 99%;
+    height: 99%;
+
+    /* THE MAIN GRADIENT */
+    /* Linear gradient from a Deep Blue-Grey to a Deep Charcoal-Orange */
+    background: linear-gradient(135deg, #0f172a 0%, #151515 50%, #1a1412 100%);
+
+    /* Modern Edge: A subtle gradient border that mimics the blue-to-orange flow */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    /* Inner shadow for depth */
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Subtle "Light Sweep" animation remains for a premium feel */
+  .back::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 50%,
+        transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Hover effect only affects position/lift, not the colors */
+  .service-card:hover .back {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes backFloat {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .service-card:hover .service-content {
+    transform: rotateY(180deg);
+  }
+
+  @keyframes rotation_481 {
+    0% {
+      transform: rotateZ(0deg);
+    }
+
+    100% {
+      transform: rotateZ(360deg);
+    }
+  }
+
+  .front {
+    transform: rotateY(180deg);
+    color: white;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .front1 {
+    background-image: url("/static/assets/img/services/training.gif");
+  }
+
+  .front2 {
+    background-image: url("/static/assets/img/services/annotations.gif");
+  }
+
+  .front3 {
+    background-image: url("/static/assets/img/services/AI powered chatbot.gif");
+  }
+
+  .front4 {
+    background-image: url("/static/assets/img/services/gis.gif");
+  }
+
+  .front .front-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .front-content .badge {
+    background-color: #00000055;
+    padding: 2px 10px;
+    border-radius: 10px;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    width: fit-content;
+  }
+
+  .description {
+    box-shadow: 0px 0px 10px 5px #00000088;
+    width: 100%;
+    padding: 10px;
+    background-color: #000000c4;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    border-radius: 5px;
+  }
+
+  .title {
+    font-size: 25px;
+    max-width: 100%;
+    display: flex;
+    font-weight: 600;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  .title p {
+    width: 50%;
+  }
+
+  .card-footer {
+    color: #ffffff88;
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
+  .front .img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    position: relative;
+    filter: blur(15px);
+    animation: floating 2600ms infinite linear;
+  }
+
+  #bottom {
+    background-color: #60a5fa;
+    left: 50px;
+    top: 0px;
+    width: 150px;
+    height: 150px;
+    animation-delay: -800ms;
+  }
+
+  #right {
+    background-color: #2563eb;
+    left: 160px;
+    top: -80px;
+    width: 30px;
+    height: 30px;
+    animation-delay: -1800ms;
+  }
+
+  @keyframes floating {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(10px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  /* ==========================================================================
+   AWARDS SECTION
+   ========================================================================== */
+  .awards-animated-heading {
+    animation: awardsHeadingFadeInUp 1.2s cubic-bezier(0.4, 2, 0.6, 1) 0.1s both;
+    display: inline-block;
+    position: relative;
+    font-family: "Manrope", sans-serif;
+  }
+
+  .awards-animated-desc {
+    animation: awardsDescFadeIn 1.6s cubic-bezier(0.4, 2, 0.6, 1) 0.7s both;
+    display: block;
+    font-size: 1.25rem;
+    color: #b7b7b7;
+    font-family: "Manrope", sans-serif;
+    margin-top: 0.7rem;
+    opacity: 0;
+  }
+
+  .award-card-white {
+    background: #fff;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.07), 0 0 0 0 #3b82f6;
+    width: 190px;
+    height: 115px;
+    margin: 0 auto;
+    animation: cardFloat 3.5s ease-in-out infinite,
+      cardGlow 2.5s ease-in-out infinite;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+
+  .award-card-white:hover {
+    box-shadow: 0 4px 32px 0 #3b82f6cc, 0 0 24px 4px #f4883d99;
+    transform: translateY(-8px) scale(1.04) rotate(-1deg);
+  }
+
+  /* ==========================================================================
+   MISC & MEDIA QUERIES
+   ========================================================================== */
+  .simple-border {
+    position: relative;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .simple-border:hover {
+    border-color: #3b82f6;
+    background: #f0f9ff;
+  }
+
+  .fade-img {
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  @media (max-width: 1024px) {
+    #headingContainer {
+      height: 100px !important;
+    }
+
+    .heading-text {
+      font-size: 1.45rem !important;
+    }
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videos = [
+      "{% static 'Media/Vids/Frames.mp4' %}",
+      "{% static 'Media/Vids/Road.mp4' %}",
+      "{% static 'Media/Vids/Chatbot.mp4' %}",
+      "{% static 'Media/Vids/ohs.mp4' %}",
+      "{% static 'Media/Vids/pkrms3.mp4' %}",
+      "{% static 'Media/Vids/Gnv.mp4' %}",
+      "{% static 'Media/Vids/rmis.mp4' %}",
+      "{% static 'Media/Vids/GPS.mp4' %}",
+    ];
+
+    const headings = [
+      "Our AI Driven Annotations",
+      "Our Road Asset Management & Maintenance System",
+      "Our Intelligent Virtual Assistants",
+      "Our Custom Web Applications & Solutions",
+      "Our Customized Software Suites",
+      "Our Clinical Trial Analysis",
+      "Our Road Management Information System",
+      "Geo-Intelligence Analytics",
+    ];
+
+    const v1 = document.getElementById("video1");
+    const v2 = document.getElementById("video2");
+    const headingContainer = document.getElementById("headingContainer");
+
+    let currentIndex = 0;
+    let activeVideo = v1;
+    let idleVideo = v2;
+
+    // Initial Load
+    v1.src = videos[0];
+    headingContainer.innerHTML = `<div class="heading-text active-gradient">${headings[0]}</div>`;
+
+    async function switchVideo() {
+      currentIndex = (currentIndex + 1) % videos.length;
+
+      // 1. Prepare the hidden video
+      idleVideo.src = videos[currentIndex];
+      idleVideo.load();
+
+      // 2. Wait for it to be ready to play
+      idleVideo.oncanplaythrough = async () => {
+        await idleVideo.play();
+
+        // 3. Perform the cross-fade
+        idleVideo.style.opacity = "1";
+        idleVideo.style.zIndex = "2";
+        activeVideo.style.opacity = "0";
+        activeVideo.style.zIndex = "1";
+
+        // 4. Update Heading
+        headingContainer.style.opacity = "0";
+        setTimeout(() => {
+          headingContainer.innerHTML = `<div class="heading-text active-gradient">${headings[currentIndex]}</div>`;
+          headingContainer.style.opacity = "1";
+        }, 500);
+
+        // 5. Swap references
+        let temp = activeVideo;
+        activeVideo = idleVideo;
+        idleVideo = temp;
+
+        // Clean up the event listener
+        idleVideo.oncanplaythrough = null;
+      };
+    }
+
+    // Run every 8 seconds
+    setInterval(switchVideo, 8000);
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const stateCards = document.querySelectorAll(".state-card");
+    const indiaMapDisplay = document.getElementById("indiaMapDisplay");
+    const baseMap = document.getElementById("indiaBaseMap");
+
+    let stateTimeout = null;
+    stateCards.forEach((card) => {
+      card.addEventListener("click", (e) => {
+        e.preventDefault();
+        const newMap = card.dataset.map;
+        if (!newMap) return;
+
+        const isMobile = window.innerWidth <= 768;
+
+        // If same state clicked again
+        if (
+          indiaMapDisplay.classList.contains("state-active") &&
+          indiaMapDisplay.src.includes(newMap)
+        ) {
+          if (!isMobile) {
+            // Desktop: reset
+            baseMap.classList.remove("base-map-hidden");
+            indiaMapDisplay.classList.remove("state-active");
+            indiaMapDisplay.classList.add("state-hidden");
+            indiaMapDisplay.src = "";
+          }
+          return;
+        }
+
+        // Show selected state
+        indiaMapDisplay.classList.remove("state-hidden");
+        indiaMapDisplay.src = newMap;
+        indiaMapDisplay.classList.add("state-active");
+        baseMap.classList.add("base-map-hidden");
+
+        // Desktop auto-reset (unchanged)
+        // 📱 Mobile auto-reset after 3 seconds
+        // Auto-reset after 3 seconds on all devices
+        if (stateTimeout) clearTimeout(stateTimeout);
+
+        stateTimeout = setTimeout(() => {
+          baseMap.classList.remove("base-map-hidden");
+          indiaMapDisplay.classList.remove("state-active");
+          indiaMapDisplay.classList.add("state-hidden");
+          stateTimeout = null;
+        }, 3000);
+
+        // Optional smooth scroll on mobile only
+        if (isMobile) {
+          setTimeout(() => {
+            indiaMapDisplay.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }, 150);
+        }
+
+      });
+    });
+
+    // Keyboard support for accessibility
+    stateCards.forEach((card) => {
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fadeEls = document.querySelectorAll(". ");
+    // Lower threshold so elements appear sooner (less scroll needed)
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05 }
+    ); // Lowered from 0.18 to 0.05
+    fadeEls.forEach((el) => {
+      observer.observe(el);
+    });
+  });
+</script>
+
+<script src="//unpkg.com/three"></script>
+<script src="//unpkg.com/globe.gl"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const elem = document.getElementById("globeViz");
+
+    const markerData = [
+      { lat: 37.0902, lng: -95.7129, name: "United States" },
+      { lat: 41.8719, lng: 12.5674, name: "Italy" },
+      { lat: -0.7893, lng: 113.9213, name: "Indonesia" },
+      { lat: 20.5937, lng: 78.9629, name: "India" },
+    ];
+
+    const world = Globe()(elem)
+      .backgroundColor("rgba(0,0,0,0)")
+      .showGlobe(false)
+      .showAtmosphere(true)
+      .atmosphereColor("#3b82f6")
+      .atmosphereAltitude(0.2)
+      .hexPolygonsData([])
+      .hexPolygonResolution(3)
+      .hexPolygonColor(() => "#ffffff")
+      .hexPolygonMargin(0.4)
+      .htmlElementsData(markerData)
+      .htmlElement((d) => {
+        const el = document.createElement("div");
+        el.className = "globe-tooltip-marker";
+        el.setAttribute("data-name", d.name);
+
+        // Make the container a zero-size point exactly at the lat/lng
+        el.style.width = "0px";
+        el.style.height = "0px";
+        el.style.pointerEvents = "none";
+        el.style.zIndex = "9999";
+        el.style.position = "relative";
+
+        el.innerHTML = `
+                <div class="tooltip-box" style="
+                    position: absolute;
+                    bottom: 15px; /* Distance from the globe surface */
+                    left: 50%;
+                    transform: translate(-50%, 0) scale(0.5);
+                    background: rgba(0, 0, 0, 0.9);
+                    color: #f4883d;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-family: fangsong, serif;
+                    font-size: 15px;
+                    font-weight: bold;
+                    border: 1px solid #3b82f6;
+                    white-space: nowrap;
+                    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+                    opacity: 0;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                ">
+                    ${d.name}
+                    <div style="
+                        position: absolute;
+                        bottom: -8px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 0;
+                        height: 0;
+                        border-left: 8px solid transparent;
+                        border-right: 8px solid transparent;
+                        border-top: 8px solid #3b82f6;
+                    "></div>
+                </div>
+            `;
+        return el;
+      });
+
+    fetch(
+      "https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson"
+    )
+      .then((res) => res.json())
+      .then((countries) => {
+        world.hexPolygonsData(countries.features);
+      });
+
+    world.controls().autoRotate = true;
+    world.controls().autoRotateSpeed = 3.0;
+    world.controls().enableZoom = false;
+
+    function getAngularDistance(lat1, lng1, lat2, lng2) {
+      const RAD = Math.PI / 180;
+      const phi1 = lat1 * RAD,
+        phi2 = lat2 * RAD;
+      const deltaLambda = (lng2 - lng1) * RAD;
+      const angle = Math.acos(
+        Math.max(
+          -1,
+          Math.min(
+            1,
+            Math.sin(phi1) * Math.sin(phi2) +
+            Math.cos(phi1) * Math.cos(phi2) * Math.cos(deltaLambda)
+          )
+        )
+      );
+      return angle * (180 / Math.PI);
+    }
+
+    const updateTooltips = () => {
+      const { lat, lng } = world.pointOfView();
+      const labels = document.querySelectorAll(".globe-tooltip-marker");
+
+      labels.forEach((container) => {
+        const countryName = container.getAttribute("data-name");
+        const marker = markerData.find((m) => m.name === countryName);
+        const box = container.querySelector(".tooltip-box");
+
+        if (marker && box) {
+          const dist = getAngularDistance(lat, lng, marker.lat, marker.lng);
+
+          // If country is within the front-facing hemisphere
+          if (dist < 50) {
+            box.style.opacity = "1";
+            box.style.transform = "translate(-50%, 0) scale(1)";
+          } else {
+            box.style.opacity = "0";
+            box.style.transform = "translate(-50%, 10px) scale(0.5)";
+          }
+        }
+      });
+      requestAnimationFrame(updateTooltips);
+    };
+
+    requestAnimationFrame(updateTooltips);
+
+    const resizeObserver = new ResizeObserver(() => {
+      const isMobile = window.innerWidth <= 768;
+
+      // Always sync width
+      world.width(elem.offsetWidth);
+
+      if (isMobile) {
+        // 📱 Mobile settings
+        world.height(300);
+        world.atmosphereAltitude(0.15);
+        world.pointOfView(
+          {
+            lat: 20,
+            lng: 0,
+            altitude: 1.8, // smaller globe
+          },
+          0
+        );
+      } else {
+        // 🖥️ Desktop RESET (🔥 this was missing)
+        world.height(500); // match CSS desktop height
+        world.atmosphereAltitude(0.2);
+        world.pointOfView(
+          {
+            lat: 20,
+            lng: 0,
+            altitude: 1.6, // larger globe
+          },
+          0
+        );
+      }
+    });
+
+    resizeObserver.observe(elem);
+
+
+  });
+</script>
+
+{% endblock %}

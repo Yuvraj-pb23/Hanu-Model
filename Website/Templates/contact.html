@@ -1,0 +1,2347 @@
+{% extends "base.html" %} {% load static %} {% block title %}HanuAi -
+Contact{%endblock %} {% block content %}
+<link rel="stylesheet" href="{% static 'CSS/services.css' %}" />
+
+<style>
+  /* ====== Two-Card Contact Layout ====== */
+  :root {
+    --card-bg: #1a2233;
+    --card-border: rgba(255, 255, 255, 0.10);
+    --input-bg: #232d42;
+    --input-border: rgba(255, 255, 255, 0.12);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --blue-accent: #3b82f6;
+    --orange-accent: #f97316;
+    --font: "Manrope", sans-serif;
+  }
+
+  .choose-channel-title {
+    text-align: center;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ffffff 0%, #ffffff 35%, #60a5fa 55%, #ffffff 75%, #ffffff 100%);
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleFadeIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both, shimmerText 4s linear 1s infinite;
+    margin-bottom: 2rem;
+    margin-top: 1.8rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.45));
+  }
+
+  /* Sphere + Contact Bars Section */
+  .sphere-contact-section {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .contact-bars-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+    padding: 1.5rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-bar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue-accent), transparent);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  .contact-bar:hover {
+    transform: translateX(5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .contact-bar:hover::before {
+    opacity: 1;
+  }
+
+  .contact-bar-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  }
+
+  .contact-bar-icon.pink {
+    background: linear-gradient(135deg, #db2777, #ec4899);
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+  }
+
+  .contact-bar-icon.orange {
+    background: linear-gradient(135deg, #ea580c, #f97316);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+  }
+
+  .contact-bar-icon.green {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  }
+
+  .contact-bar-content {
+    flex: 1;
+  }
+
+  .contact-bar-label {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.4rem;
+  }
+
+  .contact-bar-value {
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-bar-value a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .contact-bar-value a:hover {
+    color: #60a5fa;
+  }
+
+  .contact-bar-info {
+    font-family: var(--font);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  @keyframes titleFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+      filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: drop-shadow(0 0 14px rgba(59, 130, 246, 0.25));
+    }
+  }
+
+  @keyframes shimmerText {
+    0% {
+      background-position: 200% center;
+    }
+
+    100% {
+      background-position: -200% center;
+    }
+  }
+
+  .choose-channel-title::before,
+  .choose-channel-title::after {
+    content: "";
+    flex: 1;
+    max-width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), rgba(255, 255, 255, 0.4), rgba(59, 130, 246, 0.6), transparent);
+    background-size: 200% auto;
+    animation: dividerPulse 3s ease-in-out infinite;
+    border-radius: 2px;
+  }
+
+  @keyframes dividerPulse {
+
+    0%,
+    100% {
+      opacity: 0.4;
+      background-position: 0% center;
+    }
+
+    50% {
+      opacity: 1;
+      background-position: 100% center;
+    }
+  }
+
+  .contact-cards-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 2rem;
+  }
+
+  /* === Card Styles === */
+  .contact-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+    padding: 1.4rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease, border-color 0.4s ease;
+    animation: cardFadeIn 0.8s ease-out both;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .contact-card:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .contact-card.text-card:hover {
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.12);
+  }
+
+  .contact-card.voice-card:hover {
+    box-shadow: 0 12px 40px rgba(249, 115, 22, 0.12);
+  }
+
+  @keyframes cardFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .contact-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue-accent), transparent);
+    opacity: 0.5;
+    transition: opacity 0.4s ease;
+  }
+
+  .contact-card:hover::before {
+    opacity: 1;
+  }
+
+  .contact-card.voice-card::before {
+    background: linear-gradient(90deg, var(--orange-accent), transparent);
+  }
+
+  .contact-card.voice-card {
+    border-color: rgba(249, 115, 22, 0.15);
+  }
+
+  /* Card Header */
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .card-icon.blue {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  }
+
+  .card-icon.orange {
+    background: linear-gradient(135deg, #ea580c, #f97316);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+  }
+
+  .card-title {
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    font-family: var(--font);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .card-badge {
+    font-family: var(--font);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    transition: transform 0.3s ease;
+  }
+
+  .card-badge.live {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    animation: badgePulse 2.5s ease-in-out infinite;
+  }
+
+  .card-badge.rec {
+    background: rgba(249, 115, 22, 0.15);
+    color: #fb923c;
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    animation: badgePulseOrange 2.5s ease-in-out infinite;
+  }
+
+  @keyframes badgePulse {
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+    }
+
+    50% {
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+    }
+  }
+
+  @keyframes badgePulseOrange {
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3);
+    }
+
+    50% {
+      box-shadow: 0 0 0 6px rgba(249, 115, 22, 0);
+    }
+  }
+
+  /* Form Fields */
+  .field-label {
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: white;
+    outline: none;
+    font-size: 14px;
+    font-family: var(--font);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    box-sizing: border-box;
+  }
+
+  .contact-input:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
+  .contact-input:focus {
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.08);
+    background: #283548;
+  }
+
+  .voice-card .contact-input:focus {
+    border-color: var(--orange-accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15), 0 0 20px rgba(249, 115, 22, 0.08);
+    background: #2d2a28;
+  }
+
+  .contact-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Topic Pills */
+  .topic-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .topic-pill {
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.25s ease, transform 0.2s ease;
+  }
+
+  .topic-pill:active {
+    transform: scale(0.95);
+  }
+
+  .topic-pill:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+  }
+
+  .topic-pill.active {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
+    font-weight: 600;
+  }
+
+  /* Textarea */
+  .contact-textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: white;
+    outline: none;
+    font-size: 14px;
+    font-family: var(--font);
+    resize: vertical;
+    min-height: 72px;
+    max-height: 300px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    box-sizing: border-box;
+  }
+
+  .contact-textarea:focus {
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.08);
+    background: #283548;
+  }
+
+  /* Orange glow for voice message textarea */
+  #voiceMessageTextarea:focus {
+    border-color: var(--orange-accent);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.05), 0 0 15px rgba(249, 115, 22, 0.02);
+    background: #292929;
+  }
+
+  .contact-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .textarea-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .char-count {
+    font-family: var(--font);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Captcha Styles */
+  .recaptcha-button-container img[alt="captcha"] {
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+  }
+
+  .recaptcha-button-container input[name="captcha"] {
+    padding: 9px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: white;
+    outline: none;
+    font-size: 14px;
+    font-family: var(--font);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    box-sizing: border-box;
+    flex: 0 0 120px;
+  }
+
+  .recaptcha-button-container input[name="captcha"]:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
+  .recaptcha-button-container input[name="captcha"]:focus {
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.08);
+    background: #283548;
+  }
+
+  .voice-card .recaptcha-button-container input[name="captcha"]:focus {
+    border-color: var(--orange-accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15), 0 0 20px rgba(249, 115, 22, 0.08);
+    background: #2d2a28;
+  }
+
+  .recaptcha-button-container input[name="captcha"]::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Send Message Button */
+  .contact-button {
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: white;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(29, 78, 216, 0.35);
+    font-family: var(--font);
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+    box-sizing: border-box;
+  }
+
+  .contact-button:hover {
+    background: linear-gradient(135deg, #1e40af, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(29, 78, 216, 0.45);
+  }
+
+  .contact-button:active {
+    transform: translateY(0px) scale(0.98);
+  }
+
+  .contact-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .contact-btn-text-one {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    letter-spacing: 2px;
+    transition: all 0.5s;
+  }
+
+  .contact-btn-text-two {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 150%;
+    transform: translateY(-50%);
+    letter-spacing: 2px;
+    transition: all 0.5s;
+  }
+
+  .contact-button:hover .contact-btn-text-one {
+    top: -50%;
+  }
+
+  .contact-button:hover .contact-btn-text-two {
+    top: 50%;
+  }
+
+  /* Voice form stretches to fill card height */
+  #voiceForm {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  /* Voice Card Recording Area */
+  .voice-record-area {
+    background: linear-gradient(180deg, rgba(249, 115, 22, 0.06), rgba(249, 115, 22, 0.02));
+    border: 1px solid rgba(249, 115, 22, 0.1);
+    border-radius: 12px;
+    padding: 0.6rem 0.9rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height:94px;
+  }
+
+  .voice-record-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .voice-timer {
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--orange-accent);
+    letter-spacing: 2px;
+  }
+
+  .voice-timer span {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .voice-waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 15px;
+    margin: 0.15rem 0;
+  }
+
+  .voice-waveform-dot {
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+
+  .voice-hint {
+    font-family: var(--font);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Recording Mic Icon */
+  .recording-mic-icon {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ea580c, #f97316);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+   
+
+  .recording-mic-icon:hover {
+    background: linear-gradient(135deg, #c2410c, #ea580c);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+  }
+
+  .recording-mic-icon.recording {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    animation: pulse-rec 1.5s infinite;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+  }
+
+  .recording-mic-icon.processing {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+    cursor: not-allowed;
+  }
+
+  .recording-mic-icon:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+
+  /* Voice Submit Button */
+  .voice-submit-btn {
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ea580c, #f97316);
+    color: white;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.35);
+    font-family: var(--font);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    margin-top: 0;
+  }
+
+  .voice-submit-btn:hover {
+    background: linear-gradient(135deg, #c2410c, #ea580c);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(249, 115, 22, 0.45);
+  }
+
+  .voice-submit-btn:active {
+    transform: translateY(0px) scale(0.98);
+  }
+
+  .voice-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .voice-btn-text-one {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    letter-spacing: 2px;
+    transition: all 0.5s;
+  }
+
+  .voice-btn-text-two {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 150%;
+    transform: translateY(-50%);
+    letter-spacing: 2px;
+    transition: all 0.5s;
+  }
+
+  .voice-submit-btn:hover .voice-btn-text-one {
+    top: -50%;
+  }
+
+  .voice-submit-btn:hover .voice-btn-text-two {
+    top: 50%;
+  }
+
+  @keyframes pulse-rec {
+    0% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+    }
+
+    70% {
+      box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+  }
+
+  /* Globe & Map */
+  .map-section-wrapper {
+    max-width: 1100px;
+    margin: 0rem auto;
+    padding: 0 2rem 3rem;
+  }
+
+  @keyframes rotateSphere {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes counterRotate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
+  .sphere-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    animation: rotateSphere 20s linear infinite;
+  }
+
+  .sphere-container img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .tooltip-node {
+    position: absolute;
+    width: 0;
+    height: 0;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .tooltip-node.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .tooltip-text-wrapper {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 8px;
+    transform: translateX(-50%);
+    animation: counterRotate 20s linear infinite;
+    transform-origin: center center;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .tooltip-node.visible .tooltip-text-wrapper {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .tooltip-text {
+    position: relative;
+    background: rgba(26, 31, 46, 0.95);
+    color: white;
+    padding: 11px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.4;
+    font-family: var(--font);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 20;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transform: translateY(-10px);
+  }
+
+  .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(26, 31, 46, 0.95);
+  }
+
+  .tooltip-node.visible .tooltip-text {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-5px);
+  }
+
+  .tooltip-node:hover .tooltip-text {
+    transform: translateY(-3px);
+  }
+
+  .map-container {
+    width: 100%;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Audio pill for voice tab translation info */
+  .audio-pill {
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #fb923c;
+    font-size: 10px;
+    font-weight: bold;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font);
+    line-height: 1.3;
+  }
+
+  .audio-pill.visible {
+    display: flex;
+  }
+
+  .audio-info-box {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    padding: 10px 15px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .audio-info-box.visible {
+    display: flex;
+  }
+
+  .audio-info-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    font-family: var(--font);
+  }
+
+  .audio-info-value {
+    color: white;
+    font-size: 13px;
+    font-family: var(--font);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .audio-translation-area {
+    background: transparent;
+    border: none;
+    padding: 0;
+    min-height: 48px;
+    color: white;
+    resize: none;
+    font-size: 13px;
+    font-family: var(--font);
+    outline: none;
+    width: 100%;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .sphere-contact-section {
+      grid-template-columns: 1fr;
+      padding: 0 1.5rem 2rem;
+      gap: 2rem;
+    }
+
+    .contact-bars-container {
+      gap: 0.75rem;
+    }
+
+    .outer {
+      height: 175px;
+    }
+
+    .topl {
+      top: 6%;
+    }
+
+    .bottoml {
+      bottom: 6%;
+    }
+
+    .contact-bar {
+      padding: 1.2rem 1.5rem;
+    }
+
+    .contact-bar-icon {
+      width: 45px;
+      height: 45px;
+    }
+
+    .contact-bar-value {
+      font-size: 16px;
+    }
+
+    .contact-cards-wrapper {
+      grid-template-columns: 1fr;
+      padding: 0 1.5rem 2rem;
+      align-items: start;
+    }
+
+    .contact-card {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .contact-form {
+      width: 100%;
+      box-sizing: border-box;
+      flex: unset !important;
+    }
+
+    .contact-button {
+      box-sizing: border-box;
+      width: 100% !important;
+      height: 44px !important;
+      min-height: 44px !important;
+      font-size: 11px !important;
+      letter-spacing: 2px !important;
+      padding: 0 !important;
+      margin-top: 0.25rem !important;
+      display: block !important;
+    }
+
+    .map-section-wrapper {
+      padding: 0 1.5rem 2rem;
+    }
+
+    .sphere-container {
+      width: 100%;
+      max-width: 100%;
+      padding: 0 0.5rem;
+    }
+
+    .tooltip-text {
+      font-size: 12px;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .card-title {
+      font-size: 16px;
+    }
+
+    .topic-pill {
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+
+    /* Captcha and Button Mobile Styles */
+    .recaptcha-button-container {
+      flex-wrap: wrap !important;
+      gap: 0.75rem !important;
+      align-items: center !important;
+    }
+
+    .recaptcha-button-container img[alt="captcha"] {
+      flex: 0 0 auto !important;
+      height: 42px !important;
+      width: auto !important;
+    }
+
+    .recaptcha-button-container input[name="captcha"] {
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+
+    .contact-button,
+    .start-recording-btn {
+      flex: 0 0 100% !important;
+      width: 100% !important;
+      height: 42px !important;
+      min-height: 42px !important;
+      font-size: 11px !important;
+      letter-spacing: 1px !important;
+      padding: 0 0.5rem !important;
+    }
+
+    .contact-btn-text-one,
+    .contact-btn-text-two {
+      font-size: 11px !important;
+    }
+
+    .start-recording-btn span {
+      font-size: 11px !important;
+    }
+
+    .start-recording-btn svg {
+      width: 13px !important;
+      height: 13px !important;
+    }
+  }
+
+  @keyframes dotPulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+
+    50% {
+      transform: scale(1.8);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+  }
+
+  /* Message Alert Styles */
+  .message-alert {
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideDown 0.4s ease-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .message-alert-success {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+  }
+
+  .message-alert-error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15));
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+  }
+
+  .message-alert-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .message-alert-text {
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  .message-alert-close {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 18px;
+    padding: 0;
+  }
+
+  .message-alert-close:hover {
+    opacity: 1;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Disabled Voice Card */
+  .voice-card-disabled {
+    position: relative;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .voice-card-disabled .voice-card-overlay {
+    display: flex;
+  }
+
+  .voice-card-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 14, 26, 0.72);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border-radius: 1rem;
+    z-index: 10;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .voice-card-overlay-badge {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fb923c;
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    padding: 7px 20px;
+    border-radius: 20px;
+  }
+
+  .voice-card-overlay-text {
+    font-family: var(--font);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding: 0 1.5rem;
+  }
+</style>
+
+<div class="section flex justify-center items-center w-full px-8">
+  <div class="outer">
+    <div class="dot"></div>
+    <div class="card">
+      <div class="ray"></div>
+      <div class="line topl"></div>
+      <div class="line leftl"></div>
+      <div class="line bottoml"></div>
+      <div class="line rightl"></div>
+
+      <div class="flex items-center justify-center gap-3 text-white text-xl mb-3">
+        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors"
+          style="font-family: &quot;Manrope&quot;, sans-serif">
+          Home
+        </a>
+        <span class="text-blue-400 text-2xl">›</span>
+        <span class="text-blue-400" style="font-family: &quot;Manrope&quot;, sans-serif">Contact</span>
+      </div>
+      <div class="para">
+        <p>Innovation begins with intelligence—connect with HanuAI.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Choose Your Channel Title -->
+<div class="choose-channel-title">CHOOSE YOUR CHANNEL</div>
+
+<!-- Two Contact Cards Side by Side -->
+<div class="contact-cards-wrapper">
+
+  <!-- ===== TEXT MESSAGE CARD ===== -->
+  <div class="contact-card text-card">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="card-icon blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+            <path
+              d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+          </svg>
+        </div>
+        <div>
+          <p class="card-title">Text Message</p>
+          <p class="card-subtitle">Write us anything, anytime</p>
+        </div>
+      </div>
+      <span class="card-badge live">LIVE</span>
+    </div>
+
+    <form class="contact-form" id="contactForm" method="POST" action="{% url 'contact' %}"
+      style="display:flex;flex-direction:column;gap:1.25rem;">
+      {% csrf_token %}
+
+      <div id="contactSuccessBanner" class="form-success-banner" style="display:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+        <span>Your message was sent! We'll get back to you soon.</span>
+      </div>
+      <div id="contactErrorBanner" class="form-error-banner" style="display:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+        <span>Something went wrong. Please try again.</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="field-label">Name</label>
+          <input type="text" placeholder="Your Name" class="contact-input" id="nameInput" name="name" required />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Phone</label>
+          <input type="tel" placeholder="+91 98765 43210" class="contact-input" id="phoneInput" name="phone" maxlength="15" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateContactForm();" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Email Address</label>
+        <input type="email" placeholder="john@example.com" class="contact-input" id="emailInput" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Topic</label>
+        <div class="topic-row">
+          <button type="button" class="topic-pill active" onclick="selectTopic(this)">General Inquiry</button>
+          <button type="button" class="topic-pill" onclick="selectTopic(this)">Web Dev</button>
+          <button type="button" class="topic-pill" onclick="selectTopic(this)">AI / ML</button>
+          <button type="button" class="topic-pill" onclick="selectTopic(this)">Support</button>
+          <button type="button" class="topic-pill" onclick="selectTopic(this)">Partnership</button>
+          <button type="button" class="topic-pill" onclick="selectTopic(this)">Other</button>
+        </div>
+        <input type="hidden" name="subject" id="subjectInput" value="General Inquiry" />
+      </div>
+
+      <div class="form-group">
+        <div class="textarea-header">
+          <label class="field-label">Message</label>
+          <span class="char-count" id="charCount">0/500</span>
+        </div>
+        <textarea placeholder="Tell us about your project, question or idea..." class="contact-textarea"
+          id="messageInput" name="message" maxlength="500" oninput="updateCharCount(); validateContactForm()" required></textarea>
+      </div>
+
+      <button type="button" class="contact-button" id="contactSubmitBtn" onclick="showCaptchaModal('contactForm')" style="margin-top: 0.5rem;" disabled>
+        <span class="contact-btn-text-one">SEND MESSAGE</span>
+        <span class="contact-btn-text-two">SEND MESSAGE</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- ===== VOICE MESSAGE CARD ===== -->
+  <div class="contact-card voice-card">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="card-icon orange">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+            <path
+              d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
+            <path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z" />
+          </svg>
+        </div>
+        <div>
+          <p class="card-title">Speech Transcription</p>
+          <p class="card-subtitle">Record your voice and let AI convert it into text.</p>
+        </div>
+      </div>
+      <span class="card-badge rec">REC</span>
+    </div>
+
+    <form id="voiceForm" method="POST" action="{% url 'contact' %}"
+      style="display:flex;flex-direction:column;gap:1.25rem;">
+      {% csrf_token %}
+
+      <div id="voiceSuccessBanner" class="form-success-banner" style="display:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+        <span>Your message was sent! We'll get back to you soon.</span>
+      </div>
+      <div id="voiceErrorBanner" class="form-error-banner" style="display:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+        <span>Something went wrong. Please try again.</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="field-label">Full Name</label>
+          <input type="text" placeholder="John Doe" class="contact-input" id="voiceNameInput" name="name" required />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Phone</label>
+          <input type="tel" placeholder="+91 98765 43210" class="contact-input" id="voicePhoneInput" name="phone" maxlength="15" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateVoiceForm();" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label">Email</label>
+        <input type="email" placeholder="john@example.com" class="contact-input" id="voiceEmailInput" name="email"
+          required />
+      </div>
+
+      <!-- Recording Area -->
+      <div class="voice-record-area">
+        <div class="voice-record-content">
+          <div class="voice-timer">
+            <span id="voiceTimerDisplay">0:00</span>
+          </div>
+
+          <div class="voice-waveform" id="voiceWaveform">
+            <span class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span>
+            <span class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span>
+            <span class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span>
+            <span class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span><span class="voice-waveform-dot"></span><span
+              class="voice-waveform-dot"></span>
+          </div>
+
+          <p class="voice-hint">Click the mic icon to record</p>
+        </div>
+        
+        <button type="button" class="recording-mic-icon" id="startRecordingBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" />
+            <path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <div class="textarea-header">
+          <label class="field-label">Message</label>
+          <span id="detectedLangLabel" style="display: none; font-family: var(--font); font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.6);">
+            Detected: <span id="detectedLangText" style="color: #fb923c;">—</span>
+          </span>
+          <span class="char-count" id="voiceCharCount">0/500</span>
+        </div>
+        <textarea placeholder="Tell us about your project or question..." class="contact-textarea"
+          id="voiceMessageTextarea" name="voice_message_text" maxlength="500" oninput="updateVoiceCharCount(); syncVoiceMessage(); validateVoiceForm()" required></textarea>
+      </div>
+
+      <div class="audio-info-box" id="langInfoBox" style="display: none;">
+        <span class="audio-info-label">Detected Language:</span>
+        <div class="audio-info-value">
+          <span id="detectedLangTextOld">Pending recording...</span>
+        </div>
+      </div>
+
+      <div class="audio-info-box" id="translationBox" style="display: none;">
+        <span class="audio-info-label">Translation (to English):</span>
+        <textarea class="audio-translation-area" id="translatedMessageInput" readonly
+          placeholder="Your translated message will appear here..."></textarea>
+      </div>
+
+      <input type="hidden" name="message" id="voiceMessageInput" value="" />
+      <input type="hidden" name="subject" value="Voice Message" />
+
+      <button type="button" class="voice-submit-btn" id="voiceSubmitBtn" onclick="showCaptchaModal('voiceForm')" style="margin-top: 0.5rem;" disabled>
+        <span class="voice-btn-text-one">SEND MESSAGE</span>
+        <span class="voice-btn-text-two">SEND MESSAGE</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- OTHER WAYS TO REACH US Title -->
+<div class="choose-channel-title">OTHER WAYS TO REACH US</div>
+
+<!-- Sphere + Contact Bars Section -->
+<div class="sphere-contact-section">
+  <!-- Rotating Globe -->
+  <div class="sphere-container">
+    <img src="{% static 'Media/Contact/sphere3.png' %}" alt="3D Sphere" class="rotating-sphere" />
+
+    <!-- Tooltip Nodes -->
+    <div class="tooltip-node" data-product="RoadAtthena" style="top: 25%; left: 35%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">RoadAtthena</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Road Mgmt. Information System" style="top: 22%; left: 65%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Road Mgmt. Information System</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Web Development" style="top: 68%; left: 28%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Web Development</span></div>
+    </div>
+    <div class="tooltip-node" data-product="AI Chatbots" style="top: 15%; left: 50%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">AI Chatbots</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Machine Learning" style="top: 45%; left: 48%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Machine Learning</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Computer Vision" style="top: 52%; left: 25%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Computer Vision</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Latest Technologies" style="top: 38%; left: 72%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Latest Technologies</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Test Automation" style="top: 75%; left: 45%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Test Automation</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Virtual Assistance" style="top: 30%; left: 20%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Virtual Assistance</span></div>
+    </div>
+    <div class="tooltip-node" data-product="AI Enabled Translator" style="top: 62%; left: 70%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">AI Enabled Translator</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Natural Lang. Processing" style="top: 35%; left: 55%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Natural Lang. Processing</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Deep Learning" style="top: 58%; left: 38%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Deep Learning</span></div>
+    </div>
+    <div class="tooltip-node" data-product="AI MultiLingual Translator" style="top: 42%; left: 62%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">AI MultiLingual Translator</span></div>
+    </div>
+    <div class="tooltip-node" data-product="IoT Solutions" style="top: 72%; left: 62%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">IoT Solutions</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Data Intelligence" style="top: 55%; left: 75%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Data Intelligence</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Python" style="top: 68%; left: 28%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Python</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Django" style="top: 35%; left: 55%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Django</span></div>
+    </div>
+    <div class="tooltip-node" data-product="React JS/ Native" style="top: 75%; left: 45%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">React JS/ Native</span></div>
+    </div>
+    <div class="tooltip-node" data-product="DBMS" style="top: 18%; left: 38%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">DBMS</span></div>
+    </div>
+    <div class="tooltip-node" data-product="RDBMS" style="top: 28%; left: 68%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">RDBMS</span></div>
+    </div>
+    <div class="tooltip-node" data-product="GIS based Dashboard" style="top: 48%; left: 18%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">GIS based Dashboard</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Traffic Analytics" style="top: 65%; left: 52%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Traffic Analytics</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Performance Analytics" style="top: 50%; left: 78%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Performance Analytics</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Road Safety Intelligence" style="top: 80%; left: 35%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Road Safety Intelligence</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Quality Assurance" style="top: 12%; left: 42%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Quality Assurance</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Smart Planning" style="top: 60%; left: 15%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Smart Planning</span></div>
+    </div>
+    <div class="tooltip-node" data-product="DPR Preparation" style="top: 82%; left: 58%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">DPR Preparation</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Compliance Auditing" style="top: 32%; left: 80%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Compliance Auditing</span></div>
+    </div>
+    <div class="tooltip-node" data-product="Project Assessment" style="top: 70%; left: 82%">
+      <div class="tooltip-text-wrapper"><span class="tooltip-text">Project Assessment</span></div>
+    </div>
+  </div>
+
+  <!-- Four Contact Bars -->
+  <div class="contact-bars-container">
+    <!-- CALL US -->
+    <div class="contact-bar">
+      <div class="contact-bar-icon blue">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+          </path>
+        </svg>
+      </div>
+      <div class="contact-bar-content">
+        <div class="contact-bar-label">CALL US</div>
+        <div class="contact-bar-value">+91 95698 99555</div>
+        <div class="contact-bar-info">Mon–Fri, 10am–7pm IST</div>
+      </div>
+    </div>
+
+    <!-- EMAIL US -->
+    <div class="contact-bar">
+      <div class="contact-bar-icon pink">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+          </path>
+        </svg>
+      </div>
+      <div class="contact-bar-content">
+        <div class="contact-bar-label">EMAIL US</div>
+        <div class="contact-bar-value">info@hanuai.com</div>
+        <div class="contact-bar-info">We reply within 1 hour</div>
+      </div>
+    </div>
+
+    <!-- VISIT US -->
+    <div class="contact-bar">
+      <div class="contact-bar-icon orange">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z">
+          </path>
+        </svg>
+      </div>
+      <div class="contact-bar-content">
+        <div class="contact-bar-label">VISIT US</div>
+        <div class="contact-bar-value">Sector 105, Mohali, Punjab</div>
+        <div class="contact-bar-info">Mohali - New Delhi - Gandhinagar - New York</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Map Section (moved to bottom) -->
+<div class="map-section-wrapper">
+  <div class="map-container">
+    <div style="width: 100%; height: 450px">
+      <iframe style="border: 0; width: 100%; height: 100%"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3432.2086029946663!2d76.68022567477657!3d30.65625388932611!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390fe94495f81d47%3A0xa0d02849d5bd5e4e!2sHanuAI%20Private%20Limited!5e0!3m2!1sen!2sin!4v1693984735239!5m2!1sen!2sin"
+        allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tooltip rotation logic
+  document.addEventListener("DOMContentLoaded", function () {
+    const tooltipNodes = document.querySelectorAll(".tooltip-node");
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function showRandomTooltips() {
+      tooltipNodes.forEach((node) => node.classList.remove("visible"));
+      const leftNodes = [];
+      const rightNodes = [];
+      tooltipNodes.forEach((node) => {
+        const leftPercent = parseFloat(node.style.left);
+        if (leftPercent < 50) leftNodes.push(node);
+        else rightNodes.push(node);
+      });
+      const leftNode = leftNodes.length ? leftNodes[getRandomInt(0, leftNodes.length - 1)] : null;
+      const rightNode = rightNodes.length ? rightNodes[getRandomInt(0, rightNodes.length - 1)] : null;
+      if (leftNode) leftNode.classList.add("visible");
+      if (rightNode) rightNode.classList.add("visible");
+    }
+
+    function cycleTooltips() {
+      showRandomTooltips();
+      const nextDelay = getRandomInt(3000, 4000);
+      setTimeout(cycleTooltips, nextDelay);
+    }
+
+    showRandomTooltips();
+    setTimeout(() => cycleTooltips(), 1000);
+  });
+
+  // Topic pill selection
+  function selectTopic(el) {
+    document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('subjectInput').value = el.textContent.trim();
+  }
+
+  // Char count
+  function updateCharCount() {
+    const textarea = document.getElementById('messageInput');
+    const count = document.getElementById('charCount');
+    count.textContent = textarea.value.length + '/500';
+  }
+
+  // Voice message char count
+  function updateVoiceCharCount() {
+    const textarea = document.getElementById('voiceMessageTextarea');
+    const count = document.getElementById('voiceCharCount');
+    count.textContent = textarea.value.length + '/500';
+  }
+
+  // Sync voice message textarea to hidden input
+  function syncVoiceMessage() {
+    const textarea = document.getElementById('voiceMessageTextarea');
+    const hiddenInput = document.getElementById('voiceMessageInput');
+    hiddenInput.value = textarea.value;
+  }
+
+  // Validate Contact Form
+  function validateContactForm() {
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const message = document.getElementById('messageInput').value.trim();
+    const submitBtn = document.getElementById('contactSubmitBtn');
+    
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(email);
+    
+    // Phone validation - must be between 7 and 15 digits
+    const isValidPhone = phone.length >= 7 && phone.length <= 15;
+    
+    if (name && isValidEmail && isValidPhone && message) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.style.cursor = 'pointer';
+    } else {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.5';
+      submitBtn.style.cursor = 'not-allowed';
+    }
+  }
+
+  // Validate Voice Form
+  function validateVoiceForm() {
+    const name = document.getElementById('voiceNameInput').value.trim();
+    const email = document.getElementById('voiceEmailInput').value.trim();
+    const phone = document.getElementById('voicePhoneInput').value.trim();
+    const message = document.getElementById('voiceMessageTextarea').value.trim();
+    const submitBtn = document.getElementById('voiceSubmitBtn');
+    
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(email);
+    
+    // Phone validation - must be between 7 and 15 digits
+    const isValidPhone = phone.length >= 7 && phone.length <= 15;
+    
+    if (name && isValidEmail && isValidPhone && message) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.style.cursor = 'pointer';
+    } else {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.5';
+      submitBtn.style.cursor = 'not-allowed';
+    }
+  }
+
+  // Add event listeners for validation
+  document.addEventListener('DOMContentLoaded', function() {
+    // Contact form validation
+    document.getElementById('nameInput').addEventListener('input', validateContactForm);
+    document.getElementById('emailInput').addEventListener('input', validateContactForm);
+    
+    // Voice form validation
+    document.getElementById('voiceNameInput').addEventListener('input', validateVoiceForm);
+    document.getElementById('voiceEmailInput').addEventListener('input', validateVoiceForm);
+  });
+
+  // Captcha Modal Functions
+  let currentFormId = null;
+
+  function showCaptchaModal(formId) {
+    currentFormId = formId;
+    document.getElementById('captchaModal').style.display = 'flex';
+    document.getElementById('captchaInput').value = '';
+    document.getElementById('captchaError').style.display = 'none';
+    document.getElementById('captchaInput').focus();
+  }
+
+  function closeCaptchaModal() {
+    document.getElementById('captchaModal').style.display = 'none';
+    currentFormId = null;
+  }
+
+  function verifyCaptcha() {
+    const captchaInput = document.getElementById('captchaInput').value;
+    const captchaKey = document.getElementById('captchaKey').value;
+    
+    if (!captchaInput.trim()) {
+      document.getElementById('captchaError').textContent = 'Please enter the captcha code.';
+      document.getElementById('captchaError').style.display = 'block';
+      return;
+    }
+
+    // Add captcha fields to the form
+    const form = document.getElementById(currentFormId);
+    
+    // Remove any existing captcha fields
+    const existingCaptcha = form.querySelector('input[name="captcha"]');
+    const existingKey = form.querySelector('input[name="captcha_key"]');
+    if (existingCaptcha) existingCaptcha.remove();
+    if (existingKey) existingKey.remove();
+    
+    // Add new captcha fields
+    const captchaField = document.createElement('input');
+    captchaField.type = 'hidden';
+    captchaField.name = 'captcha';
+    captchaField.value = captchaInput;
+    form.appendChild(captchaField);
+    
+    const keyField = document.createElement('input');
+    keyField.type = 'hidden';
+    keyField.name = 'captcha_key';
+    keyField.value = captchaKey;
+    form.appendChild(keyField);
+    
+    // Close modal and submit the form
+    closeCaptchaModal();
+    form.submit();
+  }
+
+  // Allow Enter key to submit captcha
+  document.addEventListener('DOMContentLoaded', function() {
+    const captchaInput = document.getElementById('captchaInput');
+    if (captchaInput) {
+      captchaInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          verifyCaptcha();
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+  // Voice recording logic
+  document.addEventListener("DOMContentLoaded", function () {
+    const startRecordingBtn = document.getElementById("startRecordingBtn");
+    const voiceTimerDisplay = document.getElementById("voiceTimerDisplay");
+    const voiceWaveform = document.getElementById("voiceWaveform");
+    const voiceHint = document.querySelector(".voice-hint");
+    const translatedMessageInput = document.getElementById("translatedMessageInput");
+    const detectedLangText = document.getElementById("detectedLangText");
+    const detectedLangLabel = document.getElementById("detectedLangLabel");
+    const voiceMessageInput = document.getElementById("voiceMessageInput");
+    const voiceMessageTextarea = document.getElementById("voiceMessageTextarea");
+    const audioPill = document.getElementById("audioPill");
+    const langInfoBox = document.getElementById("langInfoBox");
+    const translationBox = document.getElementById("translationBox");
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let timerInterval = null;
+    let timerSeconds = 0;
+
+    function updateTimer() {
+      timerSeconds++;
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      voiceTimerDisplay.textContent = mins + ":" + (secs < 10 ? "0" : "") + secs;
+      if (timerSeconds >= 60) {
+        // Auto-stop at 1 minute
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
+      }
+    }
+
+    startRecordingBtn.addEventListener("click", async function (e) {
+      e.preventDefault();
+
+      if (isRecording) {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstart = () => {
+          isRecording = true;
+          timerSeconds = 0;
+          voiceTimerDisplay.textContent = "0:00";
+          timerInterval = setInterval(updateTimer, 1000);
+
+          startRecordingBtn.classList.add("recording");
+
+          // Animate waveform dots
+          voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach((dot, i) => {
+            dot.style.animation = `dotPulse 0.6s ease-in-out ${i * 0.05}s infinite alternate`;
+            dot.style.background = '#f97316';
+          });
+
+          startRecordingBtn.querySelector('svg').innerHTML =
+            '<path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>';
+        };
+
+        mediaRecorder.onstop = async () => {
+          isRecording = false;
+          clearInterval(timerInterval);
+          startRecordingBtn.classList.remove("recording");
+          startRecordingBtn.classList.add("processing");
+          startRecordingBtn.disabled = true;
+
+          // Show processing state
+          voiceHint.textContent = "Processing...";
+          voiceTimerDisplay.textContent = "Processing";
+
+          voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
+            dot.style.animation = 'dotPulse 0.8s ease-in-out infinite alternate';
+            dot.style.background = '#60a5fa';
+          });
+
+          startRecordingBtn.querySelector('svg').innerHTML =
+            '<circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="9.42 31.4" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"/></circle>';
+
+          stream.getTracks().forEach(track => track.stop());
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          await sendAudioToBackend(audioBlob);
+        };
+
+        mediaRecorder.start();
+
+      } catch (err) {
+        console.error("Error accessing microphone:", err);
+        alert("Microphone access is required. Please allow permission.");
+      }
+    });
+
+    async function sendAudioToBackend(audioBlob) {
+      const formData = new FormData();
+      formData.append("audio", audioBlob, "contact_recording.webm");
+
+      try {
+        const response = await fetch('/api/contact-transcribe/', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+        if (data.success && data.text) {
+          // Populate the translation box (readonly)
+          translatedMessageInput.value = data.text;
+          const langText = data.language || "Unknown";
+          detectedLangText.textContent = langText.charAt(0).toUpperCase() + langText.slice(1);
+
+          // Show detected language label
+          detectedLangLabel.style.display = 'block';
+
+          // Populate the message textarea (editable) with translated text
+          voiceMessageTextarea.value = data.text;
+          voiceMessageInput.value = data.text;
+          
+          // Update character count
+          updateVoiceCharCount();
+
+          // Reset processing state
+          startRecordingBtn.classList.remove("processing");
+          startRecordingBtn.disabled = false;
+          voiceHint.textContent = "Click the mic icon to record";
+          voiceTimerDisplay.textContent = "0:00";
+          
+          voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
+            dot.style.animation = '';
+            dot.style.background = 'rgba(255,255,255,0.2)';
+          });
+
+          startRecordingBtn.querySelector('svg').innerHTML =
+            '<path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"/>';
+
+        } else {
+          console.error("Transcription failed:", data.message);
+          alert("Could not transcribe the audio. Please try again.");
+          
+          // Reset processing state on error
+          startRecordingBtn.classList.remove("processing");
+          startRecordingBtn.disabled = false;
+          voiceHint.textContent = "Click the mic icon to record";
+          voiceTimerDisplay.textContent = "0:00";
+          
+          voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
+            dot.style.animation = '';
+            dot.style.background = 'rgba(255,255,255,0.2)';
+          });
+
+          startRecordingBtn.querySelector('svg').innerHTML =
+            '<path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"/>';
+        }
+      } catch (error) {
+        console.error("Error sending audio:", error);
+        alert("An error occurred while uploading.");
+        
+        // Reset processing state on error
+        startRecordingBtn.classList.remove("processing");
+        startRecordingBtn.disabled = false;
+        voiceHint.textContent = "Click the mic icon to record";
+        voiceTimerDisplay.textContent = "0:00";
+        
+        voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
+          dot.style.animation = '';
+          dot.style.background = 'rgba(255,255,255,0.2)';
+        });
+
+        startRecordingBtn.querySelector('svg').innerHTML =
+          '<path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"/>';
+      }
+    }
+  });
+
+  // Check for success message in URL parameters and show feedback
+  document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const formType = urlParams.get('form');
+    const status = urlParams.get('status');
+    
+    if (status && formType) {
+      const submitBtn = formType === 'contact' 
+        ? document.getElementById('contactSubmitBtn')
+        : document.getElementById('voiceSubmitBtn');
+      
+      if (submitBtn) {
+        const btnTextOne = submitBtn.querySelector('.contact-btn-text-one, .voice-btn-text-one');
+        const btnTextTwo = submitBtn.querySelector('.contact-btn-text-two, .voice-btn-text-two');
+        
+        if (status === 'success') {
+          // Show "SENT" for success
+          btnTextOne.textContent = 'SENT';
+          btnTextTwo.textContent = 'SENT';
+          submitBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+          submitBtn.disabled = true;
+
+          // Show success banner inside the correct card
+          const successBanner = formType === 'contact'
+            ? document.getElementById('contactSuccessBanner')
+            : document.getElementById('voiceSuccessBanner');
+          if (successBanner) successBanner.style.display = 'flex';
+          
+          setTimeout(() => {
+            btnTextOne.textContent = 'SEND MESSAGE';
+            btnTextTwo.textContent = 'SEND MESSAGE';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+            if (successBanner) successBanner.style.display = 'none';
+            
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }, 6000);
+        } else if (status === 'error') {
+          // Show "ERROR" for failures
+          btnTextOne.textContent = 'ERROR';
+          btnTextTwo.textContent = 'ERROR';
+          submitBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+          submitBtn.disabled = true;
+
+          // Show error banner inside the correct card
+          const errorBanner = formType === 'contact'
+            ? document.getElementById('contactErrorBanner')
+            : document.getElementById('voiceErrorBanner');
+          if (errorBanner) errorBanner.style.display = 'flex';
+          
+          setTimeout(() => {
+            btnTextOne.textContent = 'SEND MESSAGE';
+            btnTextTwo.textContent = 'SEND MESSAGE';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+            if (errorBanner) errorBanner.style.display = 'none';
+            
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }, 10000);
+        }
+      }
+    }
+  });
+</script>
+
+<style>
+  @keyframes dotPulse {
+    from {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+
+    to {
+      transform: scale(1.8);
+      opacity: 1;
+    }
+  }
+
+  .form-success-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: #4ade80;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    animation: bannerFadeIn 0.4s ease;
+  }
+
+  .form-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: #f87171;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    animation: bannerFadeIn 0.4s ease;
+  }
+
+  @keyframes bannerFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- Captcha Modal -->
+<div id="captchaModal" class="captcha-modal" style="display: none;">
+  <div class="captcha-modal-overlay" onclick="closeCaptchaModal()"></div>
+  <div class="captcha-modal-content">
+    <div class="captcha-modal-header">
+      <h3>Verify You're Human</h3>
+      <button type="button" class="captcha-close-btn" onclick="closeCaptchaModal()">×</button>
+    </div>
+    <div class="captcha-modal-body">
+      <img src="{{ captcha_image }}" alt="captcha" id="captchaImage" class="captcha-modal-image">
+      <input type="hidden" id="captchaKey" value="{{ captcha_key }}">
+      <input type="text" id="captchaInput" class="captcha-modal-input" placeholder="Enter the code above" autocomplete="off">
+      <p class="captcha-error" id="captchaError" style="display: none;">Incorrect captcha. Please try again.</p>
+    </div>
+    <div class="captcha-modal-footer">
+      <button type="button" class="captcha-verify-btn" onclick="verifyCaptcha()">Verify & Send</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .captcha-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .captcha-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+  }
+
+  .captcha-modal-content {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease-out;
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .captcha-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .captcha-modal-header h3 {
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+  }
+
+  .captcha-close-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .captcha-close-btn:hover {
+    color: white;
+  }
+
+  .captcha-modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .captcha-modal-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+  }
+
+  .captcha-modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: white;
+    outline: none;
+    font-size: 15px;
+    font-family: var(--font);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .captcha-modal-input:focus {
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .captcha-error {
+    font-family: var(--font);
+    font-size: 13px;
+    color: #ef4444;
+    margin: 0;
+  }
+
+  .captcha-modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--card-border);
+  }
+
+  .captcha-verify-btn {
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(29, 78, 216, 0.35);
+    font-family: var(--font);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .captcha-verify-btn:hover {
+    background: linear-gradient(135deg, #1e40af, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(29, 78, 216, 0.45);
+  }
+
+  .captcha-verify-btn:active {
+    transform: translateY(0);
+  }
+</style>
+
+{% endblock %}

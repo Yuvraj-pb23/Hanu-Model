@@ -1,0 +1,2583 @@
+{% extends "base.html" %} {% load static %} {% block title %} Employee Portal -
+HanuAi {% endblock %} {% block content %}
+<div class="flex items-center justify-center px-4 py-12 relative employee-bg">
+  <!-- Attendance/Business Login Overlay -->
+  <div id="attendance-overlay" style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(28, 32, 39, 0.96);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    ">
+    <div class="overlay-modal">
+      <!-- Close Button -->
+      <button class="overlay-close-btn" id="close-overlay-btn" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <!-- Header with Icon -->
+      <div class="overlay-header">
+        <div class="overlay-icon-wrapper">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+        </div>
+        <div class="overlay-header-text">
+          <h2 class="overlay-title">Employee Portal</h2>
+          <p class="overlay-subtitle">Choose an action to continue</p>
+        </div>
+      </div>
+
+      <!-- Action Cards Grid -->
+      <div class="overlay-actions">
+        <button data-url="https://rims.roadathena.com/" data-title="RIMS"
+          class="overlay-card overlay-card-purple action-btn">
+          <div class="card-icon">
+            <i class="bi bi-diagram-3"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">RIMS</h3>
+            <p class="card-description">Road Information Management</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
+
+        <button data-url="{% url 'generate_attendance_link' %}" data-title="Mark Attendance"
+          class="overlay-card overlay-card-orange attendance-direct-btn">
+          <div class="card-icon">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Mark Attendance</h3>
+            <p class="card-description">Record your presence</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
+
+        <button data-url="https://ai.roadathena.com/" data-title="Roadathena AI"
+          class="overlay-card overlay-card-blue action-btn">
+          <div class="card-icon">
+            <i class="bi bi-robot"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Roadathena AI</h3>
+            <p class="card-description">AI-powered analysis</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
+
+        <button data-url="https://tenders.hanuai.com/" data-title="Business Login"
+          class="overlay-card overlay-card-teal action-btn">
+          <div class="card-icon">
+            <i class="bi bi-briefcase"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Business Login</h3>
+            <p class="card-description">Tender management</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
+
+        <button data-url="https://test.roadathena.com/" data-title="Quality Analysis"
+          class="overlay-card overlay-card-green action-btn">
+          <div class="card-icon">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Quality Analysis</h3>
+            <p class="card-description">Testing & validation</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
+
+        <button data-title="Surveyors" class="overlay-card overlay-card-pink action-btn">
+          <div class="card-icon">
+            <i class="bi bi-bezier2"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Surveyors</h3>
+            <p class="card-description">Field survey tools</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download Form Overlay -->
+  <div id="download-form-overlay" style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(28, 32, 39, 0.96);
+      z-index: 1001;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    ">
+    <div class="overlay-modal form-modal">
+      <!-- Close Button -->
+      <button class="form-close-btn" id="close-form-btn" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <!-- Form Header with Icon -->
+      <div class="form-header">
+        <div class="form-icon-wrapper">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <div class="form-header-text">
+          <h2 class="form-title" id="form-title">Employee Verification</h2>
+          <p class="form-subtitle" id="form-subtitle">Please provide your details to continue</p>
+        </div>
+      </div>
+
+      <form id="download-form" class="download-form">
+        <div class="form-group">
+          <label for="user-name" class="form-label">
+            <i class="bi bi-person-fill"></i>
+            Full Name
+          </label>
+          <div class="input-wrapper">
+            <input type="text" id="user-name" name="name" class="form-input" placeholder="Enter your full name"
+              required />
+            <i class="bi bi-person input-icon"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="user-mobile" class="form-label">
+            <i class="bi bi-phone-fill"></i>
+            Mobile Number
+          </label>
+          <div class="input-wrapper">
+            <input type="tel" id="user-mobile" name="mobile" class="form-input"
+              placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required />
+            <i class="bi bi-phone input-icon"></i>
+          </div>
+        </div>
+        <div id="form-message" class="form-message" style="display: none;"></div>
+        <div class="form-actions">
+          <button type="button" id="cancel-download" class="form-btn form-btn-cancel">
+            <i class="bi bi-x-circle"></i>
+            <span>Cancel</span>
+          </button>
+          <button type="submit" id="submit-download" class="form-btn form-btn-submit">
+            <i class="bi bi-check-circle"></i>
+            <span>Continue</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- OS Selection Overlay (for Surveyors) -->
+  <div id="os-selection-overlay" style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(28, 32, 39, 0.96);
+      z-index: 1002;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    ">
+    <div class="overlay-modal os-modal">
+      <!-- Header with Icon -->
+      <div class="overlay-header">
+        <div class="overlay-icon-wrapper os-icon-wrapper">
+          <i class="bi bi-download"></i>
+        </div>
+        <div class="overlay-header-text">
+          <h2 class="overlay-title">Select Your Platform</h2>
+          <p class="overlay-subtitle">Choose the version for your operating system</p>
+        </div>
+      </div>
+
+      <!-- OS Options -->
+      <div class="os-options">
+        <button id="windows-option" class="os-option os-option-windows"
+          data-url="https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP.exe">
+          <div class="os-option-icon">
+            <i class="bi bi-windows"></i>
+          </div>
+          <div class="os-option-content">
+            <h3 class="os-option-title">Windows</h3>
+            <p class="os-option-description">Download for Windows 10/11</p>
+          </div>
+          <div class="os-option-arrow">
+            <i class="bi bi-download"></i>
+          </div>
+        </button>
+
+        <button id="ubuntu-option" class="os-option os-option-ubuntu"
+          data-url="https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP">
+          <div class="os-option-icon">
+            <i class="bi bi-ubuntu"></i>
+          </div>
+          <div class="os-option-content">
+            <h3 class="os-option-title">Ubuntu</h3>
+            <p class="os-option-description">Download for Ubuntu Linux</p>
+          </div>
+          <div class="os-option-arrow">
+            <i class="bi bi-download"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Animated Glow -->
+  <div class="employee-glow"></div>
+  <div class="employee-card max-w-md w-full z-10">
+    <div class="flex flex-col items-center justify-center mb-8">
+      <i class="bi bi-person-circle employee-icon"></i>
+    </div>
+    <h1 class="employee-title">Employee Portal</h1>
+    <p class="employee-subtitle">Are you an employee of HanuAi?</p>
+    <div class="space-y-5 w-full">
+      <div class="employee-btn-row">
+        <button id="yes-btn" class="employee-btn employee-btn-yes">
+          Yes, I am an employee
+        </button>
+        <button id="no-btn" class="employee-btn employee-btn-no">
+          No, I'm not an employee
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Global variable to store the target URL and action title
+  let targetUrl = "";
+  let actionTitle = "";
+
+  document.getElementById("yes-btn").addEventListener("click", function () {
+    document.getElementById("attendance-overlay").style.display = "flex";
+  });
+
+  // Close overlay when clicking outside the modal
+  document
+    .getElementById("attendance-overlay")
+    .addEventListener("click", function (e) {
+      if (e.target === this) {
+        this.style.display = "none";
+      }
+    });
+
+  // Close overlay with close button
+  document.getElementById("close-overlay-btn").addEventListener("click", function () {
+    document.getElementById("attendance-overlay").style.display = "none";
+  });
+
+  // Close form overlay with close button
+  document.getElementById("close-form-btn").addEventListener("click", function () {
+    document.getElementById("download-form-overlay").style.display = "none";
+    document.getElementById("download-form").reset();
+    document.getElementById("form-message").style.display = "none";
+    document.getElementById("submit-download").disabled = false;
+    document.getElementById("submit-download").innerHTML = '<i class="bi bi-check-circle"></i><span>Continue</span>';
+  });
+
+  document.getElementById("no-btn").addEventListener("click", function () {
+    window.location.href = '{% url "contact" %}#contact-form';
+  });
+
+  // Direct navigation for Mark Attendance button (no validation)
+  document.querySelector(".attendance-direct-btn").addEventListener("click", function (e) {
+    e.preventDefault();
+    const attendanceUrl = this.getAttribute("data-url");
+    window.open(attendanceUrl, "_blank");
+  });
+
+  // Add click listeners to all action buttons
+  document.querySelectorAll(".action-btn").forEach(button => {
+    button.addEventListener("click", function (e) {
+      e.preventDefault();
+      targetUrl = this.getAttribute("data-url");
+      actionTitle = this.getAttribute("data-title");
+
+      // Update form title and subtitle
+      document.getElementById("form-title").textContent = actionTitle;
+      document.getElementById("form-subtitle").textContent = "Please verify your identity to access " + actionTitle;
+
+      // Show validation form
+      document.getElementById("download-form-overlay").style.display = "flex";
+    });
+  });
+
+  // Cancel download form
+  document.getElementById("cancel-download").addEventListener("click", function () {
+    document.getElementById("download-form-overlay").style.display = "none";
+    document.getElementById("download-form").reset();
+    document.getElementById("form-message").style.display = "none";
+    document.getElementById("submit-download").disabled = false;
+    document.getElementById("submit-download").textContent = "Continue";
+  });
+
+  // Close form overlay when clicking outside
+  document.getElementById("download-form-overlay").addEventListener("click", function (e) {
+    if (e.target === this) {
+      this.style.display = "none";
+      document.getElementById("download-form").reset();
+      document.getElementById("form-message").style.display = "none";
+      document.getElementById("submit-download").disabled = false;
+      document.getElementById("submit-download").textContent = "Continue";
+    }
+  });
+
+  // Handle form submission
+  document.getElementById("download-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("user-name").value;
+    const mobile = document.getElementById("user-mobile").value;
+    const messageDiv = document.getElementById("form-message");
+    const submitBtn = document.getElementById("submit-download");
+
+    // Disable submit button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i><span>Verifying...</span>';
+    messageDiv.style.display = "none";
+
+    try {
+      // Call the validation API
+      const response = await fetch('/api/validate-employee/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'X-CSRFToken': getCookie('csrftoken') // Uncomment if not using @csrf_exempt in Django
+        },
+        body: JSON.stringify({ name: name, mobile: mobile })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Show success message
+        messageDiv.textContent = "✓ Verified! Redirecting...";
+        messageDiv.className = "form-message form-message-success";
+        messageDiv.style.display = "block";
+
+        // Wait a moment then proceed
+        setTimeout(() => {
+          // Hide form overlay
+          document.getElementById("download-form-overlay").style.display = "none";
+
+          // Check if it's Surveyors action
+          if (actionTitle === "Surveyors") {
+            // Show OS selection overlay
+            document.getElementById("os-selection-overlay").style.display = "flex";
+          } else {
+            // Hide attendance overlay and open URL directly
+            document.getElementById("attendance-overlay").style.display = "none";
+            window.open(targetUrl, "_blank");
+          }
+
+          // Reset form
+          document.getElementById("download-form").reset();
+          messageDiv.style.display = "none";
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bi bi-check-circle"></i><span>Continue</span>';
+        }, 1000);
+      } else {
+        // Show error message
+        messageDiv.textContent = result.message || "✗ Mobile number not recognized. Only HanuAi employees can access.";
+        messageDiv.className = "form-message form-message-error";
+        messageDiv.style.display = "block";
+
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-circle"></i><span>Continue</span>';
+      }
+
+    } catch (error) {
+      console.error("Validation error:", error);
+      messageDiv.textContent = "✗ Unable to verify mobile number. Please try again.";
+      messageDiv.className = "form-message form-message-error";
+      messageDiv.style.display = "block";
+
+      // Re-enable button
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Continue";
+    }
+  });
+
+  // Close OS overlay when clicking outside
+  document.getElementById("os-selection-overlay").addEventListener("click", function (e) {
+    if (e.target === this) {
+      this.style.display = "none";
+      document.getElementById("attendance-overlay").style.display = "none";
+    }
+  });
+
+  // Windows option click
+  document.getElementById("windows-option").addEventListener("click", function () {
+    const windowsUrl = this.getAttribute("data-url");
+    if (windowsUrl) {
+      window.open(windowsUrl, "_blank");
+      document.getElementById("os-selection-overlay").style.display = "none";
+      document.getElementById("attendance-overlay").style.display = "none";
+    }
+  });
+
+  // Ubuntu option click
+  document.getElementById("ubuntu-option").addEventListener("click", function () {
+    const ubuntuUrl = this.getAttribute("data-url");
+    if (ubuntuUrl) {
+      window.open(ubuntuUrl, "_blank");
+      document.getElementById("os-selection-overlay").style.display = "none";
+      document.getElementById("attendance-overlay").style.display = "none";
+    }
+  });
+
+  // Entrance animation
+  window.addEventListener("DOMContentLoaded", function () {
+    const card = document.querySelector(".employee-card");
+    card.classList.add("animate-pop-in");
+    setTimeout(() => card.classList.remove("animate-pop-in"), 1200);
+  });
+</script>
+
+<style>
+  /* Mobile Responsive Styles */
+  @media (max-width: 768px) {
+
+    /* Main Employee Card */
+    .employee-bg {
+      padding: 1.5rem 1rem !important;
+      min-height: 100vh;
+    }
+
+    .employee-card {
+      margin-left: 1rem !important;
+      margin-right: 1rem !important;
+      padding: 2rem 1.25rem 2rem !important;
+      border-radius: 1.25rem !important;
+    }
+
+    .employee-icon {
+      font-size: 3.5rem !important;
+      width: 80px !important;
+      height: 80px !important;
+      margin-bottom: 1rem !important;
+    }
+
+    .employee-title {
+      font-size: 1.75rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+
+    .employee-subtitle {
+      font-size: 0.95rem !important;
+      margin-bottom: 1.75rem !important;
+      padding: 0 0.5rem;
+    }
+
+    .employee-btn-row {
+      flex-direction: column !important;
+      gap: 1rem !important;
+    }
+
+    .employee-btn {
+      width: 100% !important;
+      padding: 1rem 1.5rem !important;
+      font-size: 1rem !important;
+    }
+
+    /* Overlay Modal */
+    .overlay-modal {
+      min-width: calc(100vw - 2rem);
+      max-width: calc(100vw - 2rem);
+      padding: 2rem 1.25rem;
+      margin: 1rem;
+      border-radius: 1.25rem;
+    }
+
+    .overlay-modal::before {
+      height: 2px;
+    }
+
+    /* Close Buttons */
+    .overlay-close-btn,
+    .form-close-btn {
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      font-size: 0.95rem;
+    }
+
+    /* Overlay Header */
+    .overlay-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .overlay-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      font-size: 1.75rem;
+      margin: 0 auto;
+    }
+
+    .overlay-header-text {
+      text-align: center;
+    }
+
+    .overlay-title {
+      font-size: 1.65rem;
+    }
+
+    .overlay-subtitle {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Action Cards Grid */
+    .overlay-actions {
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+    }
+
+    .overlay-card {
+      padding: 1.1rem;
+      border-radius: 0.875rem;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 1.35rem;
+      border-radius: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+    }
+
+    .card-description {
+      font-size: 0.825rem;
+    }
+
+    .card-arrow {
+      width: 28px;
+      height: 28px;
+      font-size: 0.9rem;
+    }
+
+    /* Form Modal */
+    .form-modal {
+      padding: 2rem 1.25rem;
+      min-width: calc(100vw - 2rem);
+      max-width: calc(100vw - 2rem);
+    }
+
+    .form-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .form-icon-wrapper {
+      width: 55px;
+      height: 55px;
+      font-size: 1.6rem;
+      margin: 0 auto;
+    }
+
+    .form-header-text {
+      text-align: center;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .form-label i {
+      font-size: 0.95rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-input {
+      padding: 0.875rem 2.75rem 0.875rem 1rem;
+      font-size: 0.95rem;
+      border-radius: 0.75rem;
+    }
+
+    .input-icon {
+      font-size: 1rem;
+      right: 0.875rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 0.95rem 1.25rem;
+      font-size: 0.975rem;
+      border-radius: 0.75rem;
+    }
+
+    .form-btn i {
+      font-size: 1rem;
+    }
+
+    .form-message {
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+    }
+  }
+
+  /* Extra Small Devices (< 480px) */
+  @media (max-width: 480px) {
+    .employee-card {
+      padding: 1.75rem 1rem 1.75rem !important;
+    }
+
+    .employee-icon {
+      font-size: 3rem !important;
+      width: 70px !important;
+      height: 70px !important;
+    }
+
+    .employee-title {
+      font-size: 1.5rem !important;
+    }
+
+    .employee-subtitle {
+      font-size: 0.9rem !important;
+    }
+
+    .employee-btn {
+      padding: 0.95rem 1.25rem !important;
+      font-size: 0.95rem !important;
+    }
+
+    .overlay-modal {
+      padding: 1.75rem 1rem;
+      margin: 0.75rem;
+    }
+
+    .overlay-title {
+      font-size: 1.5rem;
+    }
+
+    .overlay-subtitle {
+      font-size: 0.85rem;
+    }
+
+    .overlay-icon-wrapper {
+      width: 55px;
+      height: 55px;
+      font-size: 1.6rem;
+    }
+
+    .form-title {
+      font-size: 1.35rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.825rem;
+    }
+
+    .card-icon {
+      width: 45px;
+      height: 45px;
+      font-size: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .card-description {
+      font-size: 0.8rem;
+    }
+
+    .form-input {
+      padding: 0.85rem 2.5rem 0.85rem 0.95rem;
+      font-size: 0.925rem;
+    }
+
+    .form-btn {
+      padding: 0.9rem 1.15rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Landscape Mobile Devices */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .employee-bg {
+      padding: 1rem !important;
+    }
+
+    .overlay-modal {
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem 1.25rem;
+    }
+
+    .overlay-actions {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .overlay-header {
+      flex-direction: row;
+      text-align: left;
+      margin-bottom: 1.25rem;
+    }
+
+    .overlay-header-text {
+      text-align: left;
+    }
+
+    .overlay-icon-wrapper {
+      margin: 0;
+    }
+
+    .form-header {
+      flex-direction: row;
+      text-align: left;
+    }
+
+    .form-header-text {
+      text-align: left;
+    }
+
+    .form-icon-wrapper {
+      margin: 0;
+    }
+
+    .form-actions {
+      flex-direction: row;
+    }
+
+    .form-btn {
+      width: auto;
+      flex: 1;
+    }
+  }
+
+  /* Overlay Modern Effects */
+  #attendance-overlay {
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    background: linear-gradient(135deg,
+        rgba(15, 23, 42, 0.92) 0%,
+        rgba(30, 41, 59, 0.94) 50%,
+        rgba(17, 24, 39, 0.95) 100%);
+    animation: overlay-gradient-shift 10s ease infinite;
+  }
+
+  @keyframes overlay-gradient-shift {
+
+    0%,
+    100% {
+      background: linear-gradient(135deg,
+          rgba(15, 23, 42, 0.92) 0%,
+          rgba(30, 41, 59, 0.94) 50%,
+          rgba(17, 24, 39, 0.95) 100%);
+    }
+
+    50% {
+      background: linear-gradient(135deg,
+          rgba(30, 41, 59, 0.94) 0%,
+          rgba(15, 23, 42, 0.92) 50%,
+          rgba(30, 41, 59, 0.95) 100%);
+    }
+  }
+
+  .overlay-modal {
+    background: linear-gradient(145deg, rgba(30, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.98) 100%);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    min-width: 600px;
+    max-width: 750px;
+    box-shadow:
+      0 25px 70px rgba(0, 0, 0, 0.6),
+      0 0 60px rgba(59, 130, 246, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    animation: modal-pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+  }
+
+  .overlay-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(139, 92, 246, 0.6),
+        rgba(59, 130, 246, 0.6),
+        rgba(16, 185, 129, 0.6),
+        transparent);
+    animation: border-flow 4s ease-in-out infinite;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+
+  /* Close Button */
+  .overlay-close-btn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.4) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.1rem;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+  }
+
+  .overlay-close-btn:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.5) 0%, rgba(220, 38, 38, 0.6) 100%);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    border-color: rgba(239, 68, 68, 0.6);
+  }
+
+  .overlay-close-btn:active {
+    transform: rotate(90deg) scale(0.95);
+  }
+
+  /* Header Section */
+  .overlay-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .overlay-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.4);
+    border-radius: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #c4b5fd;
+    animation: icon-float 3s ease-in-out infinite;
+    box-shadow:
+      0 8px 20px rgba(139, 92, 246, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  @keyframes icon-float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .overlay-header-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .overlay-title {
+    font-family: \"Manrope\", sans-serif;
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #f3f4f6 0%, #d1d5db 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
+    animation: title-slide-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .overlay-subtitle {
+    color: #9ca3af;
+    font-size: 1rem;
+    font-family: \"Manrope\", sans-serif;
+    font-weight: 500;
+    animation: subtitle-fade-in 1s ease-out 0.2s backwards;
+  }
+
+  @keyframes subtitle-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes border-flow {
+
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* Actions Grid */
+  .overlay-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Card Styles */
+  .overlay-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(135deg, rgba(71, 85, 105, 0.4) 0%, rgba(51, 65, 85, 0.5) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: card-slide-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+
+  .overlay-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .overlay-card:hover::before {
+    left: 100%;
+  }
+
+  .overlay-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    border-color: rgba(148, 163, 184, 0.4);
+  }
+
+  .overlay-card:active {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  /* Card Animation Delays */
+  .overlay-card:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+
+  .overlay-card:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .overlay-card:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+
+  .overlay-card:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+
+  .overlay-card:nth-child(5) {
+    animation-delay: 0.25s;
+  }
+
+  .overlay-card:nth-child(6) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes card-slide-up {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+      filter: blur(5px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+  }
+
+  /* Card Icon */
+  .card-icon {
+    flex-shrink: 0;
+    width: 55px;
+    height: 55px;
+    border-radius: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .overlay-card:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Card Content */
+  .card-content {
+    flex: 1;
+    text-align: left;
+  }
+
+  .card-title {
+    font-family: \"Manrope\", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f3f4f6;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.3px;
+  }
+
+  .card-description {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-family: \"Manrope\", sans-serif;
+    font-weight: 500;
+  }
+
+  /* Card Arrow */
+  .card-arrow {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    color: #d1d5db;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .overlay-card:hover .card-arrow {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Color Variants */
+  .overlay-card-purple {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.30) 100%);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .overlay-card-purple:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(124, 58, 237, 0.4) 100%);
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 12px 35px rgba(124, 58, 237, 0.4);
+  }
+
+  .overlay-card-purple .card-icon {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.35) 100%);
+    color: #c4b5fd;
+  }
+
+  .overlay-card-orange {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.25) 0%, rgba(249, 115, 22, 0.30) 100%);
+    border-color: rgba(251, 146, 60, 0.3);
+  }
+
+  .overlay-card-orange:hover {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.35) 0%, rgba(249, 115, 22, 0.4) 100%);
+    border-color: rgba(251, 146, 60, 0.5);
+    box-shadow: 0 12px 35px rgba(249, 115, 22, 0.4);
+  }
+
+  .overlay-card-orange .card-icon {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(249, 115, 22, 0.35) 100%);
+    color: #fdba74;
+  }
+
+  .overlay-card-blue {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.30) 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .overlay-card-blue:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(37, 99, 235, 0.4) 100%);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 12px 35px rgba(37, 99, 235, 0.4);
+  }
+
+  .overlay-card-blue .card-icon {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.35) 100%);
+    color: #93c5fd;
+  }
+
+  .overlay-card-teal {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25) 0%, rgba(13, 148, 136, 0.30) 100%);
+    border-color: rgba(20, 184, 166, 0.3);
+  }
+
+  .overlay-card-teal:hover {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.35) 0%, rgba(13, 148, 136, 0.4) 100%);
+    border-color: rgba(20, 184, 166, 0.5);
+    box-shadow: 0 12px 35px rgba(13, 148, 136, 0.4);
+  }
+
+  .overlay-card-teal .card-icon {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.3) 0%, rgba(13, 148, 136, 0.35) 100%);
+    color: #5eead4;
+  }
+
+  .overlay-card-green {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.25) 0%, rgba(16, 185, 129, 0.30) 100%);
+    border-color: rgba(52, 211, 153, 0.3);
+  }
+
+  .overlay-card-green:hover {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.35) 0%, rgba(16, 185, 129, 0.4) 100%);
+    border-color: rgba(52, 211, 153, 0.5);
+    box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+  }
+
+  .overlay-card-green .card-icon {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, rgba(16, 185, 129, 0.35) 100%);
+    color: #6ee7b7;
+  }
+
+  .overlay-card-pink {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(219, 39, 119, 0.30) 100%);
+    border-color: rgba(236, 72, 153, 0.3);
+  }
+
+  .overlay-card-pink:hover {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.35) 0%, rgba(219, 39, 119, 0.4) 100%);
+    border-color: rgba(236, 72, 153, 0.5);
+    box-shadow: 0 12px 35px rgba(219, 39, 119, 0.4);
+  }
+
+  .overlay-card-pink .card-icon {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(219, 39, 119, 0.35) 100%);
+    color: #f9a8d4;
+  }
+
+  @keyframes overlay-fade-in {
+    from {
+      opacity: 0;
+      backdrop-filter: blur(0px);
+    }
+
+    to {
+      opacity: 1;
+      backdrop-filter: blur(20px);
+    }
+  }
+
+  @keyframes modal-pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.7) translateY(50px) rotateX(20deg);
+      filter: blur(10px);
+    }
+
+    70% {
+      opacity: 1;
+      transform: scale(1.05) translateY(-8px) rotateX(0deg);
+      filter: blur(0px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0) rotateX(0deg);
+      filter: blur(0px);
+    }
+  }
+
+  @keyframes title-slide-in {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+      filter: blur(10px);
+    }
+
+    70% {
+      transform: translateY(3px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+  }
+
+  /* Download Form Overlay Styles */
+  #download-form-overlay {
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    background: linear-gradient(135deg,
+        rgba(15, 23, 42, 0.92) 0%,
+        rgba(30, 41, 59, 0.94) 50%,
+        rgba(17, 24, 39, 0.95) 100%);
+    animation: overlay-gradient-shift 10s ease infinite;
+  }
+
+  .form-modal {
+    max-width: 500px;
+    position: relative;
+  }
+
+  /* Form Close Button */
+  .form-close-btn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.3) 0%, rgba(71, 85, 105, 0.4) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .form-close-btn:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.4) 0%, rgba(220, 38, 38, 0.5) 100%);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+  }
+
+  .form-close-btn:active {
+    transform: rotate(90deg) scale(0.95);
+  }
+
+  /* Form Header */
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.25) 0%, rgba(16, 185, 129, 0.3) 100%);
+    border: 2px solid rgba(52, 211, 153, 0.4);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #6ee7b7;
+    animation: icon-pulse 2.5s ease-in-out infinite;
+    box-shadow:
+      0 8px 20px rgba(16, 185, 129, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  @keyframes icon-pulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow:
+        0 8px 20px rgba(16, 185, 129, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    50% {
+      transform: scale(1.05);
+      box-shadow:
+        0 10px 25px rgba(16, 185, 129, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 30px rgba(52, 211, 153, 0.3);
+    }
+  }
+
+  .form-header-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .form-title {
+    font-family: \"Manrope\", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+    background: linear-gradient(135deg, #f3f4f6 0%, #d1d5db 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.3px;
+    animation: title-slide-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .form-subtitle {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    font-family: \"Manrope\", sans-serif;
+    font-weight: 500;
+    line-height: 1.4;
+    animation: subtitle-fade-in 1s ease-out 0.2s backwards;
+  }
+
+  .download-form {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+    animation: form-field-slide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+
+  .form-group:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  .form-group:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  @keyframes form-field-slide {
+    0% {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e5e7eb;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.65rem;
+    font-family: \"Manrope\", sans-serif;
+    letter-spacing: 0.3px;
+  }
+
+  .form-label i {
+    font-size: 1rem;
+    color: #a5b4fc;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 1.1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .form-input {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.12) 100%);
+    border: 2px solid rgba(59, 130, 246, 0.25);
+    border-radius: 0.875rem;
+    padding: 1rem 3rem 1rem 1.25rem;
+    color: #f3f4f6;
+    font-size: 1rem;
+    font-family: \"Manrope\", sans-serif;
+    outline: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 2px 10px rgba(37, 99, 235, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .form-input::placeholder {
+    color: #9ca3af;
+    transition: color 0.3s ease;
+  }
+
+  .form-input:focus {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.2) 100%);
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow:
+      0 8px 25px rgba(37, 99, 235, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 0 0 4px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .form-input:focus::placeholder {
+    color: #bfdbfe;
+  }
+
+  .form-input:focus+.input-icon {
+    color: #93c5fd;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    animation: form-actions-fade 0.6s ease-out 0.3s backwards;
+  }
+
+  @keyframes form-actions-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .form-btn {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border-radius: 0.875rem;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: \"Manrope\", sans-serif;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.3px;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .form-btn i {
+    font-size: 1.1rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .form-btn:hover i {
+    transform: scale(1.15);
+  }
+
+  .form-btn-cancel {
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.4) 0%, rgba(71, 85, 105, 0.5) 100%);
+    color: #e2e8f0;
+    border-color: rgba(148, 163, 184, 0.3);
+    box-shadow:
+      0 4px 12px rgba(71, 85, 105, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .form-btn-submit {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.5) 0%, rgba(16, 185, 129, 0.6) 100%);
+    color: #d1fae5;
+    border-color: rgba(52, 211, 153, 0.4);
+    box-shadow:
+      0 4px 15px rgba(16, 185, 129, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .form-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    filter: brightness(1.15);
+  }
+
+  .form-btn-cancel:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.45) 0%, rgba(220, 38, 38, 0.55) 100%);
+    box-shadow:
+      0 8px 20px rgba(220, 38, 38, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fecaca;
+  }
+
+  .form-btn-submit:hover {
+    box-shadow:
+      0 8px 25px rgba(16, 185, 129, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(52, 211, 153, 0.6);
+  }
+
+  .form-btn:active {
+    transform: translateY(-1px) scale(1);
+    transition: all 0.1s;
+  }
+
+  .form-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .spin-icon {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .form-message {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-family: "Manrope", sans-serif;
+    font-weight: 600;
+    text-align: center;
+    animation: messageSlideIn 0.3s ease-out;
+  }
+
+  .form-message-success {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.25) 0%, rgba(16, 185, 129, 0.35) 100%);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #6ee7b7;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 4px 12px rgba(16, 185, 129, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 0 20px rgba(52, 211, 153, 0.2);
+    animation: messageSlideIn 0.4s ease-out, success-glow 2s ease-in-out infinite;
+  }
+
+  .form-message-error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.35) 100%);
+    border: 1px solid rgba(248, 113, 113, 0.5);
+    color: #fca5a5;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 4px 12px rgba(220, 38, 38, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 0 20px rgba(239, 68, 68, 0.2);
+    animation: messageSlideIn 0.4s ease-out, error-shake 0.5s ease;
+  }
+
+  @keyframes messageSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes success-glow {
+
+    0%,
+    100% {
+      box-shadow:
+        0 4px 12px rgba(16, 185, 129, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 0 20px rgba(52, 211, 153, 0.2);
+    }
+
+    50% {
+      box-shadow:
+        0 4px 12px rgba(16, 185, 129, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 30px rgba(52, 211, 153, 0.35);
+    }
+  }
+
+  @keyframes error-shake {
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-8px);
+    }
+
+    75% {
+      transform: translateX(8px);
+    }
+  }
+
+  /* OS Selection Overlay Styles */
+  #os-selection-overlay {
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    background: linear-gradient(135deg,
+        rgba(15, 23, 42, 0.92) 0%,
+        rgba(30, 41, 59, 0.94) 50%,
+        rgba(17, 24, 39, 0.95) 100%);
+    animation: overlay-gradient-shift 10s ease infinite;
+  }
+
+  .os-modal {
+    max-width: 550px;
+  }
+
+  .os-icon-wrapper {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.3) 100%);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #93c5fd;
+  }
+
+  .os-options {
+    display: flex;
+    flex-direction: row;
+    gap: 1.25rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .os-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex: 1;
+    background: linear-gradient(135deg, rgba(71, 85, 105, 0.4) 0%, rgba(51, 65, 85, 0.5) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 1.25rem;
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: card-slide-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    text-align: center;
+    min-height: 180px;
+  }
+
+  .os-option:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  .os-option:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .os-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .os-option:hover::before {
+    left: 100%;
+  }
+
+  .os-option:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    border-color: rgba(148, 163, 184, 0.4);
+  }
+
+  .os-option:active {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  .os-option-icon {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    border-radius: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    margin-bottom: 0.5rem;
+  }
+
+  .os-option:hover .os-option-icon {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .os-option-content {
+    text-align: center;
+  }
+
+  .os-option-title {
+    font-family: "Manrope", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f3f4f6;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.3px;
+  }
+
+  .os-option-description {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    font-family: "Manrope", sans-serif;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .os-option-arrow {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    color: #d1d5db;
+    font-size: 1.1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: auto;
+  }
+
+  .os-option:hover .os-option-arrow {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* OS Color Variants */
+  .os-option-windows {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.30) 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .os-option-windows:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(37, 99, 235, 0.4) 100%);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 12px 35px rgba(37, 99, 235, 0.4);
+  }
+
+  .os-option-windows .os-option-icon {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.35) 100%);
+    color: #93c5fd;
+  }
+
+  .os-option-ubuntu {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.25) 0%, rgba(249, 115, 22, 0.30) 100%);
+    border-color: rgba(251, 146, 60, 0.3);
+  }
+
+  .os-option-ubuntu:hover {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.35) 0%, rgba(249, 115, 22, 0.4) 100%);
+    border-color: rgba(251, 146, 60, 0.5);
+    box-shadow: 0 12px 35px rgba(249, 115, 22, 0.4);
+  }
+
+  .os-option-ubuntu .os-option-icon {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(249, 115, 22, 0.35) 100%);
+    color: #fdba74;
+  }
+
+  .employee-bg {
+    overflow: hidden;
+    min-height: calc(100vh - 200px);
+  }
+
+  .employee-glow {
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle at 50% 60%,
+        rgba(55, 65, 81, 0.15) 0%,
+        transparent 70%);
+    filter: blur(40px);
+  }
+
+  .employee-card {
+    background: linear-gradient(145deg, rgba(31, 41, 55, 0.5) 0%, rgba(17, 24, 39, 0.6) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 2.5rem;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeInUp 1.2s cubic-bezier(0.4, 2, 0.6, 1);
+    will-change: transform, opacity;
+    max-width: 600px;
+    min-width: 320px;
+    width: 100%;
+    margin: 120px auto 90px;
+    transition:
+      box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .animate-pop-in {
+    animation: popIn 0.8s cubic-bezier(0.4, 2, 0.6, 1);
+  }
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+
+    60% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .employee-card:hover {
+    transform: translateY(-10px) scale(1.025);
+    box-shadow:
+      0 0 32px 0 rgba(37, 99, 235, 0.18),
+      0 1.5px 8px 0 rgba(0, 0, 0, 0.1),
+      0 0 40px 0 rgba(0, 198, 255, 0.12);
+    background: rgba(30, 40, 80, 0.18);
+    border-color: #2563eb;
+  }
+
+  .employee-icon {
+    font-size: 5rem;
+    color: white;
+    margin: auto;
+    filter: drop-shadow(0 0 18px #2563eb88);
+    transition: filter 0.3s;
+  }
+
+  .employee-icon:hover {
+    filter: drop-shadow(0 0 32px #2563ebcc);
+    color: #2563eb;
+  }
+
+  .employee-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    font-family: "Manrope", sans-serif;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #fff, #2563eb 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .employee-subtitle {
+    color: #e0e7ef;
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-family: "Manrope", sans-serif;
+    opacity: 0.85;
+    transition: color 0.3s;
+  }
+
+  .employee-btn {
+    width: 100%;
+    padding: 1.1rem 1.5rem;
+    font-size: 1.12rem;
+    font-weight: 700;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+    transition:
+      background 0.3s,
+      transform 0.2s,
+      box-shadow 0.3s;
+    font-family: "Manrope", sans-serif;
+    position: relative;
+    overflow: hidden;
+    outline: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .employee-btn-yes {
+    background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+    color: #fff;
+  }
+
+  .employee-btn-no {
+    background: linear-gradient(90deg, #374151 0%, #111827 100%);
+    color: #fff;
+  }
+
+  .employee-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 24px rgba(37, 99, 235, 0.18);
+  }
+
+  .employee-btn:active {
+    transform: scale(0.98);
+  }
+
+  .employee-btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(37, 99, 235, 0.12);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.4s cubic-bezier(0.4, 2, 0.6, 1),
+      height 0.4s cubic-bezier(0.4, 2, 0.6, 1);
+    z-index: 0;
+  }
+
+  .employee-btn:active::after {
+    width: 180%;
+    height: 180%;
+  }
+
+  .employee-btn-row {
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .employee-btn-row .employee-btn {
+    width: 50%;
+    min-width: 120px;
+  }
+
+  footer {
+    background-color: #0a0f1a !important;
+    background: #0a0f1a !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .services-carousel-container footer {
+    background-color: #0a0f1a !important;
+    background: #0a0f1a !important;
+  }
+
+  /* Mobile Responsive Styles */
+  @media (max-width: 768px) {
+
+    /* Overlays */
+    #attendance-overlay,
+    #download-form-overlay,
+    #os-selection-overlay {
+      padding: 1.5rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Attendance Overlay */
+    .overlay-modal {
+      min-width: calc(100vw - 3rem);
+      max-width: calc(100vw - 3rem);
+      width: calc(100vw - 3rem);
+      padding: 1.75rem 1.25rem;
+      margin: 1rem auto;
+      border-radius: 1.25rem;
+    }
+
+    .overlay-modal::before {
+      height: 2px;
+    }
+
+    /* Close Button */
+    .overlay-close-btn {
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      font-size: 0.95rem;
+    }
+
+    /* Header Section */
+    .overlay-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .overlay-icon-wrapper {
+      width: 55px;
+      height: 55px;
+      font-size: 1.6rem;
+      margin: 0 auto;
+      border-radius: 1rem;
+    }
+
+    .overlay-header-text {
+      text-align: center;
+    }
+
+    .overlay-title {
+      font-size: 1.65rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .overlay-subtitle {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Action Cards Grid */
+    .overlay-actions {
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+    }
+
+    .overlay-card {
+      padding: 1rem;
+      border-radius: 0.875rem;
+      gap: 0.875rem;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 1.4rem;
+      border-radius: 0.75rem;
+    }
+
+    .card-content {
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-description {
+      font-size: 0.825rem;
+    }
+
+    .card-arrow {
+      width: 28px;
+      height: 28px;
+      font-size: 0.9rem;
+    }
+
+    /* Main Employee Card */
+    .employee-card {
+      margin: 2rem 1rem;
+      padding: 2rem 1.25rem;
+      border-radius: 1.5rem;
+    }
+
+    .employee-icon {
+      font-size: 3.5rem;
+    }
+
+    .employee-title {
+      font-size: 1.75rem;
+    }
+
+    .employee-subtitle {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .employee-btn-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .employee-btn-row .employee-btn {
+      width: 100%;
+    }
+
+    .employee-btn {
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      border-radius: 1rem;
+    }
+
+    /* Download Form Overlay */
+    .form-modal {
+      padding: 1.75rem 1.25rem;
+      min-width: calc(100vw - 3rem);
+      max-width: calc(100vw - 3rem);
+      width: calc(100vw - 3rem);
+      margin: 1rem auto;
+    }
+
+    .form-close-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 0.95rem;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .form-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-icon-wrapper {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      margin: 0 auto;
+      border-radius: 1rem;
+    }
+
+    .form-header-text {
+      text-align: center;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .form-label i {
+      font-size: 0.95rem;
+    }
+
+    .form-input {
+      padding: 0.875rem 2.75rem 0.875rem 1rem;
+      font-size: 16px;
+      border-radius: 0.75rem;
+    }
+
+    .input-icon {
+      font-size: 1rem;
+      right: 0.875rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 0.95rem 1.25rem;
+      font-size: 0.975rem;
+      border-radius: 0.75rem;
+    }
+
+    .form-btn i {
+      font-size: 1rem;
+    }
+
+    /* OS Selection Overlay */
+    .os-modal {
+      min-width: calc(100vw - 3rem);
+      max-width: calc(100vw - 3rem);
+      width: calc(100vw - 3rem);
+      padding: 1.75rem 1.25rem;
+      margin: 1rem auto;
+    }
+
+    .os-icon-wrapper {
+      width: 55px;
+      height: 55px;
+      font-size: 1.6rem;
+    }
+
+    .os-options {
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .os-option {
+      padding: 1.5rem 1.1rem;
+      gap: 0.75rem;
+      min-height: 150px;
+    }
+
+    .os-option-icon {
+      width: 50px;
+      height: 50px;
+      font-size: 1.4rem;
+    }
+
+    .os-option-title {
+      font-size: 1.05rem;
+    }
+
+    .os-option-description {
+      font-size: 0.825rem;
+    }
+
+    .os-option-arrow {
+      width: 28px;
+      height: 28px;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Extra Small Devices (< 480px) */
+  @media (max-width: 480px) {
+
+    .overlay-modal,
+    .form-modal {
+      padding: 1.5rem 1rem;
+      margin: 0.75rem auto;
+    }
+
+    .overlay-title {
+      font-size: 1.5rem;
+    }
+
+    .overlay-subtitle {
+      font-size: 0.85rem;
+    }
+
+    .overlay-icon-wrapper {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+    }
+
+    .overlay-card {
+      padding: 0.95rem;
+    }
+
+    .card-icon {
+      width: 45px;
+      height: 45px;
+      font-size: 1.3rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .card-description {
+      font-size: 0.8rem;
+    }
+
+    .employee-card {
+      padding: 1.75rem 1rem;
+      margin: 1.5rem 0.75rem;
+    }
+
+    .employee-icon {
+      font-size: 3rem;
+    }
+
+    .employee-title {
+      font-size: 1.5rem;
+    }
+
+    .employee-subtitle {
+      font-size: 0.95rem;
+    }
+
+    .employee-btn {
+      padding: 0.95rem 1.15rem;
+      font-size: 0.95rem;
+    }
+
+    .form-title {
+      font-size: 1.35rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.825rem;
+    }
+
+    .form-icon-wrapper {
+      width: 45px;
+      height: 45px;
+      font-size: 1.35rem;
+    }
+
+    .form-input {
+      padding: 0.85rem 2.5rem 0.85rem 0.95rem;
+      font-size: 16px;
+    }
+
+    .form-btn {
+      padding: 0.9rem 1.15rem;
+      font-size: 0.95rem;
+    }
+
+    /* OS Selection Overlay */
+    .os-modal {
+      padding: 1.5rem 1rem;
+    }
+
+    .os-icon-wrapper {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+    }
+
+    .os-option {
+      padding: 1rem;
+    }
+
+    .os-option-icon {
+      width: 45px;
+      height: 45px;
+      font-size: 1.3rem;
+    }
+
+    .os-option-title {
+      font-size: 1rem;
+    }
+
+    .os-option-description {
+      font-size: 0.8rem;
+    }
+  }
+
+  /* Landscape Mobile Devices */
+  @media (max-width: 768px) and (orientation: landscape) {
+
+    #attendance-overlay,
+    #download-form-overlay,
+    #os-selection-overlay {
+      align-items: flex-start;
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .overlay-modal,
+    .form-modal,
+    .os-modal {
+      margin: 0 auto;
+    }
+
+    .overlay-actions {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .overlay-header {
+      flex-direction: row;
+      text-align: left;
+      margin-bottom: 1.25rem;
+    }
+
+    .overlay-icon-wrapper {
+      margin: 0;
+    }
+
+    .overlay-header-text {
+      text-align: left;
+    }
+
+    .form-header {
+      flex-direction: row;
+      text-align: left;
+    }
+
+    .form-icon-wrapper {
+      margin: 0;
+    }
+
+    .form-header-text {
+      text-align: left;
+    }
+
+    .form-actions {
+      flex-direction: row;
+    }
+
+    .form-btn {
+      width: auto;
+      flex: 1;
+    }
+
+    /* OS Selection Overlay */
+    #os-selection-overlay {
+      align-items: flex-start;
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .os-modal {
+      margin: 0 auto;
+    }
+  }
+</style>
+{% endblock %}

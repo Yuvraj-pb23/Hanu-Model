@@ -1,0 +1,679 @@
+{% extends "base.html" %} {% load static %} {% block title %}HanuAi - Careers{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/services.css' %}" />
+
+<style>
+  .career-card-container {
+    position: relative;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .career-card {
+    transition: transform 0.3s ease;
+    min-height: 16rem;
+    display: block !important;
+  }
+
+  .career-card:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  /* Form container styles */
+  .container {
+    --form-width: 410px;
+    --aspect-ratio: 1.65;
+    --login-box-color: #272727;
+    --input-color: #3a3a3a;
+    --button-color: #373737;
+    --footer-color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--login-box-color);
+    border-radius: 24px;
+    width: calc(var(--form-width) + 1px);
+    height: calc(var(--form-width) * var(--aspect-ratio) + 1px);
+    z-index: 10000;
+  }
+
+  .container::before {
+    content: "";
+    position: absolute;
+    inset: -50px;
+    z-index: -2;
+    background: conic-gradient(from 45deg, transparent 75%, #fff, transparent 100%);
+    animation: spin 4s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .login-box {
+    background: var(--login-box-color);
+    border-radius: 24px;
+    padding: 28px;
+    width: var(--form-width);
+    height: calc(var(--form-width) * var(--aspect-ratio));
+    position: absolute;
+    z-index: 10;
+    backdrop-filter: blur(15px);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    padding-bottom: 10px;
+  }
+
+  .input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    background: var(--input-color);
+    color: white;
+    font-size: 14px;
+  }
+
+  .button {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--button-color);
+    color: white;
+    transition: 0.3s;
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10001;
+  }
+
+  /* Updated Career Apply Button Styles */
+  .career-apply-btn {
+    position: relative !important;
+    width: 120px !important;
+    height: 45px !important;
+    border: none !important;
+    border-radius: 5px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+    background: #1d4ed8 !important;
+    color: white !important;
+    transition: background 0.4s ease !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5) !important;
+    font-family: "Manrope", sans-serif !important;
+    letter-spacing: 2px !important;
+    overflow: hidden !important;
+  }
+
+  .career-apply-btn:hover {
+    background: #222429 !important;
+  }
+
+  .career-apply-btn .btn-text-one {
+    position: absolute !important;
+    width: 100% !important;
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.5s !important;
+  }
+
+  .career-apply-btn .btn-text-two {
+    position: absolute !important;
+    width: 100% !important;
+    left: 0 !important;
+    top: 150% !important;
+    transform: translateY(-50%) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.5s !important;
+  }
+
+  .career-apply-btn:hover .btn-text-one {
+    top: -50% !important;
+  }
+
+  .career-apply-btn:hover .btn-text-two {
+    top: 50% !important;
+  }
+
+  /* Disabled state styling */
+  .career-apply-btn:disabled {
+    background: #4b5563;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+  }
+
+  .career-apply-btn:disabled:hover {
+    background: #4b5563 !important;
+  }
+
+  .career-apply-btn:disabled .btn-text-one,
+  .career-apply-btn:disabled .btn-text-two {
+    transition: none;
+  }
+
+  .career-apply-btn:disabled:hover .btn-text-one {
+    top: 50%;
+  }
+
+  .career-apply-btn:disabled:hover .btn-text-two {
+    top: 150%;
+  }
+
+  .career-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row on laptop/desktop */
+    gap: 2rem;
+  }
+
+  /* Mobile view: 1 card per row */
+  @media (max-width: 768px) {
+    .career-grid {
+      grid-template-columns: 1fr;
+    }
+    .outer {
+      height: 180px;
+    }
+    .topl {
+      top: 6%;
+    }
+    .bottoml {
+      bottom: 6%;
+    }
+  }
+
+</style>
+
+<div class="section flex justify-center items-center w-full px-8">
+  <div class="outer">
+    <div class="dot"></div>
+    <div class="card">
+      <div class="ray"></div>
+      <div class="line topl"></div>
+      <div class="line leftl"></div>
+      <div class="line bottoml"></div>
+      <div class="line rightl"></div>
+
+      <div class="flex items-center justify-center gap-3 text-white text-xl mb-3">
+        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors" style="font-family: 'Manrope', sans-serif; font-weight: 600;">
+          Home
+        </a>
+
+        <span class="text-blue-400 text-2xl">›</span>
+
+        <span class="text-blue-400" style="font-family: 'Manrope', sans-serif">
+          Careers
+        </span>
+      </div>
+      <div class="para">
+        <p>Build, ship, and grow with us. Explore open roles and apply easily.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="career-card-container" style="margin: 0 auto; max-width: 1200px; padding: 1.8rem 2rem 5rem 2rem;">
+  <div class="career-grid">
+      <!-- AI/ML Developer Card (Disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">AI/ML Developer</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Support AI/ML model development and
+            Django-based
+            projects.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Surveyors Card (Active) -->
+      <!-- <div class="career-card"
+      style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px;">
+      <div
+        style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+          <h3 style="color: white; font-size: 1.5rem; font-weight: bold;">Surveyors</h3>
+          <span
+            style="background-color: #1e40af; color: white; padding: 10px; border-radius: 8px; font-size: 12px;">Internship</span>
+        </div>
+        <p style="color: #d1d5db; margin-bottom: 1.5rem; flex-grow: 1;">Seeking Civil Engineering professionals for road
+          construction practices.</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <a href="{% static 'Media/JD/Surveyors.pdf' %}" target="_blank" style="color: #60a5fa;">View JD →</a>
+          <button class="career-apply-btn" onclick="openModal('Surveyors', '2')" type="button">
+            <span class="btn-text-one">APPLY</span>
+            <span class="btn-text-two">APPLY</span>
+          </button>
+        </div>
+      </div>
+    </div> -->
+
+
+      <!-- Surveyors(Disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Surveyors</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Seeking Civil Engineering professionals for
+            road
+            construction practices.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/Surveyors.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Digital Marketing(Disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Digital Marketing</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Promote brands online using SEO, social media,
+            content, and ads to reach and engage the right audience.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Analyst (disabled)-->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Business Analyst</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Analyze business data and processes to
+            identify
+            insights, improve decision-making, and drive growth.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- React node/Js developer (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">React Node/Js Developer</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Build fast, scalable web applications using
+            React for the frontend and Node.js for the backend.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- django (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Django</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Develop secure, scalable web applications
+            using the Django framework and Python.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Database Experts (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Database Experts</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Design, manage, and optimize databases to
+            ensure secure, reliable, and high-performance data systems.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Security expert (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Security Experts</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Protect systems, networks, and data by
+            identifying risks and implementing strong cybersecurity measures.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Sales and Operations (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Sales and Operations</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Manage sales strategies and operational
+            processes to drive revenue, efficiency, and business growth.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- HR (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">HR</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Manage recruitment, employee relations, and HR policies to foster a positive workplace culture.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Admin (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Admin</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Handle administrative tasks, office management, and support operations to ensure efficient workflow.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Accounts (disabled) -->
+      <div class="career-card"
+        style="position: relative; border-radius: 0.75rem; background-color: #3d3c3d; padding: 2px; opacity: 0.75; pointer-events: none;">
+        <div
+          style="background-color: #323132; padding: 2rem; border-radius: 0.75rem; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+            <h3 style="color: #9ca3af; font-size: 1.5rem; font-weight: bold;">Accounts</h3>
+            <span
+              style="background-color: #4b5563; color: #9ca3af; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 40px;">Internship</span>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1.5rem; flex-grow: 1;">Manage financial records, bookkeeping, and reporting to ensure accurate and compliant accounting.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% static 'Media/JD/AI_ML_Developer.pdf' %}" target="_blank"
+              style="color: #6b7280; pointer-events: none; cursor: not-allowed;">View JD →</a>
+            <button class="career-apply-btn" disabled>
+              <span class="btn-text-one">APPLY</span>
+              <span class="btn-text-two">APPLY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Application Modal -->
+<div class="modal-overlay" id="applicationModal">
+  <div class="container">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <div class="login-box">
+      <form class="form" id="applicationForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <span class="header">Apply Now!</span>
+
+        <input type="text" name="name" placeholder="Full Name" class="input" required />
+        <input type="email" name="email" id="emailInput" placeholder="Email" class="input" required />
+        <input type="tel" name="phone" id="phoneInput" value="+91 " class="input" required />
+        <input type="file" name="resume" class="input" accept=".pdf,.doc,.docx" required />
+
+        <input type="hidden" name="job_id" id="jobIdInput" />
+        <input type="text" id="positionInput" class="input" readonly />
+
+        <textarea name="cover_letter" class="input" placeholder="Cover Letter (Optional)" rows="3"></textarea>
+        <button type="submit" class="button" id="submitBtn">Submit Application</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(position, jobId) {
+    document.getElementById("positionInput").value = position;
+    document.getElementById("jobIdInput").value = jobId;
+    document.getElementById("applicationModal").classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    document.getElementById("applicationModal").classList.remove("active");
+    document.body.style.overflow = "auto";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const applicationForm = document.getElementById("applicationForm");
+    const phoneInput = document.getElementById("phoneInput");
+    const emailInput = document.getElementById("emailInput");
+
+    // Phone Formatting
+    phoneInput.addEventListener("input", function (e) {
+      let value = e.target.value;
+      if (!value.startsWith("+91 ")) value = "+91 ";
+      const numbers = value.slice(4).replace(/\D/g, "").slice(0, 10);
+      e.target.value = "+91 " + numbers;
+    });
+
+    // Form Submission
+    applicationForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const jobId = document.getElementById("jobIdInput").value;
+      const submitBtn = document.getElementById("submitBtn");
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Sending...";
+
+      const formData = new FormData(this);
+
+      fetch(`/apply-job/${jobId}/`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Application submitted successfully!");
+            closeModal();
+            applicationForm.reset();
+            phoneInput.value = "+91 ";
+          } else {
+            alert("Error: " + data.message);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("An error occurred. Please try again.");
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit Application";
+        });
+    });
+  });
+
+  // Close on outside click
+  document.getElementById("applicationModal").addEventListener("click", function (e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+{% endblock %}

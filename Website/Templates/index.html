@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Processing Suite | Professional Transcription & Translation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a1d2e;
+            --secondary-dark: #252a40;
+            --accent-blue: #4361ee;
+            --accent-purple: #7209b7;
+            --accent-teal: #06d6a0;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b7d6;
+            --text-muted: #8a94b3;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --glass-bg: rgba(30, 33, 57, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(114, 9, 183, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        /* Professional Header */
+        .header-container {
+            background: rgba(30, 33, 57, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .app-logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        .app-logo-text h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #ffffff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .app-logo-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Professional Tabs */
+        .nav-tabs.professional-tabs {
+            border: none;
+            margin-bottom: 2.5rem;
+            gap: 5px;
+        }
+        
+        .nav-tabs.professional-tabs .nav-link {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            padding: 16px 24px;
+            margin-right: 5px;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-tabs.professional-tabs .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .nav-tabs.professional-tabs .nav-link:hover {
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-tabs.professional-tabs .nav-link:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-tabs.professional-tabs .nav-link.active {
+            background: rgba(67, 97, 238, 0.15);
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+        }
+        
+        .nav-tabs.professional-tabs .nav-link.active::before {
+            opacity: 1;
+        }
+        
+        /* Professional Cards */
+        .professional-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-smooth);
+        }
+        
+        .professional-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--accent-blue);
+            font-size: 1.3rem;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+        }
+        
+        /* Form Elements */
+        .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .professional-input, .professional-select, .professional-textarea {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 10px !important;
+            color: var(--text-primary) !important;
+            padding: 12px 16px !important;
+            transition: var(--transition-smooth);
+            font-size: 0.9rem;
+        }
+        
+        .professional-input:focus, .professional-select:focus, .professional-textarea:focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: var(--accent-blue) !important;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2) !important;
+            outline: none;
+        }
+        
+        .professional-input::placeholder, .professional-textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+        
+        /* Professional Buttons */
+        .btn-professional {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-professional::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        
+        .btn-professional:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
+        
+        .btn-professional:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-professional:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 12px 24px;
+            transition: var(--transition-smooth);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            color: var(--text-primary);
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-area:hover, .upload-area.dragover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-blue);
+        }
+        
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--accent-blue);
+        }
+        
+        /* Progress Bar */
+        .professional-progress {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        
+        .professional-progress-bar {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .indeterminate {
+            width: 30%;
+            animation: indeterminate 1.5s infinite ease-in-out;
+        }
+
+        @keyframes indeterminate {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+        
+        /* Results Area */
+        .results-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-badge {
+            background: rgba(6, 214, 160, 0.15);
+            color: var(--accent-teal);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-text {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        /* Metrics */
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-smooth);
+        }
+        
+        .metric-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-4px);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Footer */
+        .professional-footer {
+            background: rgba(30, 33, 57, 0.8);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        /* Toast Notifications */
+        .professional-toast {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* JSON Viewer Style */
+        .json-viewer {
+            background: rgba(0, 0, 0, 0.6);
+            color: #a5d6ff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .result-text {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-text.hidden {
+            display: none;
+        }
+
+        .waveform {
+            height: 40px;
+            background: linear-gradient(90deg, #6c757d 0%, transparent 100%);
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .speech-status {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            min-height: 1.25rem;
+        }
+
+        .professional-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .professional-card .card-body {
+            flex: 1;
+        }
+
+        /* Range Input Styling */
+        .form-range {
+            background: transparent;
+            height: 6px;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background: var(--accent-blue);
+            border: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .form-range::-moz-range-thumb {
+            background: var(--accent-blue);
+            border: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0px;
+        }
+        
+        .slider-value {
+            font-size: 0.8rem;
+            color: var(--accent-teal);
+            font-weight: 600;
+        }
+
+        /* TTS Controls Grouping */
+        .tts-control-group {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tts-group-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* File info box */
+        .file-info-box {
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-info-box .file-name {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .file-info-box .file-size {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-size: 0.9rem;
+        }
+
+        .upload-btn:hover {
+            background: rgba(67, 97, 238, 0.2);
+            border-color: rgba(67, 97, 238, 0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-container">
+        <div class="container">
+            <div class="app-header">
+                <div class="app-logo">
+                    <div class="app-logo-icon">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <div class="app-logo-text">
+                        <h1>Audio Processing Suite</h1>
+                        <p>Professional Transcription & Translation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs professional-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="transcription-tab" data-bs-toggle="tab" data-bs-target="#transcription" type="button" role="tab">
+                    <i class="fas fa-microphone me-2"></i>Transcription
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="text-processing-tab" data-bs-toggle="tab" data-bs-target="#text-processing" type="button" role="tab">
+                    <i class="fas fa-language me-2"></i>Text Processing
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
+                    <i class="fas fa-layer-group me-2"></i>Batch Processing
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content" id="mainTabContent">
+            <!-- Transcription Tab -->
+            <div class="tab-pane fade show active" id="transcription" role="tabpanel">
+                <div class="professional-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">Media Upload</h3>
+                            <p class="card-subtitle">Upload audio or video files for transcription and translation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-area" id="dropZone">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4>Drag & Drop Media Files</h4>
+                        <p class="text-muted mb-4">Supported formats: MP3, WAV, MP4, AVI, MOV, FLAC, etc.</p>
+                        <button class="btn btn-professional" id="browseFiles">
+                            <i class="fas fa-folder-open me-2"></i>Browse Files
+                        </button>
+                        <input type="file" class="form-control d-none" id="mediaFile" accept="audio/*,video/*">
+                    </div>
+                    
+                    <div id="fileInfo" class="hidden">
+                        <div class="d-flex align-items-center justify-content-between p-3 mb-3" style="background: rgba(6, 214, 160, 0.1); border-radius: 12px; border-left: 4px solid var(--accent-teal);">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle me-3" style="color: var(--accent-teal); font-size: 1.5rem;"></i>
+                                <div>
+                                    <h5 class="mb-1" id="fileName">File selected</h5>
+                                    <p class="mb-0 text-muted" id="fileDetails">Details will appear here</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="clearFile">
+                                <i class="fas fa-times me-1"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="mediaPreview" class="hidden">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title">Media Preview</h3>
+                                <p class="card-subtitle">Preview your uploaded media file</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <audio controls class="w-100" id="audioPreview" style="border-radius: 12px;"></audio>
+                            <video controls class="w-100 hidden" id="videoPreview" style="border-radius: 12px; max-height: 300px;"></video>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="professional-card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Processing Settings</h3>
+                                    <p class="card-subtitle">Configure transcription and translation parameters</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="sourceLang" class="form-label">Source Language</label>
+                                        <select class="form-select professional-select" id="sourceLang" disabled>
+                                            <option value="loading">Loading languages...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="targetLang" class="form-label">Translation Language</label>
+                                        <select class="form-select professional-select" id="targetLang" disabled>
+                                            <option value="loading">Loading languages...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="processingMode" class="form-label">Processing Mode</label>
+                                        <select class="form-select professional-select" id="processingMode">
+                                            <option value="fast" selected>Fast Processing</option>
+                                            <option value="normal">Normal</option>
+                                            <option value="high_accuracy">High Accuracy</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="outputFormat" class="form-label">Output Format</label>
+                                        <select class="form-select professional-select" id="outputFormat">
+                                            <option value="txt" selected>Plain Text (.txt)</option>
+                                            <option value="json">JSON</option>
+                                            <option value="srt">SRT Subtitles</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="progress professional-progress hidden" id="progressContainer">
+                                <div class="professional-progress-bar" role="progressbar" style="width: 0%" id="progressBar"></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-4">
+                                <button id="startTranscription" class="btn btn-professional">
+                                    <i class="fas fa-play-circle me-2"></i>Start Processing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="professional-card h-100">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Processing Metrics</h3>
+                                    <p class="card-subtitle">Real-time processing statistics</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="metricDuration">--:--</div>
+                                        <div class="metric-label">Duration</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="metricConfidence">--%</div>
+                                        <div class="metric-label">Confidence</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="metricWords">0</div>
+                                        <div class="metric-label">Words</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="metricTime">0s</div>
+                                        <div class="metric-label">Time</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5 class="mb-3">Advanced Options</h5>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="enableTimestamps" checked>
+                                    <label class="form-check-label" for="enableTimestamps">
+                                        Include timestamps
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="transcriptionResults" class="hidden">
+                    <div class="professional-card">
+                        <div class="result-header">
+                            <div>
+                                <span class="result-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    Transcription Complete
+                                </span>
+                                <p class="mb-0 mt-2 text-muted" id="processingStats">Processed in 0 seconds</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-secondary" id="copyTranscription">
+                                    <i class="fas fa-copy me-2"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="result-text" id="transcriptionText">
+                            Transcription results will appear here...
+                        </div>
+
+                        <!-- JSON Viewer for Transcription -->
+                        <div id="jsonViewer" class="hidden json-viewer"></div>
+                        
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button class="btn btn-secondary" id="downloadTxt">
+                                <i class="fas fa-file-alt me-2"></i>TXT
+                            </button>
+                            <button class="btn btn-secondary" id="downloadSrt">
+                                <i class="fas fa-closed-captioning me-2"></i>SRT
+                            </button>
+                            <button class="btn btn-secondary" id="downloadJson">
+                                <i class="fas fa-code me-2"></i>JSON
+                            </button>
+                            <button class="btn btn-secondary" id="toggleJson">
+                                <i class="fas fa-eye me-2"></i>Preview JSON
+                            </button>
+                            <button class="btn btn-secondary" id="translateTextBtn">
+                                <i class="fas fa-language me-2"></i>Translate This
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Translation Results Card -->
+                    <div id="translationResults" class="hidden">
+                        <div class="professional-card">
+                            <div class="result-header">
+                                <div>
+                                    <span class="result-badge" style="background: rgba(67, 97, 238, 0.15); color: var(--accent-blue);">
+                                        <i class="fas fa-language"></i>
+                                        Translation Complete
+                                    </span>
+                                    <p class="mb-0 mt-2 text-muted" id="translationStats">Translated from English to Spanish</p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-secondary" id="copyTranslation">
+                                        <i class="fas fa-copy me-2"></i>Copy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- JSON Viewer for Translation -->
+                            <div id="translationJsonViewer" class="hidden json-viewer"></div>
+
+                            <div class="result-text" id="translatedText">
+                                Translation results will appear here...
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <button class="btn btn-secondary" id="downloadTranslationTxt">
+                                    <i class="fas fa-file-alt me-2"></i>Save as TXT
+                                </button>
+                                <button class="btn btn-secondary" id="downloadTranslationJson">
+                                    <i class="fas fa-code me-2"></i>Save as JSON
+                                </button>
+                                <button class="btn btn-secondary" id="toggleTranslationJson">
+                                    <i class="fas fa-eye me-2"></i>Preview JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Text Processing Tab -->
+            <div class="tab-pane fade" id="text-processing" role="tabpanel">
+                <div class="row">
+                    <!-- Text Summarizer Card -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="professional-card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-font"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Text Summarizer</h3>
+                                    <p class="card-subtitle">Summarize long transcripts into key points</p>
+                                </div>
+                            </div>
+                            
+                            <!-- File Upload Option -->
+                            <div class="mb-3">
+                                <label class="form-label">Upload Text File</label>
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <label for="summaryFileUpload" class="upload-btn">
+                                        <i class="fas fa-file-upload"></i> Choose Text File
+                                    </label>
+                                    <input type="file" class="form-control d-none" id="summaryFileUpload" accept=".txt,.text,.md,.doc,.docx,.pdf">
+                                    <span class="text-muted small">(.txt, .md, .doc, .pdf)</span>
+                                </div>
+                                <div id="summaryFileInfo" class="hidden file-info-box">
+                                    <div>
+                                        <div class="file-name" id="summaryFileName">file.txt</div>
+                                        <div class="file-size" id="summaryFileSize">0 KB</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" id="clearSummaryFile">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <textarea class="form-control professional-textarea" id="summaryInput" rows="6" placeholder="Paste text here to summarize or upload a text file..."></textarea>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <label class="form-label">Ratio: <span id="ratioValue">30%</span></label>
+                                    <input type="range" class="form-range professional-input" style="width: 200px" min="10" max="90" step="10" id="summaryRatio" value="30">
+                                </div>
+                                <button class="btn btn-professional" id="summarizeBtn">
+                                    <i class="fas fa-compress-alt me-2"></i>Summarize
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-end mb-2">
+                                <button class="btn btn-secondary btn-sm" id="downloadSummaryBtn" disabled>
+                                    <i class="fas fa-download me-1"></i>Download Summary
+                                </button>
+                            </div>
+                            <div class="result-text hidden" id="summaryResult"></div>
+                        </div>
+                    </div>
+
+                    <!-- Text to Speech Card (UPDATED) -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="professional-card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-volume-up"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Text to Speech</h3>
+                                    <p class="card-subtitle">Convert written text into spoken audio with effects</p>
+                                </div>
+                            </div>
+
+                            <!-- Upload Text -->
+                            <div class="mb-3">
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <label for="ttsFileUpload" class="upload-btn">
+                                        <i class="fas fa-file-upload"></i> Choose Text File
+                                    </label>
+                                    <input type="file" class="form-control d-none" id="ttsFileUpload" accept=".txt,.text,.md,.doc,.docx,.pdf">
+                                    <span class="text-muted small">(.txt, .md, .doc)</span>
+                                </div>
+                                <div id="ttsFileInfo" class="hidden file-info-box">
+                                    <div>
+                                        <div class="file-name" id="ttsFileName">file.txt</div>
+                                        <div class="file-size" id="ttsFileSize">0 KB</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" id="clearTtsFile">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <textarea class="form-control professional-textarea" id="ttsInput" rows="4" placeholder="Enter text to convert to speech..."></textarea>
+                            </div>
+
+                            <!-- Voice & Style Selection -->
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Voice</label>
+                                    <select class="form-select professional-select" id="ttsVoice">
+                                        <option value="loading">Loading voices...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Style</label>
+                                    <select class="form-select professional-select" id="ttsStyle">
+                                        <option value="loading">Loading styles...</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Profile</label>
+                                    <select class="form-select professional-select" id="ttsProfile">
+                                        <option value="">None (Standard)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Effect</label>
+                                    <select class="form-select professional-select" id="ttsEffect">
+                                        <option value="">None</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Sliders Grid -->
+                            <div class="tts-control-group">
+                                <div class="tts-group-title">Modulation</div>
+                                <div class="row g-3">
+                                    <div class="col-6 col-md-3">
+                                        <div class="d-flex justify-content-between">
+                                            <label class="slider-label">Rate</label>
+                                            <span class="slider-value" id="ttsRateVal">1.0</span>
+                                        </div>
+                                        <input type="range" class="form-range" min="0.5" max="2.0" step="0.1" value="1.0" id="ttsRate">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="d-flex justify-content-between">
+                                            <label class="slider-label">Pitch</label>
+                                            <span class="slider-value" id="ttsPitchVal">0</span>
+                                        </div>
+                                        <input type="range" class="form-range" min="-300" max="300" step="10" value="0" id="ttsPitch">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="d-flex justify-content-between">
+                                            <label class="slider-label">Volume</label>
+                                            <span class="slider-value" id="ttsVolumeVal">1.0</span>
+                                        </div>
+                                        <input type="range" class="form-range" min="0.1" max="2.0" step="0.1" value="1.0" id="ttsVolume">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- EQ Grid -->
+                            <div class="tts-control-group">
+                                <div class="tts-group-title">Audio Effects (EQ)</div>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="d-flex justify-content-between">
+                                            <label class="slider-label">Bass Boost</label>
+                                            <span class="slider-value" id="ttsBassVal">1.0</span>
+                                        </div>
+                                        <input type="range" class="form-range" min="0.5" max="2.0" step="0.1" value="1.0" id="ttsBass">
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex justify-content-between">
+                                            <label class="slider-label">Treble Boost</label>
+                                            <span class="slider-value" id="ttsTrebleVal">1.0</span>
+                                        </div>
+                                        <input type="range" class="form-range" min="0.5" max="2.0" step="0.1" value="1.0" id="ttsTreble">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div class="text-muted small" id="ttsStatus">Ready</div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-secondary btn-sm" id="pauseTTS" disabled>
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="resumeTTS" disabled>
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn btn-professional btn-sm" id="speakBtn">
+                                        <i class="fas fa-play-circle me-1"></i>Speak
+                                    </button>
+                                    <div class="vr mx-2 text-muted"></div>
+                                    <button class="btn btn-secondary btn-sm" id="downloadTranscriptBtn" disabled title="Download text transcript">
+                                        <i class="fas fa-file-alt me-1"></i> Transcript
+                                    </button>
+                                    <button class="btn btn-professional btn-sm" id="downloadSpeechBtn" disabled title="Download rendered audio">
+                                        <i class="fas fa-download me-1"></i> Render MP3
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Translation Card -->
+                    <div class="col-lg-12 mb-4">
+                        <div class="professional-card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div>
+                                    <h3 class="card-title">Text Translation</h3>
+                                    <p class="card-subtitle">Translate text between multiple languages</p>
+                                </div>
+                            </div>
+                            
+                            <!-- File Upload Option -->
+                            <div class="mb-3">
+                                <label class="form-label">Upload Text File</label>
+                                <div class="d-flex gap-2 align-items-center mb-2">
+                                    <label for="translationFileUpload" class="upload-btn">
+                                        <i class="fas fa-file-upload"></i> Choose Text File
+                                    </label>
+                                    <input type="file" class="form-control d-none" id="translationFileUpload" accept=".txt,.text,.md,.doc,.docx,.pdf">
+                                    <span class="text-muted small">(.txt, .md, .doc, .pdf)</span>
+                                </div>
+                                <div id="translationFileInfo" class="hidden file-info-box">
+                                    <div>
+                                        <div class="file-name" id="translationFileName">file.txt</div>
+                                        <div class="file-size" id="translationFileSize">0 KB</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" id="clearTranslationFile">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label small">From:</label>
+                                        <select class="form-select professional-select" id="textSourceLang">
+                                            <option value="auto">Auto Detect</option>
+                                            <option value="en">English</option>
+                                            <option value="hi">Hindi</option>
+                                            <option value="pa">Punjabi</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                            <option value="it">Italian</option>
+                                            <option value="ja">Japanese</option>
+                                            <option value="zh">Chinese</option>
+                                            <option value="ar">Arabic</option>
+                                            <option value="ru">Russian</option>
+                                            <option value="pt">Portuguese</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <button class="btn btn-secondary btn-sm mt-4" id="textSwapLangs" title="Swap languages">
+                                            <i class="fas fa-exchange-alt"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label small">To:</label>
+                                        <select class="form-select professional-select" id="textTargetLang">
+                                            <option value="en">English</option>
+                                            <option value="hi">Hindi</option>
+                                            <option value="pa">Punjabi</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                            <option value="it">Italian</option>
+                                            <option value="ja">Japanese</option>
+                                            <option value="zh">Chinese</option>
+                                            <option value="ar">Arabic</option>
+                                            <option value="ru">Russian</option>
+                                            <option value="pt">Portuguese</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <textarea class="form-control professional-textarea mb-2" id="textTranslationInput" rows="4" placeholder="Enter text to translate or upload a text file..."></textarea>
+                                <div class="position-relative">
+                                    <textarea class="form-control professional-textarea" id="textTranslationOutput" rows="4" placeholder="Translation will appear here..." readonly></textarea>
+                                    <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 m-2" id="textCopyTranslation" title="Copy translation">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small" id="textTranslationStatus"></div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-professional btn-sm" id="textTranslateBtn">
+                                        <i class="fas fa-exchange-alt me-1"></i>Translate
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="downloadTranslationResultBtn" disabled>
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Processing Tab -->
+            <div class="tab-pane fade" id="batch" role="tabpanel">
+                <div class="text-center mt-5">
+                    <div class="professional-card" style="max-width: 600px; margin: 0 auto;">
+                        <div class="card-icon" style="margin: 0 auto 2rem;">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3 class="card-title">Batch Processing Module</h3>
+                        <p class="card-subtitle mb-4">Process multiple files simultaneously</p>
+                        <div class="upload-area" id="batchDropZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h4>Drag & Drop Multiple Files</h4>
+                            <p class="text-muted mb-4">Select multiple audio/video files</p>
+                            <button class="btn btn-professional" id="batchBrowseFiles">
+                                <i class="fas fa-folder-open me-2"></i>Browse Files
+                            </button>
+                            <input type="file" class="form-control d-none" id="batchMediaFiles" accept="audio/*,video/*" multiple>
+                        </div>
+                        <button class="btn btn-professional w-100 mt-3" id="startBatchTranscription" disabled>
+                            <i class="fas fa-play-circle me-2"></i>Start Batch Processing
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="professional-footer mt-5">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p class="mb-0" style="color: var(--text-muted); font-size: 0.9rem;">
+                        &copy; 2025 Audio Processing Suite
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <a href="/api/docs" target="_blank"><i class="fas fa-book me-1"></i> API Docs</a>
+                    <a href="/api/health" target="_blank"><i class="fas fa-heartbeat me-1"></i> Health</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast professional-toast" id="successToast" role="alert">
+            <div class="toast-header" style="background: rgba(6, 214, 160, 0.1); border-bottom: 1px solid rgba(6, 214, 160, 0.2);">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="successMessage">
+                Operation completed successfully.
+            </div>
+        </div>
+        
+        <div class="toast professional-toast" id="errorToast" role="alert">
+            <div class="toast-header" style="background: rgba(239, 71, 111, 0.1); border-bottom: 1px solid rgba(239, 71, 111, 0.2);">
+                <i class="fas fa-exclamation-circle text-danger me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="errorMessage">
+                An error occurred while processing your request.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initApplication();
+            setupEventListeners();
+            loadLanguages();
+            setupTextProcessingTab();
+        });
+
+        let currentTranscriptionData = null;
+        let currentTranslationData = null;
+        let supportedLanguages = {};
+
+        let currentSummaryData = null;
+        let currentTranslationResult = null;
+        let currentTtsText = "";
+        
+        // Store TTS Config from server
+        let ttsVoices = [];
+        let ttsStyles = {};
+        let ttsProfiles = {};
+        let ttsEffects = {};
+
+        function initApplication() {
+            window.toast = {
+                success: function(message) {
+                    document.getElementById('successMessage').textContent = message;
+                    new bootstrap.Toast(document.getElementById('successToast')).show();
+                },
+                error: function(message) {
+                    document.getElementById('errorMessage').textContent = message;
+                    new bootstrap.Toast(document.getElementById('errorToast')).show();
+                }
+            };
+        }
+
+        async function loadLanguages() {
+            try {
+                const response = await fetch('/api/languages');
+                if (!response.ok) throw new Error('Failed to fetch languages');
+                supportedLanguages = await response.json();
+
+                const sourceSelect = document.getElementById('sourceLang');
+                const targetSelect = document.getElementById('targetLang');
+                
+                sourceSelect.innerHTML = '';
+                targetSelect.innerHTML = '';
+
+                let autoOption = document.createElement('option');
+                autoOption.value = "auto";
+                autoOption.text = "Auto Detect";
+                sourceSelect.add(autoOption);
+
+                for (const [code, name] of Object.entries(supportedLanguages)) {
+                    let opt1 = document.createElement('option');
+                    opt1.value = code;
+                    opt1.text = name;
+                    sourceSelect.add(opt1);
+
+                    let opt2 = document.createElement('option');
+                    opt2.value = code;
+                    opt2.text = name;
+                    targetSelect.add(opt2);
+                }
+                
+                sourceSelect.value = "en";
+                targetSelect.value = "en";
+                
+                sourceSelect.disabled = false;
+                targetSelect.disabled = false;
+
+            } catch (error) {
+                console.error('Error loading languages:', error);
+                window.toast.error('Failed to load language list from server.');
+            }
+        }
+
+        function setupEventListeners() {
+            // File Upload
+            document.getElementById('browseFiles').addEventListener('click', () => document.getElementById('mediaFile').click());
+            document.getElementById('mediaFile').addEventListener('change', handleMediaFileChange);
+            document.getElementById('clearFile').addEventListener('click', clearSelectedFile);
+
+            // Drag & Drop
+            const dropZone = document.getElementById('dropZone');
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+            });
+            
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            // Processing Actions
+            document.getElementById('startTranscription').addEventListener('click', startTranscriptionProcess);
+            document.getElementById('translateTextBtn').addEventListener('click', translateCurrentText);
+
+            // Transcription Result Actions
+            document.getElementById('copyTranscription').addEventListener('click', () => copyToClipboard(document.getElementById('transcriptionText').textContent));
+            document.getElementById('downloadTxt').addEventListener('click', () => downloadTranscriptionFormat('txt'));
+            document.getElementById('downloadSrt').addEventListener('click', () => downloadTranscriptionFormat('srt'));
+            document.getElementById('downloadJson').addEventListener('click', () => downloadTranscriptionFormat('json'));
+            document.getElementById('toggleJson').addEventListener('click', toggleJsonViewer);
+
+            // Translation Result Actions
+            document.getElementById('copyTranslation').addEventListener('click', () => copyToClipboard(document.getElementById('translatedText').textContent));
+            document.getElementById('downloadTranslationTxt').addEventListener('click', downloadTranslationTxt);
+            document.getElementById('downloadTranslationJson').addEventListener('click', downloadTranslationJson);
+            document.getElementById('toggleTranslationJson').addEventListener('click', toggleTranslationJsonViewer);
+
+            // Batch Handling
+            document.getElementById('batchBrowseFiles').addEventListener('click', () => document.getElementById('batchMediaFiles').click());
+            document.getElementById('batchMediaFiles').addEventListener('change', handleBatchFileSelect);
+            document.getElementById('startBatchTranscription').addEventListener('click', startBatchProcess);
+        }
+
+        // --- File Handling ---
+
+        function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            if(files.length) {
+                document.getElementById('mediaFile').files = files;
+                handleMediaFileChange({target: {files: files}});
+            }
+        }
+
+        function handleMediaFileChange(e) {
+            const files = e.target.files;
+            if (!files.length) return;
+            const file = files[0];
+            
+            displayFileInfo(file);
+            showPreview(file);
+        }
+
+        function displayFileInfo(file) {
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+            const fileType = file.type.split('/')[0] || 'unknown';
+            const fileName = file.name.length > 30 ? file.name.substring(0, 27) + '...' : file.name;
+            
+            document.getElementById('fileName').textContent = fileName;
+            document.getElementById('fileDetails').textContent = 
+                `${fileType.toUpperCase()} • ${fileSize} MB • ${getFileExtension(file.name).toUpperCase()}`;
+            
+            document.getElementById('fileInfo').classList.remove('hidden');
+        }
+
+        function showPreview(file) {
+            const fileType = file.type.split('/')[0];
+            const audioPreview = document.getElementById('audioPreview');
+            const videoPreview = document.getElementById('videoPreview');
+            const url = URL.createObjectURL(file);
+            
+            document.getElementById('mediaPreview').classList.remove('hidden');
+            
+            if (fileType === 'audio') {
+                audioPreview.src = url;
+                audioPreview.classList.remove('hidden');
+                videoPreview.classList.add('hidden');
+                audioPreview.onloadedmetadata = () => {
+                    document.getElementById('metricDuration').textContent = formatTime(audioPreview.duration);
+                };
+            } else if (fileType === 'video') {
+                videoPreview.src = url;
+                videoPreview.classList.remove('hidden');
+                audioPreview.classList.add('hidden');
+                videoPreview.onloadedmetadata = () => {
+                    document.getElementById('metricDuration').textContent = formatTime(videoPreview.duration);
+                };
+            }
+        }
+
+        function clearSelectedFile() {
+            document.getElementById('mediaFile').value = '';
+            document.getElementById('fileInfo').classList.add('hidden');
+            document.getElementById('mediaPreview').classList.add('hidden');
+            document.getElementById('transcriptionResults').classList.add('hidden');
+            document.getElementById('translationResults').classList.add('hidden');
+            
+            document.getElementById('audioPreview').src = '';
+            document.getElementById('videoPreview').src = '';
+            document.getElementById('metricDuration').textContent = '--:--';
+            currentTranscriptionData = null;
+            currentTranslationData = null;
+        }
+
+        // --- Core API Logic ---
+
+        async function startTranscriptionProcess() {
+            const fileInput = document.getElementById('mediaFile');
+            if (!fileInput.files.length) {
+                window.toast.error('Please select a file first.');
+                return;
+            }
+
+            const btn = document.getElementById('startTranscription');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            progressContainer.classList.remove('hidden');
+            progressBar.classList.add('indeterminate');
+            progressBar.style.width = '100%';
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('source_lang', document.getElementById('sourceLang').value);
+            formData.append('processing_mode', document.getElementById('processingMode').value);
+            formData.append('format', document.getElementById('outputFormat').value);
+            formData.append('word_timestamps', document.getElementById('enableTimestamps').checked);
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch('/api/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || 'Transcription failed');
+                }
+
+                const data = await response.json();
+                currentTranscriptionData = data;
+                
+                const processingTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                document.getElementById('metricTime').textContent = processingTime + 's';
+                
+                if (data.confidence) {
+                    document.getElementById('metricConfidence').textContent = Math.round(data.confidence * 100) + '%';
+                }
+                if (data.text) {
+                    document.getElementById('metricWords').textContent = data.text.split(/\s+/).length;
+                }
+                if (data.formatted_result) {
+                    document.getElementById('transcriptionText').textContent = data.formatted_result;
+                } else {
+                    document.getElementById('transcriptionText').textContent = data.text || "No text generated.";
+                }
+
+                document.getElementById('processingStats').textContent = 
+                    `Processed in ${processingTime}s. Model: ${data.model_size || 'base'}. Lang: ${data.language}`;
+
+                document.getElementById('transcriptionResults').classList.remove('hidden');
+                document.getElementById('translationResults').classList.add('hidden');
+                document.getElementById('transcriptionResults').scrollIntoView({ behavior: 'smooth' });
+
+                window.toast.success('Transcription completed!');
+
+            } catch (error) {
+                console.error(error);
+                window.toast.error(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-play-circle me-2"></i>Start Processing';
+                progressContainer.classList.add('hidden');
+                progressBar.classList.remove('indeterminate');
+                progressBar.style.width = '0%';
+            }
+        }
+
+        async function translateCurrentText() {
+            if (!currentTranscriptionData || !currentTranscriptionData.text) {
+                window.toast.error('No transcription text to translate.');
+                return;
+            }
+
+            const targetLang = document.getElementById('targetLang').value;
+            const sourceLang = currentTranscriptionData.language || 'auto';
+
+            const btn = document.getElementById('translateTextBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Translating...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({
+                        text: currentTranscriptionData.text,
+                        target_lang: targetLang,
+                        source_lang: sourceLang
+                    })
+                });
+
+                if (!response.ok) throw new Error('Translation failed');
+
+                const data = await response.json();
+                currentTranslationData = data;
+
+                document.getElementById('translatedText').textContent = data.translated_text;
+                
+                document.getElementById('translationStats').textContent = 
+                    `Translated from ${getLanguageName(sourceLang)} to ${getLanguageName(targetLang)} in ${data.processing_time.toFixed(2)}s`;
+
+                document.getElementById('translationResults').classList.remove('hidden');
+                document.getElementById('translationResults').scrollIntoView({ behavior: 'smooth' });
+                window.toast.success('Translation complete!');
+
+            } catch (error) {
+                console.error(error);
+                window.toast.error(error.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // --- Download & Preview Helpers ---
+
+        function downloadTranscriptionFormat(format) {
+            if(!currentTranscriptionData) return;
+
+            let content = currentTranscriptionData.text;
+            let extension = 'txt';
+
+            if (format === 'json') {
+                content = JSON.stringify(currentTranscriptionData, null, 2);
+                extension = 'json';
+            } else if (format === 'srt') {
+                if(currentTranscriptionData.segments) {
+                    content = generateSRT(currentTranscriptionData.segments);
+                    extension = 'srt';
+                } else {
+                    content = currentTranscriptionData.text;
+                    extension = 'txt';
+                }
+            } else {
+                extension = 'txt';
+            }
+
+            downloadTextFile(content, extension, 'transcription');
+        }
+
+        function generateSRT(segments) {
+            if (!segments || segments.length === 0) return "";
+            let srtContent = "";
+            segments.forEach((segment, index) => {
+                const start = formatSrtTime(segment.start);
+                const end = formatSrtTime(segment.end);
+                const text = segment.text.trim();
+                srtContent += `${index + 1}\n${start} --> ${end}\n${text}\n\n`;
+            });
+            return srtContent;
+        }
+
+        function formatSrtTime(seconds) {
+            const pad = (num, size) => num.toString().padStart(size, '0');
+            const date = new Date(0);
+            date.setSeconds(seconds);
+            date.setMilliseconds((seconds % 1) * 1000);
+            const hours = date.getUTCHours();
+            const minutes = date.getUTCMinutes();
+            const secs = date.getUTCSeconds();
+            const millis = date.getUTCMilliseconds();
+            return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(millis, 3)}`;
+        }
+
+        function downloadTranslationTxt() {
+            if (!currentTranslationData || !currentTranslationData.translated_text) {
+                window.toast.error('No translation data to download.');
+                return;
+            }
+            downloadTextFile(currentTranslationData.translated_text, 'txt', 'translation');
+            window.toast.success('Downloaded Translation as TXT');
+        }
+
+        function downloadTranslationJson() {
+            if (!currentTranslationData) {
+                window.toast.error('No translation data to download.');
+                return;
+            }
+            const jsonString = JSON.stringify(currentTranslationData, null, 2);
+            downloadTextFile(jsonString, 'json', 'translation');
+            window.toast.success('Downloaded Translation as JSON');
+        }
+
+        function toggleJsonViewer() {
+            const viewer = document.getElementById('jsonViewer');
+            const btn = document.getElementById('toggleJson');
+            const isHidden = viewer.classList.contains('hidden');
+
+            if (isHidden) {
+                if (currentTranscriptionData) {
+                    viewer.textContent = JSON.stringify(currentTranscriptionData, null, 2);
+                    viewer.classList.remove('hidden');
+                    btn.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide JSON';
+                } else {
+                    window.toast.error('No data available to display.');
+                }
+            } else {
+                viewer.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-eye me-2"></i>Preview JSON';
+            }
+        }
+
+        function toggleTranslationJsonViewer() {
+            const viewer = document.getElementById('translationJsonViewer');
+            const btn = document.getElementById('toggleTranslationJson');
+            const isHidden = viewer.classList.contains('hidden');
+
+            if (isHidden) {
+                if (currentTranslationData) {
+                    viewer.textContent = JSON.stringify(currentTranslationData, null, 2);
+                    viewer.classList.remove('hidden');
+                    btn.innerHTML = '<i class="fas fa-eye-slash me-2"></i>Hide JSON';
+                } else {
+                    window.toast.error('No data available to display.');
+                }
+            } else {
+                viewer.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-eye me-2"></i>Preview JSON';
+            }
+        }
+
+        function downloadTextFile(content, extension, typePrefix) {
+            const blob = new Blob([content], { type: `text/${extension === 'json' ? 'plain' : 'plain'}` }); 
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${typePrefix}_${Date.now()}.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function handleBatchFileSelect(e) {
+            const files = e.target.files;
+            const btn = document.getElementById('startBatchTranscription');
+            if(files.length > 0) {
+                btn.disabled = false;
+                btn.textContent = `Process ${files.length} Files`;
+            }
+        }
+
+        async function startBatchProcess() {
+            const fileInput = document.getElementById('batchMediaFiles');
+            if(!fileInput.files.length) return;
+
+            const formData = new FormData();
+            for(let i=0; i<fileInput.files.length; i++) {
+                formData.append('files', fileInput.files[i]);
+            }
+            formData.append('source_lang', document.getElementById('sourceLang').value);
+            formData.append('processing_mode', document.getElementById('processingMode').value);
+            formData.append('output_format', 'txt');
+
+            const btn = document.getElementById('startBatchTranscription');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting Batch...';
+
+            try {
+                const response = await fetch('/api/batch/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if(!response.ok) throw new Error('Batch processing failed');
+                const result = await response.json();
+
+                window.toast.success(`Batch Job ${result.job_id} started! Check console for details.`);
+                console.log('Batch Result:', result);
+                alert(`Batch job started successfully. Job ID: ${result.job_id}\nSuccessful: ${result.successful}\nFailed: ${result.failed}`);
+
+            } catch (error) {
+                window.toast.error(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-play-circle me-2"></i>Start Batch Processing';
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                window.toast.success('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy', err);
+            });
+        }
+
+        function getLanguageName(code) {
+            return supportedLanguages[code] || code;
+        }
+
+        function getFileExtension(filename) {
+            return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        }
+
+        function formatTime(seconds) {
+            if (!seconds) return '--:--';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return (h > 0 ? `${h}:` : '') + `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // ====================
+        // TEXT PROCESSING TAB FUNCTIONS
+        // ====================
+
+        function setupTextProcessingTab() {
+            // Initialize when tab is clicked
+            document.getElementById('text-processing-tab').addEventListener('click', function() {
+                setTimeout(() => {
+                    if (document.getElementById('text-processing').classList.contains('active')) {
+                        fetchTTSOptions();
+                    }
+                }, 100);
+            });
+
+            function setupFileUpload(uploadId, fileInfoId, clearBtnId, textareaId, fileNameId, fileSizeId) {
+                const uploadInput = document.getElementById(uploadId);
+                const clearBtn = document.getElementById(clearBtnId);
+                
+                uploadInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    if (file.size > 5 * 1024 * 1024) {
+                        window.toast.error('File size must be less than 5MB.');
+                        this.value = '';
+                        return;
+                    }
+
+                    document.getElementById(fileNameId).textContent = file.name;
+                    document.getElementById(fileSizeId).textContent = formatFileSize(file.size);
+                    document.getElementById(fileInfoId).classList.remove('hidden');
+
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const text = event.target.result;
+                        document.getElementById(textareaId).value = text;
+                        window.toast.success('Text file loaded successfully!');
+                    };
+                    reader.onerror = function() {
+                        window.toast.error('Failed to read the file.');
+                    };
+                    reader.readAsText(file);
+                });
+
+                clearBtn.addEventListener('click', function() {
+                    document.getElementById(uploadId).value = '';
+                    document.getElementById(fileInfoId).classList.add('hidden');
+                    document.getElementById(textareaId).value = '';
+                    window.toast.success('File cleared.');
+                });
+            }
+
+            // 1. TEXT SUMMARIZER
+            setupFileUpload('summaryFileUpload', 'summaryFileInfo', 'clearSummaryFile', 'summaryInput', 'summaryFileName', 'summaryFileSize');
+
+            document.getElementById('summaryRatio').addEventListener('input', function(e) {
+                document.getElementById('ratioValue').textContent = e.target.value + '%';
+            });
+
+            document.getElementById('summarizeBtn').addEventListener('click', function() {
+                const text = document.getElementById('summaryInput').value;
+                const ratio = parseInt(document.getElementById('summaryRatio').value) / 100;
+                const resultDiv = document.getElementById('summaryResult');
+                
+                if (!text.trim()) {
+                    window.toast.error('Please enter text to summarize or upload a text file.');
+                    return;
+                }
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                    const wordCount = Math.max(1, Math.floor(sentences.length * ratio));
+                    const summary = sentences.slice(0, wordCount).map(s => s.trim() + '.').join(' ');
+                    
+                    currentSummaryData = {
+                        originalText: text,
+                        summary: summary,
+                        ratio: ratio * 100 + '%',
+                        sentences: sentences.length,
+                        summarizedSentences: wordCount,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    resultDiv.textContent = summary;
+                    resultDiv.classList.remove('hidden');
+                    
+                    document.getElementById('downloadSummaryBtn').disabled = false;
+                    
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    
+                    window.toast.success(`Text summarized successfully! Reduced from ${sentences.length} to ${wordCount} sentences.`);
+                }, 500);
+            });
+
+            document.getElementById('downloadSummaryBtn').addEventListener('click', function() {
+                if (!currentSummaryData) {
+                    window.toast.error('No summary data to download.');
+                    return;
+                }
+
+                const content = `Text Summary Report
+=================================
+Summary Ratio: ${currentSummaryData.ratio}
+Original Sentences: ${currentSummaryData.sentences}
+Summarized Sentences: ${currentSummaryData.summarizedSentences}
+Date: ${new Date(currentSummaryData.timestamp).toLocaleString()}
+
+ORIGINAL TEXT:
+=================================
+ ${currentSummaryData.originalText}
+
+SUMMARY:
+=================================
+ ${currentSummaryData.summary}`;
+
+                downloadTextFile(content, 'txt', 'text_summary');
+                window.toast.success('Summary downloaded successfully!');
+            });
+
+            // 2. ADVANCED TEXT TO SPEECH
+            setupFileUpload('ttsFileUpload', 'ttsFileInfo', 'clearTtsFile', 'ttsInput', 'ttsFileName', 'ttsFileSize');
+
+            // Update Slider Labels on Input
+            ['ttsRate', 'ttsPitch', 'ttsVolume', 'ttsBass', 'ttsTreble'].forEach(id => {
+                document.getElementById(id).addEventListener('input', (e) => {
+                    document.getElementById(id + 'Val').textContent = e.target.value;
+                });
+            });
+
+            let tts = window.speechSynthesis;
+            let currentUtterance = null;
+
+            // Fetch TTS Options from Backend
+            async function fetchTTSOptions() {
+                try {
+                    // 1. Get Voices
+                    const vRes = await fetch('/api/tts/voices');
+                    if(vRes.ok) {
+                        const vData = await vRes.json();
+                        populateSelect('ttsVoice', vData.voices, 'id', 'name');
+                    }
+
+                    // 2. Get Styles
+                    const sRes = await fetch('/api/tts/styles');
+                    if(sRes.ok) {
+                        ttsStyles = await sRes.json();
+                        populateSelectFromObj('ttsStyle', ttsStyles);
+                    }
+
+                    // 3. Get Profiles
+                    const pRes = await fetch('/api/tts/profiles');
+                    if(pRes.ok) {
+                        ttsProfiles = await pRes.json();
+                        populateSelectFromObj('ttsProfile', ttsProfiles);
+                    }
+
+                    // 4. Get Effects
+                    const eRes = await fetch('/api/tts/effects');
+                    if(eRes.ok) {
+                        ttsEffects = await eRes.json();
+                        populateSelectFromObj('ttsEffect', ttsEffects);
+                    }
+
+                } catch (err) {
+                    console.error("Failed to load TTS options", err);
+                    window.toast.error("Failed to load TTS voice options.");
+                }
+            }
+
+            function populateSelect(elementId, dataArray, valKey, textKey) {
+                const select = document.getElementById(elementId);
+                select.innerHTML = '';
+                dataArray.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item[valKey];
+                    option.text = item[textKey];
+                    select.appendChild(option);
+                });
+            }
+
+            function populateSelectFromObj(elementId, dataObj) {
+                const select = document.getElementById(elementId);
+                select.innerHTML = '';
+                for (const [key, val] of Object.entries(dataObj)) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.text = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    select.appendChild(option);
+                }
+            }
+
+            // SPEAK BUTTON (Browser Native Preview)
+            document.getElementById('speakBtn').addEventListener('click', function() {
+                const text = document.getElementById('ttsInput').value;
+                if (!text.trim()) {
+                    window.toast.error('Please enter text to speak or upload a text file.');
+                    return;
+                }
+                
+                if (currentUtterance) {
+                    tts.cancel();
+                }
+                
+                currentTtsText = text; 
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Try to match browser voice to selected backend voice (approximate)
+                const selectedVoiceId = document.getElementById('ttsVoice').value;
+                const browserVoices = tts.getVoices();
+                // Simple heuristic: match language code
+                const langCode = selectedVoiceId.split('-')[0];
+                const matchingVoice = browserVoices.find(v => v.lang.startsWith(langCode));
+                if (matchingVoice) utterance.voice = matchingVoice;
+
+                // Browser synthesis doesn't support styles/profiles, but supports rate/pitch
+                utterance.rate = parseFloat(document.getElementById('ttsRate').value);
+                utterance.pitch = 1.0; // Browser pitch is normalized differently, keeping neutral
+                
+                utterance.onstart = function() {
+                    document.getElementById('ttsStatus').textContent = 'Speaking (Preview)...';
+                    document.getElementById('pauseTTS').disabled = false;
+                    document.getElementById('resumeTTS').disabled = true;
+                    document.getElementById('speakBtn').disabled = true;
+                    document.getElementById('downloadTranscriptBtn').disabled = true;
+                    document.getElementById('downloadSpeechBtn').disabled = true;
+                };
+                
+                utterance.onend = function() {
+                    document.getElementById('ttsStatus').textContent = 'Finished Preview';
+                    document.getElementById('pauseTTS').disabled = true;
+                    document.getElementById('resumeTTS').disabled = true;
+                    document.getElementById('speakBtn').disabled = false;
+                    document.getElementById('downloadTranscriptBtn').disabled = false;
+                    document.getElementById('downloadSpeechBtn').disabled = false;
+                    currentUtterance = null;
+                };
+                
+                utterance.onpause = function() {
+                    document.getElementById('ttsStatus').textContent = 'Paused';
+                    document.getElementById('resumeTTS').disabled = false;
+                };
+                
+                utterance.onresume = function() {
+                    document.getElementById('ttsStatus').textContent = 'Speaking (Preview)...';
+                    document.getElementById('resumeTTS').disabled = true;
+                };
+                
+                currentUtterance = utterance;
+                tts.speak(utterance);
+            });
+
+            document.getElementById('pauseTTS').addEventListener('click', function() {
+                if (tts.speaking) {
+                    tts.pause();
+                }
+            });
+
+            document.getElementById('resumeTTS').addEventListener('click', function() {
+                if (tts.paused) {
+                    tts.resume();
+                }
+            });
+
+            // DOWNLOAD TRANSCRIPT BUTTON
+            document.getElementById('downloadTranscriptBtn').addEventListener('click', function() {
+                if (!currentTtsText) {
+                    window.toast.error('No text available to download. Please speak text first.');
+                    return;
+                }
+
+                const text = currentTtsText;
+                const content = `Text-to-Speech Transcript
+=================================
+Voice: ${document.getElementById('ttsVoice').value}
+Style: ${document.getElementById('ttsStyle').value}
+Profile: ${document.getElementById('ttsProfile').value}
+Rate: ${document.getElementById('ttsRate').value}
+Pitch: ${document.getElementById('ttsPitch').value}
+Date: ${new Date().toLocaleString()}
+
+TEXT CONTENT:
+=================================
+ ${text}`;
+
+                downloadTextFile(content, 'txt', 'tts_transcript');
+                window.toast.success('Transcript downloaded successfully!');
+            });
+
+            // DOWNLOAD AUDIO BUTTON (Advanced Backend Call)
+            document.getElementById('downloadSpeechBtn').addEventListener('click', async function() {
+                if (!currentTtsText) {
+                    window.toast.error('No audio data available. Please speak text first.');
+                    return;
+                }
+
+                const btn = this;
+                btn.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Rendering...';
+
+                try {
+                    const formData = new FormData();
+                    
+                    // Core
+                    formData.append('text', currentTtsText);
+                    formData.append('voice', document.getElementById('ttsVoice').value);
+                    formData.append('style', document.getElementById('ttsStyle').value);
+                    
+                    const profile = document.getElementById('ttsProfile').value;
+                    if(profile) formData.append('profile', profile);
+                    
+                    const effect = document.getElementById('ttsEffect').value;
+                    if(effect) formData.append('effect', effect);
+
+                    // Sliders
+                    formData.append('rate', document.getElementById('ttsRate').value);
+                    formData.append('pitch', document.getElementById('ttsPitch').value);
+                    formData.append('volume', document.getElementById('ttsVolume').value);
+                    formData.append('bass_boost', document.getElementById('ttsBass').value);
+                    formData.append('treble_boost', document.getElementById('ttsTreble').value);
+
+                    const response = await fetch('/api/tts/advanced', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || "Server failed to generate audio");
+                    }
+
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `advanced_speech_${Date.now()}.mp3`;
+
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    window.toast.success('High-quality MP3 rendered successfully!');
+
+                } catch (error) {
+                    console.error(error);
+                    window.toast.error('Failed to render audio. Check server connection.');
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+
+            // 3. TEXT TRANSLATION
+            setupFileUpload('translationFileUpload', 'translationFileInfo', 'clearTranslationFile', 'textTranslationInput', 'translationFileName', 'translationFileSize');
+
+            document.getElementById('textSwapLangs').addEventListener('click', function() {
+                const source = document.getElementById('textSourceLang');
+                const target = document.getElementById('textTargetLang');
+                const temp = source.value;
+                
+                if (source.value !== 'auto') {
+                    source.value = target.value;
+                    target.value = temp;
+                }
+            });
+
+            document.getElementById('textTranslateBtn').addEventListener('click', async function() {
+                const text = document.getElementById('textTranslationInput').value;
+                const sourceLang = document.getElementById('textSourceLang').value;
+                const targetLang = document.getElementById('textTargetLang').value;
+                const status = document.getElementById('textTranslationStatus');
+                
+                if (!text.trim()) {
+                    window.toast.error('Please enter text to translate or upload a text file.');
+                    return;
+                }
+                
+                if (sourceLang === targetLang && sourceLang !== 'auto') {
+                    window.toast.error('Source and target languages are the same.');
+                    return;
+                }
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Translating';
+                this.disabled = true;
+                status.textContent = 'Translating...';
+                
+                try {
+                    const response = await fetch('https://libretranslate.com/translate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            q: text,
+                            source: sourceLang === 'auto' ? 'auto' : sourceLang,
+                            target: targetLang,
+                            format: 'text',
+                            api_key: '' 
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Translation failed: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const translatedText = data.translatedText;
+                    
+                    document.getElementById('textTranslationOutput').value = translatedText;
+                    status.textContent = 'Translation complete';
+                    
+                    currentTranslationResult = {
+                        originalText: text,
+                        translatedText: translatedText,
+                        sourceLang: sourceLang === 'auto' ? 'Auto Detect' : sourceLang,
+                        targetLang: targetLang,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    document.getElementById('downloadTranslationResultBtn').disabled = false;
+                    
+                    window.toast.success('Text translated successfully!');
+                    
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    
+                    const mockTranslations = {
+                        'en': 'Hello! This is a mock translation.',
+                        'es': '¡Hola! Esta es una traducción simulada.',
+                        'fr': 'Bonjour ! Ceci est une traduction simulada.',
+                        'de': 'Hallo! Dies ist eine Mock-Übersetzung.',
+                        'it': 'Ciao! Questa è una traduzione simulata.',
+                        'ja': 'こんにちは！これは模擬翻訳です。',
+                        'zh': '你好！这是一个模拟翻译。'
+                    };
+                    
+                    const translated = mockTranslations[targetLang] || mockTranslations['en'];
+                    const mockResult = `[Mock Translation]: ${translated}\n\nOriginal: ${text}`;
+                    
+                    document.getElementById('textTranslationOutput').value = mockResult;
+                    status.textContent = 'Used mock translation (API unavailable)';
+                    
+                    currentTranslationResult = {
+                        originalText: text,
+                        translatedText: mockResult,
+                        sourceLang: sourceLang === 'auto' ? 'Auto Detect' : sourceLang,
+                        targetLang: targetLang,
+                        timestamp: new Date().toISOString(),
+                        isMock: true
+                    };
+                    
+                    document.getElementById('downloadTranslationResultBtn').disabled = false;
+                    
+                    window.toast.error('Translation API unavailable. Using mock translation.');
+                    
+                } finally {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }
+            });
+
+            document.getElementById('textCopyTranslation').addEventListener('click', function() {
+                const text = document.getElementById('textTranslationOutput').value;
+                if (text.trim()) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        window.toast.success('Translation copied to clipboard!');
+                    });
+                } else {
+                    window.toast.error('No translation to copy.');
+                }
+            });
+
+            document.getElementById('downloadTranslationResultBtn').addEventListener('click', function() {
+                if (!currentTranslationResult) {
+                    window.toast.error('No translation result to download.');
+                    return;
+                }
+
+                const content = `Translation Report
+=================================
+Source Language: ${currentTranslationResult.sourceLang}
+Target Language: ${currentTranslationResult.targetLang}
+Date: ${new Date(currentTranslationResult.timestamp).toLocaleString()}
+ ${currentTranslationResult.isMock ? 'NOTE: This is a mock translation (API was unavailable)\n' : ''}
+
+ORIGINAL TEXT:
+=================================
+ ${currentTranslationResult.originalText}
+
+TRANSLATED TEXT:
+=================================
+ ${currentTranslationResult.translatedText}`;
+
+                downloadTextFile(content, 'txt', 'text_translation');
+                window.toast.success('Translation result downloaded successfully!');
+            });
+        }
+    </script>
+</body>
+</html>

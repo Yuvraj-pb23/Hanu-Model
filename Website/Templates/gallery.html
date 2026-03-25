@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}HanuAi - Gallery{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'CSS/services.css' %}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.css" />
+
+<style>
+  /* 1. Main Container */
+  .gallery-main-wrapper {
+    width: 100%;
+    max-width: 1400px;
+    /* Increased width for 4 columns */
+    margin: 80px auto 0;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    min-height: auto;
+  }
+
+  /* 2. Grid Layout - Fixed 4 Columns */
+  .gallery-grid {
+    display: grid;
+    /* Forces 4 columns on desktop, scales down on mobile */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    justify-items: center;
+    margin-bottom: 4rem;
+  }
+
+  /* Responsive adjustment for tablets and phones */
+  @media (max-width: 1100px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 2 columns for tablets */
+  }
+
+  @media (max-width: 600px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 2 columns for mobile */
+  }
+
+  /* 3. Blue Theme Glow Cards */
+  .gallery-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #0a0a0a;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Subtle blue glow base */
+    border: 1px solid rgba(0, 150, 255, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  /* The Blue Backlight */
+  .gallery-card::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #0072ff, #00c6ff, #0072ff);
+    background-size: 200%;
+    z-index: -1;
+    filter: blur(15px);
+    opacity: 0.15;
+    /* Constant faint glow */
+    transition: opacity 0.4s ease, filter 0.4s ease;
+    border-radius: 1.2rem;
+  }
+
+  .gallery-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(0, 198, 255, 0.6);
+    /* Multi-layered blue shadow for "Neon" look */
+    box-shadow: 0 0 20px rgba(0, 114, 255, 0.4),
+      0 0 40px rgba(0, 114, 255, 0.1);
+  }
+
+  .gallery-card:hover::before {
+    opacity: 0.8;
+    filter: blur(20px);
+    animation: blue-flow 3s linear infinite;
+  }
+
+  .gallery-card-inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 0.9rem;
+    position: relative;
+    z-index: 2;
+    background: #000;
+  }
+
+  .gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+    opacity: 0.9;
+  }
+
+  .gallery-card:hover img {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+
+  /* Default */
+  .gallery-card img {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Only for special image */
+  .focus-top {
+    object-position: right center;
+  }
+
+  .focus-bottom-right {
+    object-position: 100% 70% !important;
+  }
+
+
+  @keyframes blue-flow {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+
+  /* 4. Modal Styles */
+  .gallery-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 5, 15, 0.95);
+    /* Deep blue-tinted dark */
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .gallery-modal.active {
+    display: flex;
+  }
+
+  .gallery-modal img {
+    max-width: 85vw;
+    max-height: 80vh;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 198, 255, 0.3);
+    box-shadow: 0 0 50px rgba(0, 114, 255, 0.3);
+  }
+</style>
+
+<div data-scroll-container>
+  <div data-scroll-section>
+
+    <div class="gallery-main-wrapper">
+      <div class="gallery-grid">
+        {% for image in images %}
+        <div class="gallery-card" onclick="openModal('/static/{{ image.url }}')">
+          <div class="gallery-card-inner">
+            <img src="/static/{{ image.url }}" alt="{{ image.name }}" loading="lazy"
+              class="{% if image.name == 'Prerna Kalra with PM' %}focus-bottom-right{% endif %}">
+
+          </div>
+        </div>
+        {% empty %}
+        <p style="color: #00c6ff; text-align: center; grid-column: 1/-1;">No images to display.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="gallery-modal" id="galleryModal" onclick="closeModal()">
+  <img id="modalImage" src="" onclick="event.stopPropagation()" />
+</div>
+
+<script>
+  const scroll = new LocomotiveScroll({
+    el: document.querySelector('[data-scroll-container]'),
+    smooth: true
+  });
+
+  function openModal(imageSrc) {
+    const modal = document.getElementById('galleryModal');
+    const modalImg = document.getElementById('modalImage');
+    modalImg.src = imageSrc;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('galleryModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  window.addEventListener('load', () => {
+    scroll.update();
+  });
+</script>
+
+{% endblock %}

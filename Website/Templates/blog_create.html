@@ -1,0 +1,412 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .glass-card {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    padding: 60px !important;
+    border-radius: 30px !important;
+  }
+  
+  @media (max-width: 768px) {
+    .glass-card {
+      padding: 40px !important;
+      border-radius: 20px !important;
+    }
+  }
+
+  .presence {
+    box-shadow: 0 8px 40px 0 rgba(13,110,253,0.13), 0 1.5px 8px 0 rgba(0,0,0,0.18);
+    width: 100%;
+    padding: 56px 32px 40px 32px;
+    margin: 100px 0;
+    background: rgba(0,0,0,0.97);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    position: relative;
+    z-index: 2;
+    animation: fadeSlideIn 1.1s cubic-bezier(.39,.575,.565,1.000);
+    transition: box-shadow 0.4s, background 0.4s, transform 0.4s;
+  }
+  .presence:hover {
+    box-shadow: 0 16px 64px 0 rgba(13,110,253,0.22), 0 2.5px 16px 0 rgba(0,0,0,0.22);
+    transform: translateY(-4px) scale(1.012);
+    background: rgba(10,18,40,0.99);
+  }
+  @keyframes fadeSlideIn {
+    0% { opacity: 0; transform: translateY(60px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .blog-heading {
+    color: #fff !important;
+    font-size: 2.3rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.7rem;
+    text-shadow: 0 2px 16px rgba(13,110,253,0.13);
+    transition: color 0.3s, text-shadow 0.3s;
+    animation: fadeInHeading 1.2s cubic-bezier(.39,.575,.565,1.000);
+  }
+  @keyframes fadeInHeading {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .blog-desc {
+    color: #b7b7b7 !important;
+    font-size: 1.13rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.2px;
+    animation: fadeInDesc 1.4s cubic-bezier(.39,.575,.565,1.000);
+  }
+
+  /* 🔹 DESIGNED BUTTONS START 🔹 */
+  .btn-new-post {
+    background: linear-gradient(90deg, #0d6efd 0%, #2563eb 100%) !important;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(13,110,253,0.2);
+  }
+  .btn-new-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13,110,253,0.4);
+    filter: brightness(1.1);
+  }
+
+  .btn-edit-action {
+    background: rgba(13, 110, 253, 0.1) !important;
+    border: 1px solid rgba(13, 110, 253, 0.3) !important;
+    color: #60a5fa !important;
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+  }
+  .btn-edit-action:hover {
+    background: #60a5fa !important;
+    color: #fff !important;
+    border-color: #60a5fa !important;
+    transform: translateY(-1px);
+  }
+
+  .btn-delete-action {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+  }
+  .btn-delete-action:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+    border-color: #ef4444 !important;
+    transform: translateY(-1px);
+  }
+  /* 🔹 DESIGNED BUTTONS END 🔹 */
+
+  .presence, .presence * {
+    color: #e0e0e0 !important;
+  }
+  .blog-heading, .presence h1, .presence h2, .presence h3 {
+    color: #fff !important;
+  }
+  .blog-desc, .presence p, .presence .text-gray-400, .presence .text-gray-500, .presence .text-gray-200 {
+    color: #b7b7b7 !important;
+  }
+  .presence .btn, .presence button, .presence .blog-btn {
+    color: #fff !important;
+  }
+  .presence input, .presence textarea, .presence select {
+    color: #fff !important;
+    background: #181a1b !important;
+    border-color: #23262b !important;
+  }
+  .presence input::placeholder, .presence textarea::placeholder {
+    color: #b7b7b7 !important;
+    opacity: 1;
+  }
+  @keyframes fadeInDesc {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .blog-btn {
+    background: linear-gradient(90deg, #0d6efd 0%, #2563eb 100%) !important;
+    color: #fff !important;
+    font-weight: 700;
+    border-radius: 16px;
+    padding: 0.85rem 2.5rem;
+    font-size: 1.13rem;
+    box-shadow: 0 2px 16px rgba(13,110,253,0.13);
+    border: none;
+    outline: none;
+    letter-spacing: 0.5px;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    position: relative;
+    z-index: 1;
+  }
+  .blog-btn:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #0d6efd 100%) !important;
+    color: #fff !important;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 32px rgba(13,110,253,0.18);
+  }
+  
+  .blog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 1.2rem 1.5rem 1.2rem;
+    background: rgba(20,22,30,0.7);
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(13,110,253,0.07);
+    animation: fadeInForm 1.2s cubic-bezier(.39,.575,.565,1.000);
+  }
+  @keyframes fadeInForm {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem 2.2rem;
+    align-items: flex-end;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+  }
+  .form-label {
+    font-size: 1.07rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.2px;
+  }
+  .form-input {
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid #23262b;
+    background: #181a1b;
+    color: #fff;
+    font-size: 1.05rem;
+    transition: border 0.3s, box-shadow 0.3s;
+    outline: none;
+  }
+  .form-input:focus {
+    border: 1.5px solid #0d6efd;
+    box-shadow: 0 0 0 2px #0d6efd44;
+  }
+  .form-hint {
+    color: #b7b7b7;
+    font-size: 0.97rem;
+  }
+  @media (max-width: 768px) {
+    .presence {
+      padding: 24px 6px 16px 6px;
+      border-radius: 14px;
+    }
+    .blog-heading {
+      font-size: 1.3rem;
+    }
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+</style>
+
+<div class="max-w-7xl mx-auto px-6 py-12 mt-40">
+  <div class="presence rounded-3xl">
+    
+    <header class="mb-8 flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0 text-center md:text-left">
+        <h1 class="text-4xl font-bold blog-heading mb-2">Blog Manager</h1>
+        <p class="text-sm blog-desc">Create and manage your blog posts</p>
+      </div>
+
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="blog-btn">Logout</button>
+      </form>
+    </header>
+
+    {% if message %}
+      <div class="mb-8" id="blog-message-container">
+        <div class="p-4 rounded-xl {% if 'successfully' in message %}bg-green-500/80{% else %}bg-red-500/80{% endif %} backdrop-blur-sm text-white shadow-lg" id="blog-message">
+          {{ message }}
+        </div>
+      </div>
+      <script>
+        setTimeout(function() {
+          var msg = document.getElementById('blog-message-container');
+          if (msg) { msg.style.display = 'none'; }
+        }, 4000);
+      </script>
+    {% endif %}
+
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <section id="blogListSection">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold">Blogs</h2>
+        <button onclick="showEditor()" class="btn-new-post">+ New Post</button>
+      </div>
+
+      {% if blogs %}
+        <div class="space-y-4">
+          {% for blog in blogs %}
+            <div class="bg-slate-800 p-4 rounded-lg border border-white/10 hover:border-blue-500/30 transition-colors">
+              <h3 class="text-teal-300 font-semibold">{{ blog.title }}</h3>
+              <p class="text-gray-400 text-sm">{{ blog.published_date }} — {{ blog.category }}</p>
+              <div class="mt-4 flex space-x-3 gap-3">
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="edit_id" value="{{ blog.id }}">
+                  <button type="submit" class="btn-edit-action">Edit</button>
+                </form>
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="delete_id" value="{{ blog.id }}">
+                  <button type="submit" class="btn-delete-action" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-gray-500">No blogs found.</p>
+      {% endif %}
+    </section>
+
+    <section id="blogEditorSection" class="{% if not blog_to_edit %}hidden{% endif %}">
+      <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <h2 class="text-2xl font-semibold mb-6">{% if blog_to_edit %}Edit Blog{% else %}Create Blog{% endif %}</h2>
+
+        <form method="POST" enctype="multipart/form-data" class="blog-form">
+          {% csrf_token %}
+          {% if blog_to_edit %}
+            <input type="hidden" name="update_id" value="{{ blog_to_edit.id }}">
+          {% endif %}
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input type="text" name="title" value="{{ blog_to_edit.title|default:'' }}" required class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <input type="text" name="category" value="{{ blog_to_edit.category|default:'Insight' }}" class="form-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Cover Image</label>
+              <input type="file" name="cover_image" accept="image/*" class="form-input">
+              {% if blog_to_edit.cover_image %}
+                <p class="form-hint">Current: {{ blog_to_edit.cover_image.url }}</p>
+              {% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <textarea name="content" rows="8" required class="form-input">{{ blog_to_edit.content|default:'' }}</textarea>
+          </div>
+
+          <hr class="border-slate-700 my-6">
+          <h3 class="text-lg font-semibold text-teal-400">Sub Sections</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Sub Title 1</label>
+              <input type="text" name="sub_title1" value="{{ blog_to_edit.sub_title1|default:'' }}" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sub Content 1</label>
+              <textarea name="sub_content1" rows="4" class="form-input">{{ blog_to_edit.sub_content1|default:'' }}</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Image 1</label>
+              <input type="file" name="image1" accept="image/*" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Sub Title 2</label>
+              <input type="text" name="sub_title2" value="{{ blog_to_edit.sub_title2|default:'' }}" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sub Content 2</label>
+              <textarea name="sub_content2" rows="4" class="form-input">{{ blog_to_edit.sub_content2|default:'' }}</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Image 2</label>
+              <input type="file" name="image2" accept="image/*" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Sub Title 3</label>
+              <input type="text" name="sub_title3" value="{{ blog_to_edit.sub_title3|default:'' }}" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sub Content 3</label>
+              <textarea name="sub_content3" rows="4" class="form-input">{{ blog_to_edit.sub_content3|default:'' }}</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Image 3</label>
+              <input type="file" name="image3" accept="image/*" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Sub Title 4</label>
+              <input type="text" name="sub_title4" value="{{ blog_to_edit.sub_title4|default:'' }}" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sub Content 4</label>
+              <textarea name="sub_content4" rows="4" class="form-input">{{ blog_to_edit.sub_content4|default:'' }}</textarea>
+            </div>
+          </div>
+
+          <div style="text-align:center;margin-top:2.2rem;">
+            <button type="submit" class="w-full btn px-4 py-2 rounded blog-btn" style="max-width:320px;">
+              {% if blog_to_edit %}Update Blog{% else %}Publish Blog{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+  </div>
+</div>
+
+<script>
+  function showEditor() {
+    document.getElementById("blogEditorSection").classList.remove("hidden");
+    window.scrollTo({ top: document.getElementById("blogEditorSection").offsetTop - 100, behavior: "smooth" });
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}HanuAi - Web Development{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/services.css' %}" />
+
+<style>
+  /* --- Typography & Global Layout --- */
+  .section-title h2 {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1.08;
+    font-family: 'Manrope', sans-serif;
+    color: white;
+    text-align: center;
+  }
+
+  /* --- Video Section Custom Styles --- */
+  .video-section video {
+    width: 600px !important;
+    height: auto;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 24px 0 #0002;
+  }
+
+  .video-section video:hover,
+  .video-section video:focus {
+    transform: scale(1.04) translateY(-6px);
+    box-shadow: 0 12px 36px 0 #0004;
+  }
+
+  .section-title p {
+    font-size: 1.3rem !important;
+    font-weight: 500;
+    margin: 1.5rem auto 0;
+    line-height: 1.3;
+    color: #b7b7b7;
+    font-family: 'Manrope', sans-serif;
+    text-align: center;
+    max-width: 900px;
+  }
+
+  .presence {
+    box-shadow: 0px 0px 10px 5px #d3d3d388;
+    width: 100%;
+    padding: 55px 0;
+    margin: 50px 0;
+    background-color: transparent;
+    backdrop-filter: blur(3px);
+    border-radius: 5px;
+  }
+
+
+  @keyframes desc-shadow-glow {
+    0% {
+      text-shadow: 0 0 4px #ff914d88, 0 0 8px #000a;
+    }
+
+    100% {
+      text-shadow: 0 0 12px #ff914dcc, 0 0 18px #fff6;
+    }
+  }
+
+  /* --- Core Capabilities Section --- */
+  .core-capabilities-title {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .core-capabilities-title span {
+    color: #ff914d;
+  }
+
+  .capabilities-cards-row {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .capability-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 60%, rgba(0, 175, 240, 0.1) 100%);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 #0002;
+    width: 250px;
+    min-height: 170px;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.35s ease;
+    cursor: pointer;
+    backdrop-filter: blur(7px);
+    border: 1.5px solid #fff6;
+  }
+
+  .capability-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 16px 48px 0 #0003;
+  }
+
+  .capability-card .icon {
+    height: 48px;
+    width: 48px;
+    margin-bottom: 1rem;
+    transition: filter 0.4s;
+  }
+
+  .capability-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.5rem;
+  }
+
+  .capability-card p {
+    color: #444;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  /* --- Modal Styles --- */
+  .capability-modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+  }
+
+  .capability-modal-bg.active {
+    display: flex;
+  }
+
+  .capability-modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    /* Prevent the dark overlay itself from scrolling */
+    overflow: hidden;
+  }
+
+  .capability-modal {
+    background: #fff;
+    border-radius: 1.5rem;
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    padding: 2.5rem;
+
+    /* 1. LIMIT THE HEIGHT */
+    max-height: 80vh;
+
+    /* 2. ENABLE INTERNAL SCROLL */
+    overflow-y: auto !important;
+
+    /* 3. FORCE SCROLL FOCUS */
+    overscroll-behavior: contain;
+
+    animation: modal-fade-in 0.4s ease-out;
+  }
+
+  /* Optional: Style the scrollbar inside the modal so it's visible */
+  .capability-modal::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .capability-modal::-webkit-scrollbar-thumb {
+    background-color: #ff914d;
+    border-radius: 10px;
+  }
+
+  /* Add !important to ensure it overrides any other styles */
+  body.modal-open,
+  html.modal-open {
+    overflow: hidden !important;
+    height: 100% !important;
+    /* This prevents the "jump" when the scrollbar disappears */
+    padding-right: var(--scrollbar-width, 0px);
+  }
+
+  /* Ensure the wrapper blurs and ignores clicks */
+  body.modal-open .main-wrapper {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ... Keep your existing .section-title and .capability-card styles ... */
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+
+  #capability-modal-title {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #222;
+  }
+
+  .modal-content {
+    color: #444;
+    line-height: 1.7;
+    font-size: 1rem;
+  }
+
+  .modal-content p {
+    margin-bottom: 1rem;
+  }
+
+  @keyframes modal-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section {
+    margin-top: 90px;
+  }
+
+  .para {
+    max-width: 40%;
+  }
+
+  .para p {
+    font-size: 1.2rem !important;
+    font-weight: 500;
+    margin-top: 0.8rem;
+    line-height: 1.3;
+    color: #f4883d;
+    font-family: 'Manrope', sans-serif;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .card>.flex {
+      flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+    }
+
+    /* First row: Home > Services */
+    .card>.flex a:nth-of-type(1),
+    .card>.flex span:nth-of-type(1),
+    .card>.flex a:nth-of-type(2) {
+      white-space: nowrap;
+      font-size: 1.3rem;
+    }
+
+    /* Second row: > Web & App Development */
+    .card>.flex span:last-child {
+      width: 100%;
+      display: block;
+      font-size: 1.3rem;
+    }
+
+    .outer {
+      height: 250px;
+    }
+
+    .topl {
+      top: 6%;
+    }
+
+    .bottoml {
+      bottom: 6%;
+    }
+
+    .presence {
+      padding: 35px 0;
+      margin: 30px 0;
+    }
+
+    .presence h2 {
+      font-size: 2.3rem !important;
+    }
+
+    .presence p {
+      font-size: 1.1rem !important;
+      padding: 0.7rem;
+    }
+
+    .video-section {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 20px !important;
+    }
+
+    .video-section video {
+      width: 100% !important;
+      max-width: 340px;
+    }
+
+    .para{
+      max-width: 81%;
+    }
+    .capability-card {
+      width: 275px;
+    }
+
+    .video-section {
+      margin: 0.7rem 0 !important;
+    }
+  }
+</style>
+<div class="main-wrapper">
+  <div class="section flex justify-center items-center w-full mb-6 px-8">
+    <div class="outer">
+      <div class="dot"></div>
+      <div class="card">
+        <div class="ray"></div>
+        <div class="line topl"></div>
+        <div class="line leftl"></div>
+        <div class="line bottoml"></div>
+        <div class="line rightl"></div>
+
+        <div class="flex items-center justify-center gap-3 text-white text-xl mb-3">
+          <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors"
+            style="font-family: 'Manrope', sans-serif">
+            Home
+          </a>
+
+          <span class="text-blue-400 text-2xl">›</span>
+          <a href="{% url 'services' %}" class="hover:text-blue-400 transition-colors"
+            style="font-family: 'Manrope', sans-serif">
+            Services
+          </a>
+          <span class="text-blue-400 text-2xl">›</span>
+          <span class="text-blue-400" style="font-family: 'Manrope', sans-serif">AI Chatbots & Predictive
+            Analytics</span>
+        </div>
+        <div class="para">
+          <p>Automate, personalize and predict with our intelligent AI-driven solutions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
+    <div class="presence" id="ai-chat-section">
+      <div class="section-title">
+        <h2>AI-Powered Chatbots & <span style="color:#ff914d">Predictive Analytics</span></h2>
+        <p>At HanuAI, we build intelligent chatbots, virtual assistants, and predictive AI models that enhance
+          customer
+          experience, reduce manual effort, and enable smarter, faster decisions.</p>
+      </div>
+    </div>
+
+    <div class="video">
+      <div class="video-section"
+        style="display: flex; gap: 20px; justify-content: center; align-items: flex-start; margin: 60px 0 90px;">
+        <video autoplay muted loop playsinline>
+          <source src="/static/Media/Vids/Chatbot.mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="presence" id="capabilities-section">
+      <div class="capabilities-cards-row">
+        <div class="capability-card" data-modal="responsive">
+          <img src="https://img.icons8.com/fluency/96/chatbot.png" alt="AI-Powered Chatbots Icon" class="icon">
+          <h3>AI-Powered Chatbots</h3>
+          <p>Deliver 24/7 customer support with human-like conversations and instant query resolution.</p>
+        </div>
+        <div class="capability-card" data-modal="mobile">
+          <img src="https://img.icons8.com/fluency/96/robot-2.png" alt="Virtual Assistants Icon" class="icon">
+          <h3>Virtual Assistants</h3>
+          <p>Optimize internal processes and drive efficiency through intelligent automation..</p>
+        </div>
+        <div class="capability-card" data-modal="scalable">
+          <img src="https://img.icons8.com/fluency/96/combo-chart.png" alt="Predictive Analytics Icon" class="icon">
+          <h3>Predictive Analytics</h3>
+          <p>Forecast customer behavior, sales trends, and operational risks with AI-driven insights.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<div id="capability-modal-bg" class="capability-modal-bg">
+  <div class="capability-modal">
+    <button class="modal-close" id="capability-modal-close">&times;</button>
+    <h2 id="capability-modal-title"></h2>
+    <img id="capability-modal-img" src="" alt="" class="w-full rounded-xl mb-4 shadow-md" style="display:none;">
+    <div class="modal-content text-gray-700 leading-relaxed" id="capability-modal-desc"></div>
+  </div>
+</div>
+
+<script>
+  const capabilityModalData = {
+    responsive: {
+      title: 'AI-Powered Chatbots',
+      img: "{% static 'assets/img/services/modal/chatbot.png' %}",
+      desc: `<p>Deliver 24/7 customer support with human-like conversations and instant query resolution.</p>
+         <br>
+         <p>Our AI-powered chatbots leverage advanced NLP to interpret user intent and deliver quick, relevant responses. Designed for scalability and seamless integration, they evolve continuously through machine learning, enhancing accuracy, efficiency, and overall customer experience.</p>`
+    },
+    mobile: {
+      title: 'Virtual Assistants',
+      img: "{% static 'assets/img/services/modal/virtual.png' %}",
+      desc: `<p>Optimize internal processes and drive efficiency through intelligent automation.</p>
+         <br>
+         <p>Our AI-enabled virtual assistants handle everything from task automation and data insights to supporting employee training programs. With natural language understanding and adaptive learning, they evolve over time to deliver smarter, more personalized assistance.</p>`
+    },
+    scalable: {
+      title: 'Predictive Analytics',
+      img: "{% static 'assets/img/services/modal/analytics.png' %}",
+      desc: `<p>Forecast customer behavior, sales trends, and operational risks with AI-driven insights.</p>
+         <br>
+         <p>Our predictive analytics solutions harness the power of AI and machine learning not only to anticipate trends and optimize decision-making but also to enable intelligent chatbot interactions. By training on custom datasets, our systems can generate predictive and context-aware replies, delivering personalized user experiences. Leveraging both historical and real-time data, organizations can forecast customer behavior, detect anomalies, and deploy chatbots that proactively assist users while minimizing business risks and enhancing operational efficiency.</p>`
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const modalBg = document.getElementById('capability-modal-bg');
+    const modalTitle = document.getElementById('capability-modal-title');
+    const modalImg = document.getElementById('capability-modal-img');
+    const modalDesc = document.getElementById('capability-modal-desc');
+    const modalClose = document.getElementById('capability-modal-close');
+
+    // Select both html and body
+    const root = document.documentElement;
+    const body = document.body;
+
+    const getScrollbarWidth = () => window.innerWidth - root.clientWidth;
+
+    document.querySelectorAll('.capability-card').forEach(card => {
+      card.addEventListener('click', function () {
+        const key = card.getAttribute('data-modal');
+        const data = capabilityModalData[key];
+
+        if (data && modalBg) {
+          modalTitle.textContent = data.title;
+          modalImg.src = data.img || "";
+          modalImg.style.display = data.img ? 'block' : 'none';
+          modalDesc.innerHTML = data.desc;
+
+          const scrollWidth = getScrollbarWidth();
+          // Apply the width to root so CSS can see it
+          root.style.setProperty('--scrollbar-width', `${scrollWidth}px`);
+
+          // Add class to both for maximum compatibility
+          root.classList.add('modal-open');
+          body.classList.add('modal-open');
+
+          modalBg.classList.add('active');
+        }
+      });
+    });
+
+    const closeActions = () => {
+      if (modalBg) {
+        modalBg.classList.remove('active');
+        root.classList.remove('modal-open');
+        body.classList.remove('modal-open');
+      }
+      const capabilitiesSection = document.getElementById('capabilities-section');
+      if (capabilitiesSection) {
+        capabilitiesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    // Attach listeners
+    if (modalClose) modalClose.addEventListener('click', closeActions);
+
+    if (modalBg) {
+      modalBg.addEventListener('click', (e) => {
+        // Only close if clicking the dark part, not the white box
+        if (e.target === modalBg) closeActions();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeActions();
+    });
+
+    // Modal mouse wheel scroll fix
+    const modal = document.querySelector('.capability-modal');
+    if (modal) {
+      modal.addEventListener('wheel', function (e) {
+        if (modal.scrollHeight > modal.clientHeight) {
+          modal.scrollTop += e.deltaY;
+          e.preventDefault();
+        }
+      }, { passive: false });
+    }
+  });
+</script>
+{% endblock %}

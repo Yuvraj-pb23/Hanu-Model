@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .blogs-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .blogs-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .blog-preview-popup {
+    position: relative; /* inside backdrop */
+    width: 90%;
+    max-width: 700px;
+    max-height: 75vh;
+    background: #fff; /* ✅ white background */
+    border: 1px solid #1165ff; /* ✅ blue border */
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem;
+    opacity: 0;
+    transform: scale(0.9); /* ✅ smooth zoom effect */
+    transition: all 0.3s ease;
+  }
+
+  .blog-preview-popup.active {
+    opacity: 1;
+    transform: scale(1); /* ✅ zoom-in center */
+  }
+
+  .blog-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .blog-backdrop.hidden {
+    display: none;
+  }
+
+  .popup-header {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 10;
+  }
+</style>
+
+<section id="blog-grid" class="bg-[#fefefe] mt-40 py-20">
+  <div class="container mx-auto px-6">
+    <!-- Section Title -->
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold text-gray-900">Our Resources</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Explore ideas that move the future. Stay ahead with expert insights,
+        news, and case studies in road and AI technology.
+      </p>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {% for blog in blogs %}
+      <div
+        class="bg-white rounded-2xl border border-gray-200 hover:border-[#0d6efd40] transition-all duration-300 shadow-xl hover:shadow-[#0d6efd40] transform hover:-translate-y-1 overflow-hidden flex flex-col"
+      >
+        {% if blog.cover_image %}
+        <img
+          src="{{ blog.cover_image.url }}"
+          alt="{{ blog.title }}"
+          class="w-full h-52 object-cover rounded-t-2xl"
+        />
+        {% endif %}
+
+        <div class="p-6 flex flex-col flex-grow">
+          <div
+            class="text-[#0d6efd] text-xs font-semibold uppercase tracking-wide mb-1 truncate"
+          >
+            {{ blog.category }}
+          </div>
+
+          <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+            {{ blog.title }}
+          </h3>
+
+          <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+            {{ blog.short_description|truncatechars:100 }}
+          </p>
+
+          <a
+            href="{% url 'blog_detail' blog.slug %}"
+            class="inline-block mt-auto text-[#0d6efd] hover:opacity-80 text-sm font-semibold transition-colors duration-200"
+          >
+            Read More →
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-span-full text-center py-20">
+        <p class="text-gray-500 text-lg">No blog posts available yet. Check back soon!</p>
+        <p class="text-gray-400 text-sm mt-2">Create your first blog post from the <a href="{% url 'create_blog' %}" class="text-blue-500 hover:underline">blog manager</a>.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- Backdrop wrapper -->
+<div id="blogBackdrop" class="blog-backdrop hidden">
+  <div id="blogPreview" class="blog-preview-popup text-gray-800">
+    <div class="popup-header">
+      <button onclick="closeBlogPreview()" title="Close" class="text-gray-600 text-2xl hover:text-red-400 transition">✕</button>
+      <button id="fullScreenBtn" title="Open Full Screen" class="text-gray-600 text-2xl hover:text-[#0d6efd] transition">⤢</button>
+    </div>
+
+    <div id="previewCategory" class="text-[#0d6efd] text-xs uppercase tracking-wider"></div>
+    <h2 id="previewTitle" class="text-2xl font-bold text-[#0f0f0f]"></h2>
+    <p id="previewShort" class="text-gray-900 text-sm"></p>
+
+    <img id="previewImage" src="" alt="Blog Image" />
+
+    <div id="previewContent" class="text-gray-700 text-sm leading-relaxed whitespace-pre-line"></div>
+
+    <h4 id="previewSubTitle1" class="text-2xl font-bold text-[#0f0f0f]"></h4>
+    <div id="previewContent1" class="text-gray-700 text-sm leading-relaxed whitespace-pre-line"></div>
+    <img id="previewImage1" src="" alt="Blog Image" />
+
+    <h4 id="previewSubTitle2" class="text-2xl font-bold text-[#0f0f0f]"></h4>
+    <div id="previewContent2" class="text-gray-700 text-sm leading-relaxed whitespace-pre-line"></div>
+    <img id="previewImage2" src="" alt="Blog Image" />
+
+    <h4 id="previewSubTitle3" class="text-2xl font-bold text-[#0f0f0f]"></h4>
+    <div id="previewContent3" class="text-gray-700 text-sm leading-relaxed whitespace-pre-line"></div>
+    <img id="previewImage3" src="" alt="Blog Image" />
+
+    <h4 id="previewSubTitle4" class="text-2xl font-bold text-[#0f0f0f]"></h4>
+    <div id="previewContent4" class="text-gray-700 text-sm leading-relaxed whitespace-pre-line"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const carousel_blog = document.querySelector(".carousel-track-blog");
+    const prevBtn_blog  = document.querySelector(".cro-prv");
+    const nextBtn_blog  = document.querySelector(".cro-next");
+    const scrollAmount = 300;
+
+    function updateArrows() {
+        const maxScrollLeft = carousel_blog.scrollWidth - carousel_blog.clientWidth;
+
+        // Left arrow hide when close to start
+        if (carousel_blog.scrollLeft <= 10) {
+            prevBtn_blog.style.display = 'none';
+        } else {
+            prevBtn_blog.style.display = 'block';
+        }
+
+        // Right arrow hide when close to end
+        if (carousel_blog.scrollLeft >= maxScrollLeft - 10) {
+            nextBtn_blog.style.display = 'none';
+        } else {
+            nextBtn_blog.style.display = 'block';
+        }
+    }
+
+
+
+    nextBtn_blog.addEventListener("click", () => {
+        carousel_blog.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        setTimeout(updateArrows, 300); // update after scroll
+    });
+
+    prevBtn_blog.addEventListener("click", () => {
+        carousel_blog.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        setTimeout(updateArrows, 300);
+    });
+
+    // Update arrows on manual scroll
+    carousel_blog.addEventListener('scroll', updateArrows);
+
+    // Initial check
+    updateArrows();
+});
+
+// Popup & Backdrop code (same as before)
+let currentSlug = "";
+
+function closeBlogPreview() {
+  document.getElementById("blogBackdrop")?.classList.add("hidden");
+  document.getElementById("blogPreview")?.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+document.querySelectorAll(".read-more-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const card = button.closest(".blog-card");
+    currentSlug = button.getAttribute("data-slug") || "";
+
+    // Helpers
+    function setContent(previewEl, sourceEl) {
+      const content = sourceEl?.innerHTML?.trim();
+      if (content) {
+        previewEl.innerHTML = content;
+        previewEl.style.display = "block";
+      } else {
+        previewEl.style.display = "none";
+      }
+    }
+
+    function setImage(previewEl, sourceEl) {
+      const src = sourceEl?.getAttribute("src")?.trim();
+      if (src) {
+        previewEl.src = src;
+        previewEl.style.display = "block";
+      } else {
+        previewEl.style.display = "none";
+      }
+    }
+
+    // Basic info
+    const category = card.querySelector('[class*="text-[#0d6efd]"]')?.innerText || "";
+    const title = card.querySelector("h3")?.innerText || "";
+    const shortDesc = card.querySelector(".full-short-desc")?.innerText || "";
+    const fullContent = card.querySelector(".expanded-content")?.innerHTML || "";
+
+    document.getElementById("previewCategory").innerText = category;
+    document.getElementById("previewTitle").innerText = title;
+    document.getElementById("previewShort").innerText = shortDesc;
+    document.getElementById("previewContent").innerHTML = fullContent;
+
+    // Main image
+    setImage(document.getElementById("previewImage"), card.querySelector("img"));
+
+    // Subsections
+    for (let i = 1; i <= 4; i++) {
+      setContent(
+        document.getElementById(`previewSubTitle${i}`),
+        card.querySelector(`.expanded-sub_title${i}`)
+      );
+      setContent(
+        document.getElementById(`previewContent${i}`),
+        card.querySelector(`.expanded-sub_content${i}`)
+      );
+      if (i < 4) {
+        setImage(
+          document.getElementById(`previewImage${i}`),
+          card.querySelector(`.expanded-image${i}`)
+        );
+      }
+    }
+
+    // Show popup
+    document.getElementById("blogBackdrop")?.classList.remove("hidden");
+    document.getElementById("blogPreview")?.classList.add("active");
+    document.body.style.overflow = "hidden";
+  });
+});
+
+document.getElementById("fullScreenBtn")?.addEventListener("click", () => {
+  if (currentSlug) window.location.href = currentSlug;
+});
+
+document.getElementById("blogBackdrop")?.addEventListener("click", (e) => {
+  if (e.target.id === "blogBackdrop") closeBlogPreview();
+});
+</script>
+
+{% endblock %}
