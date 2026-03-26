@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -174,23 +175,63 @@ DEFAULT_FROM_EMAIL = 'HanuAI <info@hanuai.com>'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-'''
-# Logging to see errors when DEBUG=False
+# ---------------------------------------------------------------------------
+# Logging — view-level INFO to console + rotating file
+# ---------------------------------------------------------------------------
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} — {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_DIR / 'django.log',
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB per file
+            'backupCount': 3,
+            'formatter': 'verbose',
         },
     },
     'loggers': {
+        # Django internals — warnings and above
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        # Django request/response cycle — errors
+        'django.request': {
+            'handlers': ['console', 'file'],
             'level': 'ERROR',
+            'propagate': False,
+        },
+        # Our views — full INFO so every [VIEW] line is visible
+        'Website.views': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Root catch-all
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
         },
     },
 }
-
-'''
 ATTENDANCE_SECRET_KEY = os.getenv('ATTENDANCE_SECRET_KEY', 'hanuai-attendance-secret-shared-key')
