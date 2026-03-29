@@ -65,6 +65,7 @@ def _get_translation_engine():
 
 def home(request):
     logger.info("[VIEW] home | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] home | method=%s | user=%s", request.method, request.user)
     states = [
         ("Jammu & Kashmir", "blue"),
         ("Himachal Pradesh", "teal"),
@@ -94,30 +95,36 @@ def home(request):
 
 def services(request):
     logger.info("[VIEW] services | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] services | method=%s | user=%s", request.method, request.user)
     return render(request, "services.html")
 
 
 def webDev(request):
+    logger.info("[VIEW] webDev | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] webDev | method=%s | user=%s", request.method, request.user)
     return render(request, "Services/web.html")
 
 
 def compVision(request):
     logger.info("[VIEW] compVision | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] compVision | method=%s | user=%s", request.method, request.user)
     return render(request, "Services/comp.html")
 
 
 def aiChat(request):
+    logger.info("[VIEW] aiChat | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] aiChat | method=%s | user=%s", request.method, request.user)
     return render(request, "Services/ai-chat.html")
 
 
 def gis(request):
     logger.info("[VIEW] gis | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] gis | method=%s | user=%s", request.method, request.user)
     return render(request, "Services/gis.html")
 
 
 def blogs(request):
+    logger.info("[VIEW] blogs | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] blogs | method=%s | user=%s", request.method, request.user)
     blogs_list = Blog.objects.all().order_by("-published_date")
     
@@ -143,10 +150,12 @@ def blogs(request):
 
 def about(request):
     logger.info("[VIEW] about | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] about | method=%s | user=%s", request.method, request.user)
     return render(request, "about.html")
 
 
 def gallery(request):
+    logger.info("[VIEW] gallery | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] gallery | method=%s | user=%s", request.method, request.user)
     # Get the path to the Gallery/Images folder
     gallery_path = os.path.join(
@@ -174,12 +183,14 @@ def gallery(request):
 
 def careers(request):
     logger.info("[VIEW] careers | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] careers | method=%s | user=%s", request.method, request.user)
     return render(request, "careers.html")
 
 def generate_attendance_link(request):
     """
     Executes generate_gated_token.py and redirects the user to the generated URL.
     """
+    logger.info("[VIEW] generate_attendance_link | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] generate_attendance_link | method=%s | user=%s", request.method, request.user)
     try:
         # Run the script and capture output
@@ -225,11 +236,13 @@ STATIC_USER = {
 
 def blog_detail(request, slug):
     logger.info("[VIEW] blog_detail | method=%s | slug=%s | user=%s", request.method, slug, request.user)
+    logger.info("[VIEW] blog_detail | method=%s | slug=%s | user=%s", request.method, slug, request.user)
     blog = get_object_or_404(Blog, slug=slug)
     return render(request, "blog_page.html", {"blog": blog})
 
 
 def login_view(request):
+    logger.info("[VIEW] login_view | method=%s", request.method)
     logger.info("[VIEW] login_view | method=%s", request.method)
     if request.method == "POST":
         email = request.POST.get("email", "").strip()
@@ -258,6 +271,7 @@ def logout_view(request):
     """
     Clear simple session login.
     """
+    logger.info("[VIEW] logout_view | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] logout_view | method=%s | user=%s", request.method, request.user)
     request.session.pop("is_authenticated_simple", None)
     request.session.pop("user_email_simple", None)
@@ -305,6 +319,7 @@ def _require_blogger_session(request):
 
 
 def contact(request):
+    logger.info("[VIEW] contact | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] contact | method=%s | user=%s", request.method, request.user)
     if request.method == "POST":
         #  # 🔹 Get recaptcha token
@@ -423,16 +438,19 @@ def verify_recaptcha(token):
 
 @csrf_exempt
 def contact_transcribe_audio(request):
+    print("assfsfdfsdf- view called")
     """
     Receives an audio file (WebM/WAV) from the contact form,
     processes it natively using TranscriberBackend,
     and returns the english translation.
     """
     logger.info("[VIEW] contact_transcribe_audio | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] contact_transcribe_audio | method=%s | user=%s", request.method, request.user)
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
 
     audio_file = request.FILES.get('audio')
+    print(audio_file)
     if not audio_file:
         return JsonResponse({'success': False, 'message': 'No audio file provided'}, status=400)
 
@@ -482,6 +500,7 @@ def contact_transcribe_audio(request):
 
 
 def apply_job(request, job_id):
+    logger.info("[VIEW] apply_job | method=%s | job_id=%s | user=%s", request.method, job_id, request.user)
     logger.info("[VIEW] apply_job | method=%s | job_id=%s | user=%s", request.method, job_id, request.user)
     if request.method == "POST":
         job = get_object_or_404(Job, id=job_id)
@@ -534,6 +553,7 @@ def create_blog(request):
     """
     Your existing create_blog logic, protected by session-based simple auth.
     """
+    logger.info("[VIEW] create_blog | method=%s | user=%s", request.method, request.user)
     logger.info("[VIEW] create_blog | method=%s | user=%s", request.method, request.user)
     ok, resp = _require_blogger_session(request)
     if not ok:
@@ -621,6 +641,7 @@ def create_blog(request):
 
 def resources(request):
     logger.info("[VIEW] resources | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] resources | method=%s | user=%s", request.method, request.user)
     blogs = Blog.objects.all().order_by("-published_date")
     return render(request, "resource.html", {"blogs": blogs})
 
@@ -690,6 +711,7 @@ def format_images_for_response(image_results):
 @csrf_exempt
 def chatbot_response(request):
     logger.info("[VIEW] chatbot_response | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] chatbot_response | method=%s | user=%s", request.method, request.user)
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
@@ -701,6 +723,8 @@ def chatbot_response(request):
 
     if not user_question:
         return JsonResponse({"error": "Empty message"}, status=400)
+
+    logger.debug("[VIEW] chatbot_response | question=%r", user_question)
 
     logger.debug("[VIEW] chatbot_response | question=%r", user_question)
 
@@ -836,6 +860,7 @@ def validate_employee_api(request):
     Validates user phone number against an external API.
     """
     logger.info("[VIEW] validate_employee_api | method=%s | user=%s", request.method, request.user)
+    logger.info("[VIEW] validate_employee_api | method=%s | user=%s", request.method, request.user)
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -896,16 +921,20 @@ def validate_employee_api(request):
 # Custom Error Handlers
 def custom_400(request, exception):
     logger.warning("[VIEW] custom_400 | path=%s", request.path)
+    logger.warning("[VIEW] custom_400 | path=%s", request.path)
     return render(request, '404.html', status=400)
 
 def custom_403(request, exception):
+    logger.warning("[VIEW] custom_403 | path=%s | user=%s", request.path, request.user)
     logger.warning("[VIEW] custom_403 | path=%s | user=%s", request.path, request.user)
     return render(request, '404.html', status=403)
 
 def custom_404(request, exception):
     logger.warning("[VIEW] custom_404 | path=%s", request.path)
+    logger.warning("[VIEW] custom_404 | path=%s", request.path)
     return render(request, '404.html', status=404)
 
 def custom_500(request):
+    logger.error("[VIEW] custom_500 | path=%s", request.path)
     logger.error("[VIEW] custom_500 | path=%s", request.path)
     return render(request, '404.html', status=500)
