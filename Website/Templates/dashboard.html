@@ -1,0 +1,530 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard - HanuAi</title>
+    
+    <!-- Google Fonts - Manrope -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    
+    <!-- Tailwind -->
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
+
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #0a0f1a;
+            color: #f3f4f6;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Sidebar Styles */
+        .dashboard-sidebar {
+            width: 320px;
+            background-color: #111827;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #9ca3af;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none !important;
+            margin-bottom: 4px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: rgba(37, 99, 235, 0.1);
+            color: #60a5fa;
+            border-right: 3px solid #2563eb;
+        }
+
+        .nav-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            margin-right: 14px;
+            font-size: 1.2rem;
+        }
+
+        .sub-nav-item {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #6b7280;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none !important;
+            cursor: pointer;
+        }
+
+        .sub-nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #d1d5db;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0a0f1a;
+        }
+
+        /* Screen States */
+        .screen-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen-container.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Validation Screen */
+        .validation-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, transparent 70%);
+        }
+
+        /* Iframe Screen */
+        .iframe-screen {
+            display: block; /* Overrides flex when active */
+        }
+
+        .tool-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Form Styling (Glow & Premium) */
+        .verification-card {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #9ca3af;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .bg-watermark {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.03;
+            width: 80%;
+            max-width: 1200px;
+            z-index: 0;
+            transform: scale(1.2);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 0.03; transform: scale(1.2); }
+        }
+
+        .hidden { display: none; }
+
+        .form-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .message-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .message-success { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        /* Loader */
+        .loader {
+            width: 100%;
+            height: 4px;
+            background: rgba(37, 99, 235, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            display: none;
+            z-index: 100;
+        }
+
+        .loader-bar {
+            width: 30%;
+            height: 100%;
+            background: #2563eb;
+            animation: loading 2s infinite linear;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        {% load cache %}
+        {% cache 3600 sidebar_v3 %}
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header p-8 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-900/30">
+                    <i class="bi bi-person-workspace text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-white font-extrabold text-xl leading-tight tracking-tighter uppercase">Portal</h2>
+                    <span class="text-gray-500 text-[10px] font-black uppercase tracking-widest block">HanuAi Employee</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav flex-1 px-5 py-6 overflow-y-auto">
+                <button onclick="loadTool('{% url \'generate_attendance_link' \}', 'Mark Attendance', this)" class="nav-item group">
+                    <div class="nav-icon bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-white">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <span class="nav-label">Mark Attendance</span>
+                </button>
+
+                <button onclick="loadTool('https://rims.roadathena.com/', 'RIMS', this)" class="nav-item group">
+                    <div class="nav-icon bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-white">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                    <span class="nav-label">RIMS</span>
+                </button>
+
+                <button onclick="loadTool('https://ai.roadathena.com/', 'Roadathena AI', this)" class="nav-item group">
+                    <div class="nav-icon bg-blue-500/10 text-blue-400 group-hover:bg-blue-500 group-hover:text-white">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <span class="nav-label">Roadathena AI</span>
+                </button>
+
+                <button onclick="loadTool('https://tenders.hanuai.com/', 'Business Login', this)" class="nav-item group">
+                    <div class="nav-icon bg-teal-500/10 text-teal-400 group-hover:bg-teal-500 group-hover:text-white">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="nav-label">Business Login</span>
+                </button>
+
+                <button onclick="loadTool('https://test.roadathena.com/', 'Quality Analysis', this)" class="nav-item group">
+                    <div class="nav-icon bg-green-500/10 text-green-400 group-hover:bg-green-500 group-hover:text-white">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <span class="nav-label">Quality Analysis</span>
+                </button>
+
+                <button onclick="toggleSurveyors()" class="nav-item group w-full text-left">
+                    <div class="nav-icon bg-pink-500/10 text-pink-400 group-hover:bg-pink-500 group-hover:text-white">
+                        <i class="bi bi-bezier2"></i>
+                    </div>
+                    <span class="nav-label">Surveyors</span>
+                    <i class="bi bi-chevron-down ml-auto text-gray-600 transition-transform duration-300 mr-2" id="surveyors-chevron"></i>
+                </button>
+                
+                <div id="surveyors-submenu" class="hidden pl-14 pr-4 py-2 space-y-2">
+                    <button onclick="loadTool('https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP.exe', 'Surveyors - Windows', this)" class="sub-nav-item">
+                        <i class="bi bi-windows mr-2"></i> Windows
+                    </button>
+                    <button onclick="loadTool('https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP', 'Surveyors - Ubuntu', this)" class="sub-nav-item">
+                        <i class="bi bi-ubuntu mr-2"></i> Ubuntu
+                    </button>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer p-8 mt-auto border-t border-gray-800/50 bg-[#0d121d]">
+                <a href="{% url 'logout' %}" class="flex items-center gap-3 text-gray-400 hover:text-red-400 transition-colors duration-300 font-bold text-sm">
+                    <i class="bi bi-box-arrow-left text-lg"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        {% endcache %}
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div id="loader" class="loader"><div class="loader-bar"></div></div>
+
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen-container welcome-screen active">
+                <img src="{% static 'Media/Base/HanuAi-logo.png' %}" alt="HanuAi" class="bg-watermark">
+                <div class="relative z-10 text-center opacity-40">
+                    <p class="text-sm uppercase tracking-[0.3em] font-light">Internal Operations Hub</p>
+                    <p class="mt-4 text-xs">Select a tool from the sidebar to begin</p>
+                </div>
+            </div>
+
+            <!-- Validation Screen -->
+            <div id="validation-screen" class="screen-container validation-screen">
+                <div class="verification-card">
+                    <div class="mb-6 text-center">
+                        <div class="w-16 h-16 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center mx-auto mb-4">
+                            <i class="bi bi-shield-lock text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Employee Verification</h3>
+                        <p class="text-gray-400 text-sm">Please verify your identity to access <span id="pending-tool-name" class="text-blue-400 font-bold">this tool</span></p>
+                    </div>
+
+                    <form id="verify-form" onsubmit="handleVerify(event)">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="user-name" class="form-input" placeholder="Your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="tel" id="user-mobile" class="form-input" placeholder="10-digit mobile" pattern="[0-9]{10}" required>
+                        </div>
+                        <div id="verify-message" class="form-message hidden"></div>
+                        <button type="submit" id="verify-btn" class="verify-btn mt-4">
+                            <span>Verify Identity</span>
+                            <i class="bi bi-arrow-right-short text-xl"></i>
+                        </button>
+                    </form>
+                    
+                    <button onclick="showScreen('welcome-screen')" class="w-full mt-4 text-xs text-gray-500 hover:text-gray-300 transition-colors">
+                        Cancel and return
+                    </button>
+                </div>
+            </div>
+
+            <!-- Iframe Screen -->
+            <div id="iframe-screen" class="screen-container iframe-screen">
+                <iframe id="tool-iframe" class="tool-iframe" src="about:blank"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let isVerified = {% if is_verified %}true{% else %}false{% endif %};
+        let pendingToolUrl = "";
+        let pendingToolName = "";
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen-container').forEach(s => {
+                s.classList.remove('active');
+                setTimeout(() => { if(!s.classList.contains('active')) s.style.display = 'none'; }, 500);
+            });
+            const target = document.getElementById(screenId);
+            target.style.display = 'flex';
+            if(screenId === 'iframe-screen') target.style.display = 'block';
+            setTimeout(() => target.classList.add('active'), 50);
+        }
+
+        function loadTool(url, name, btn) {
+            // Update active state in sidebar
+            document.querySelectorAll('.nav-item, .sub-nav-item').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+
+            if (!isVerified) {
+                pendingToolUrl = url;
+                pendingToolName = name;
+                document.getElementById('pending-tool-name').textContent = name;
+                showScreen('validation-screen');
+                return;
+            }
+
+            // If verified, load tool
+            const iframe = document.getElementById('tool-iframe');
+            const loader = document.getElementById('loader');
+            
+            loader.style.display = 'block';
+            iframe.src = url;
+            
+            iframe.onload = () => {
+                loader.style.display = 'none';
+            };
+
+            showScreen('iframe-screen');
+        }
+
+        async function handleVerify(e) {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const mobile = document.getElementById('user-mobile').value;
+            const msg = document.getElementById('verify-message');
+            const btn = document.getElementById('verify-btn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i><span>Verifying...</span>';
+            msg.className = 'form-message hidden';
+
+            try {
+                const response = await fetch('/api/validate-employee/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, mobile: mobile })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    isVerified = true;
+                    msg.textContent = '✓ Verification successful! Loading...';
+                    msg.className = 'form-message message-success';
+                    msg.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        loadTool(pendingToolUrl, pendingToolName);
+                    }, 1000);
+                } else {
+                    msg.textContent = result.message || '✗ Verification failed.';
+                    msg.className = 'form-message message-error';
+                    msg.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-xl"></i>';
+                }
+            } catch (error) {
+                msg.textContent = '✗ Error connecting to server.';
+                msg.className = 'form-message message-error';
+                msg.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-xl"></i>';
+            }
+        }
+
+        function toggleSurveyors() {
+            const submenu = document.getElementById('surveyors-submenu');
+            const chevron = document.getElementById('surveyors-chevron');
+            
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                submenu.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => { /* Secure Registration */ })
+                    .catch(err => { /* Failed Silently */ });
+            });
+        }
+    </script>
+</body>
+</html>

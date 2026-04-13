@@ -20,7 +20,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 from Website.views import custom_400, custom_403, custom_404, custom_500
 
 urlpatterns = [
@@ -29,6 +29,14 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
     path("favicon.ico", RedirectView.as_view(url=settings.STATIC_URL + "assets/img/favicon.ico")),
+    # Service Worker mapping for root scope access
+    path(
+        "sw.js",
+        TemplateView.as_view(
+            template_name="sw.js", content_type="application/javascript"
+        ),
+        name="sw.js",
+    ),
 ]
 
 # Serve media files even when DEBUG=False

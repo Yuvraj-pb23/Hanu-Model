@@ -21,6 +21,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('employee/', views.employee, name='employee'),
+    path('employee/dashboard/', views.employee_dashboard, name='employee_dashboard'),
     path('api/validate-employee/', views.validate_employee_api, name='validate_employee_api'),
     path('attendance/generate/', views.generate_attendance_link, name='generate_attendance_link'),    
     

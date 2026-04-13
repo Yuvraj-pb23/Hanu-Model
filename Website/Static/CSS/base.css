@@ -21,14 +21,23 @@ body::before {
 }
 
 html {
-  overflow-y: scroll;
+  height: 100%;
+  overflow: hidden !important;
   scroll-padding-top: 80px;
 }
 
 body {
+  height: 100%;
   background: #1c2027 !important;
   position: relative;
-  overflow-x: hidden;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Helper to lock scroll during preloader or modals */
+.scroll-lock {
+  overflow: hidden !important;
+  height: 100vh !important;
 }
 .beta-badge {
   background-color: white;

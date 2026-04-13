@@ -277,7 +277,8 @@ HanuAi {% endblock %} {% block content %}
   let actionTitle = "";
 
   document.getElementById("yes-btn").addEventListener("click", function () {
-    document.getElementById("attendance-overlay").style.display = "flex";
+    // Redirect to dashboard immediately
+    window.location.href = "{% url 'employee_dashboard' %}";
   });
 
   // Close overlay when clicking outside the modal
@@ -388,15 +389,8 @@ HanuAi {% endblock %} {% block content %}
           // Hide form overlay
           document.getElementById("download-form-overlay").style.display = "none";
 
-          // Check if it's Surveyors action
-          if (actionTitle === "Surveyors") {
-            // Show OS selection overlay
-            document.getElementById("os-selection-overlay").style.display = "flex";
-          } else {
-            // Hide attendance overlay and open URL directly
-            document.getElementById("attendance-overlay").style.display = "none";
-            window.open(targetUrl, "_blank");
-          }
+          // Redirect to dashboard
+          window.location.href = "{% url 'employee_dashboard' %}";
 
           // Reset form
           document.getElementById("download-form").reset();

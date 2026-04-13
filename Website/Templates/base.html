@@ -246,7 +246,7 @@
   </style>
 </head>
 
-<body class="min-h-screen text-base-content" id="water-body">
+<body class="min-h-screen text-base-content {% if request.resolver_match.url_name == 'home' %}scroll-lock{% endif %}" id="water-body">
   {% if request.resolver_match.url_name == 'home' %}
   <!-- Preloader Overlay (Homepage only) -->
   <div id="preloader-overlay"
@@ -371,6 +371,8 @@
     {% block content %}{% endblock %}
 
     <!-- FOOTER -->
+    {% load cache %}
+    {% cache 3600 footer_v2 %}
     <footer class="bg-[#0a0f1a] text-gray-400"
       style="padding-top: 2rem; padding-bottom: 2rem; padding-left: 5rem; padding-right: 5rem; position: relative; z-index: 2;">
       <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -530,6 +532,7 @@
         </p>
       </div>
     </footer>
+    {% endcache %}
 
     <!-- Scroll to Top Button -->
     <button id="scrollToTopBtn" class="scroll-to-top-btn" aria-label="Scroll to top">
@@ -812,8 +815,13 @@
       overlay && (overlay.style.display = 'none');
       return;
     }
+    // Lock scroll immediately
+    document.documentElement.classList.add('scroll-lock');
+    document.body.classList.add('scroll-lock');
+
     // Hide the navbar logo initially to prevent duplicate
     navLogo.style.visibility = 'hidden';
+
     // Wait for layout
     setTimeout(() => {
       // Get nav logo position and size (relative to viewport)
@@ -836,9 +844,24 @@
         overlay.style.display = 'none';
         // Keep logo hidden after morph
         logo.style.display = 'none';
+        
+        // Unlock scroll after page is ready
+        document.documentElement.classList.remove('scroll-lock');
+        document.body.classList.remove('scroll-lock');
       }, 700);
     }, 50); // Reduced initial delay for logo display
   });
+
+  // 🛡️ SCROLL GUARD: Prevents double scrollbars by keeping html hidden
+  (function() {
+    const guard = () => {
+      if (document.documentElement.style.overflow !== 'hidden' && !document.documentElement.classList.contains('scroll-lock')) {
+          // document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+      }
+    };
+    setInterval(guard, 1000);
+    window.addEventListener('load', guard);
+  })();
 </script>
 {% endif %}
 
@@ -853,7 +876,8 @@
 
   // Define and store the handler
   window.updateNavHandler = function () {
-    if (window.scrollY > 10) {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop > 10) {
       nav.classList.add("scrolled");
     } else {
       nav.classList.remove("scrolled");
@@ -861,10 +885,27 @@
   };
 
   window.addEventListener("scroll", window.updateNavHandler);
+  // Also listen on body since we moved the scroll container
+  document.body.addEventListener("scroll", window.updateNavHandler);
   window.updateNavHandler();
 </script>
 
-<!-- Scroll to Top Button Script -->
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => {
+              // Successfully registered locally
+            })
+            .catch(err => {
+              // Registration failed silently for security
+            });
+        });
+      }
+    </script>
+
+    <!-- Scroll to Top Button Script -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const scrollBtn = document.getElementById('scrollToTopBtn');
@@ -872,8 +913,8 @@
 
     function updateScrollProgress() {
       const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const documentHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
       const scrollableHeight = documentHeight - windowHeight;
       const scrollPercentage = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
 
@@ -890,7 +931,7 @@
 
     // Update on scroll
     let ticking = false;
-    window.addEventListener('scroll', function () {
+    const scrollHandler = function () {
       if (!ticking) {
         window.requestAnimationFrame(function () {
           updateScrollProgress();
@@ -898,17 +939,25 @@
         });
         ticking = true;
       }
-    });
+    };
+    
+    window.addEventListener('scroll', scrollHandler);
+    document.body.addEventListener('scroll', scrollHandler);
 
     // Initial check
     updateScrollProgress();
 
     // Smooth scroll to top on click
     scrollBtn.addEventListener('click', function () {
-      window.scrollTo({
+      const scrollBody = document.body;
+      scrollBody.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
+      // Fallback for older browsers
+      if (scrollBody.scrollTop > 0) {
+        scrollBody.scrollTop = 0;
+      }
     });
   });
 </script>

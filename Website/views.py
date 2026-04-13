@@ -194,12 +194,24 @@ def generate_attendance_link(request):
     except Exception as e:
         logger.error(f"Error generating attendance link: {e}")
         messages.error(request, "An unexpected error occurred.")
-        return redirect('employee')
+        return redirect('employee_dashboard')
 
 
 
 def employee(request):
+    """
+    Renders the employee entry page.
+    If already verified, redirects to the dashboard.
+    """
     return render(request, "employee.html")
+
+
+def employee_dashboard(request):
+    """
+    Renders the employee dashboard.
+    """
+    is_verified = request.session.get('is_verified_employee', False)
+    return render(request, "dashboard.html", {"is_verified": is_verified})
 
 
 STATIC_USER = {
@@ -247,7 +259,7 @@ def logout_view(request):
     request.session.pop("is_authenticated_simple", None)
     request.session.pop("user_email_simple", None)
     request.session.pop("user_role_simple", None)
-    return redirect("login")
+    return redirect("home")
 
 
 def _require_blogger_session(request):
@@ -843,6 +855,8 @@ def validate_employee_api(request):
                             user_exists = any(str(user.get("phone", "")) == mobile for user in employee_list)
                             
                             if user_exists:
+                                request.session['is_verified_employee'] = True
+                                request.session['verified_mobile'] = mobile
                                 return JsonResponse({"success": True, "message": "Verification successful."})
                             else:
                                 return JsonResponse({
