@@ -254,12 +254,14 @@ def login_view(request):
 
 def logout_view(request):
     """
-    Clear simple session login.
+    Clear all session login data and redirect to employee entry page.
     """
     request.session.pop("is_authenticated_simple", None)
     request.session.pop("user_email_simple", None)
     request.session.pop("user_role_simple", None)
-    return redirect("home")
+    request.session.pop("is_verified_employee", None)
+    request.session.pop("verified_mobile", None)
+    return redirect("employee")
 
 
 def _require_blogger_session(request):

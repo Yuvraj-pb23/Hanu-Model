@@ -1,19 +1,20 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Dashboard - HanuAi</title>
-    
+
     <!-- Google Fonts - Manrope -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    
+
     <!-- Tailwind -->
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
@@ -41,6 +42,17 @@
             flex-direction: column;
             z-index: 50;
             flex-shrink: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .dashboard-sidebar.collapsed {
+            width: 80px;
+        }
+
+
+        .sidebar-header {
+            padding: 2rem 2rem 1rem 2rem !important;
         }
 
         .nav-item {
@@ -48,7 +60,7 @@
             align-items: center;
             padding: 12px 16px;
             border-radius: 12px;
-            color: #9ca3af;
+            color: #d1d5db;
             font-weight: 600;
             font-size: 0.95rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -63,7 +75,7 @@
 
         .nav-item:hover {
             background: rgba(255, 255, 255, 0.03);
-            color: #f3f4f6;
+            color: #ffffff;
             transform: translateX(4px);
         }
 
@@ -82,13 +94,66 @@
             border-radius: 10px;
             margin-right: 14px;
             font-size: 1.2rem;
+            flex-shrink: 0;
+            transition: margin 0.3s;
         }
+
+        .dashboard-sidebar.collapsed .nav-icon {
+            margin-right: 0;
+        }
+
+        .dashboard-sidebar.collapsed .nav-label,
+        .dashboard-sidebar.collapsed .sidebar-header h2,
+        .dashboard-sidebar.collapsed .sidebar-header span,
+        .dashboard-sidebar.collapsed .sidebar-footer span,
+        .dashboard-sidebar.collapsed #surveyors-chevron,
+        .dashboard-sidebar.collapsed .nav-item::after {
+            display: none !important;
+        }
+
+        .dashboard-sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 12px 0;
+        }
+
+        .dashboard-sidebar.collapsed .sidebar-header {
+            padding: 2rem 0 1rem 0 !important;
+            justify-content: center;
+        }
+
+        .dashboard-sidebar.collapsed .sidebar-header .sidebar-logo-text {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            right: -12px;
+            top: 32px;
+            width: 24px;
+            height: 24px;
+            background: #2563eb;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+            border: 2px solid #0a0f1a;
+            transition: all 0.3s;
+        }
+
+        .sidebar-toggle:hover {
+            background: #1d4ed8;
+            transform: scale(1.1);
+        }
+
 
         .sub-nav-item {
             display: block;
             padding: 8px 12px;
             border-radius: 8px;
-            color: #6b7280;
+            color: #9ca3af;
             font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.2s;
@@ -98,7 +163,44 @@
 
         .sub-nav-item:hover {
             background: rgba(255, 255, 255, 0.05);
-            color: #d1d5db;
+            color: #f3f4f6;
+        }
+
+        /* Unique Attendance Button */
+        .attendance-btn {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.2) 100%) !important;
+            border: 1px solid rgba(249, 115, 22, 0.2) !important;
+            margin-top: 10px;
+            margin-bottom: 20px !important;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.1);
+        }
+
+        .attendance-btn:hover {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.3) 100%) !important;
+            border-color: rgba(249, 115, 22, 0.4) !important;
+            box-shadow: 0 4px 20px rgba(234, 88, 12, 0.2);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .attendance-btn .nav-icon {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+            animation: pulse-orange 2s infinite;
+        }
+
+        @keyframes pulse-orange {
+            0% {
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+            }
         }
 
         /* Main Content Area */
@@ -145,9 +247,21 @@
             background: radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, transparent 70%);
         }
 
+        .hub-text {
+            font-size: 22px;
+            letter-spacing: 0.3em;
+            font-weight: 600;
+        }
+
+        .sub-text {
+            font-size: 16px;
+            color: #9ca3af;
+        }
+
         /* Iframe Screen */
-        .iframe-screen {
-            display: block; /* Overrides flex when active */
+        .iframe-screen.active {
+            display: block;
+            /* Overrides flex when active */
         }
 
         .tool-iframe {
@@ -171,8 +285,15 @@
         }
 
         @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .form-group {
@@ -232,20 +353,29 @@
         .bg-watermark {
             position: absolute;
             pointer-events: none;
-            opacity: 0.03;
+            opacity: 0.3;
             width: 80%;
             max-width: 1200px;
             z-index: 0;
-            transform: scale(1.2);
+            transform: scale(1);
             animation: fadeIn 1.5s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(1.1); }
-            to { opacity: 0.03; transform: scale(1.2); }
+            from {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+
+            to {
+                opacity: 0.3;
+                transform: scale(1);
+            }
         }
 
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
 
         .form-message {
             margin-top: 15px;
@@ -255,8 +385,17 @@
             text-align: center;
         }
 
-        .message-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .message-success { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .message-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .message-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
 
         /* Loader */
         .loader {
@@ -279,37 +418,127 @@
         }
 
         @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(400%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(400%);
+            }
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .dashboard-sidebar {
+                width: 100% !important;
+                z-index: 10;
+            }
+
+            .dashboard-sidebar.collapsed {
+                width: 80px !important;
+            }
+
+            .sidebar-toggle {
+                display: flex !important;
+                right: 20px !important;
+                top: 40px !important;
+            }
+
+            .dashboard-sidebar.collapsed .sidebar-toggle {
+                right: -12px !important;
+            }
+
+            .main-content {
+                display: none !important;
+                position: relative;
+                flex: 1;
+                width: calc(100% - 80px);
+                z-index: 5;
+            }
+
+            .dashboard-sidebar.collapsed+.main-content {
+                display: flex !important;
+            }
+
+            .welcome-screen {
+                display: flex !important;
+            }
+
+            .welcome-screen .hub-text {
+                font-size: 12px !important;
+                letter-spacing: 0.2em !important;
+            }
+
+            .welcome-screen .sub-text {
+                font-size: 10px !important;
+            }
+
+            .verification-card {
+                width: 90%;
+                padding: 24px;
+                border-radius: 16px;
+            }
+
+            .mobile-back-btn {
+                display: none !important;
+                /* Replaced by sidebar toggle arrow */
+            }
+        }
+
+
+        .mobile-back-btn {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2000;
+            align-items: center;
+            gap: 8px;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
-        {% load cache %}
-        {% cache 3600 sidebar_v3 %}
         <aside class="dashboard-sidebar">
-            <div class="sidebar-header p-8 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-900/30">
+
+            <div class="sidebar-header flex items-center gap-4">
+                <div onclick="toggleSidebar()" class="sidebar-toggle" id="sidebar-toggle-btn">
+                    <i class="bi bi-chevron-left" id="toggle-icon"></i>
+                </div>
+                <div
+                    class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-900/30 flex-shrink-0">
                     <i class="bi bi-person-workspace text-white text-2xl"></i>
                 </div>
-                <div>
-                    <h2 class="text-white font-extrabold text-xl leading-tight tracking-tighter uppercase">Portal</h2>
-                    <span class="text-gray-500 text-[10px] font-black uppercase tracking-widest block">HanuAi Employee</span>
+                <div class="sidebar-logo-text">
+                    <h2 class="text-white font-extrabold text-xl leading-tight uppercase">Portal</h2>
+                    <span class="text-gray-500 text-[10px] font-black uppercase tracking-widest block">HanuAi
+                        Employee</span>
                 </div>
             </div>
 
-            <nav class="sidebar-nav flex-1 px-5 py-6 overflow-y-auto">
-                <button onclick="loadTool('{% url \'generate_attendance_link' \}', 'Mark Attendance', this)" class="nav-item group">
-                    <div class="nav-icon bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-white">
+
+            <nav class="sidebar-nav flex-1 px-5 overflow-y-auto">
+                <button onclick="loadTool('{% url 'generate_attendance_link' %}', 'Mark Attendance', this)"
+                    class="nav-item group attendance-btn">
+                    <div class="nav-icon">
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <span class="nav-label">Mark Attendance</span>
                 </button>
 
                 <button onclick="loadTool('https://rims.roadathena.com/', 'RIMS', this)" class="nav-item group">
-                    <div class="nav-icon bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-white">
+                    <div
+                        class="nav-icon bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-white">
                         <i class="bi bi-diagram-3"></i>
                     </div>
                     <span class="nav-label">RIMS</span>
@@ -322,15 +551,18 @@
                     <span class="nav-label">Roadathena AI</span>
                 </button>
 
-                <button onclick="loadTool('https://tenders.hanuai.com/', 'Business Login', this)" class="nav-item group">
+                <button onclick="loadTool('https://tenders.hanuai.com/', 'Business Login', this)"
+                    class="nav-item group">
                     <div class="nav-icon bg-teal-500/10 text-teal-400 group-hover:bg-teal-500 group-hover:text-white">
                         <i class="bi bi-briefcase"></i>
                     </div>
                     <span class="nav-label">Business Login</span>
                 </button>
 
-                <button onclick="loadTool('https://test.roadathena.com/', 'Quality Analysis', this)" class="nav-item group">
-                    <div class="nav-icon bg-green-500/10 text-green-400 group-hover:bg-green-500 group-hover:text-white">
+                <button onclick="loadTool('https://test.roadathena.com/', 'Quality Analysis', this)"
+                    class="nav-item group">
+                    <div
+                        class="nav-icon bg-green-500/10 text-green-400 group-hover:bg-green-500 group-hover:text-white">
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
                     <span class="nav-label">Quality Analysis</span>
@@ -341,38 +573,51 @@
                         <i class="bi bi-bezier2"></i>
                     </div>
                     <span class="nav-label">Surveyors</span>
-                    <i class="bi bi-chevron-down ml-auto text-gray-600 transition-transform duration-300 mr-2" id="surveyors-chevron"></i>
+                    <i class="bi bi-chevron-down ml-auto text-gray-600 transition-transform duration-300 mr-2"
+                        id="surveyors-chevron"></i>
                 </button>
-                
+
                 <div id="surveyors-submenu" class="hidden pl-14 pr-4 py-2 space-y-2">
-                    <button onclick="loadTool('https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP.exe', 'Surveyors - Windows', this)" class="sub-nav-item">
+                    <button
+                        onclick="loadTool('https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP.exe', 'Surveyors - Windows', this)"
+                        class="sub-nav-item">
                         <i class="bi bi-windows mr-2"></i> Windows
                     </button>
-                    <button onclick="loadTool('https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP', 'Surveyors - Ubuntu', this)" class="sub-nav-item">
+                    <button
+                        onclick="loadTool('https://raiotransection.s3.ap-south-1.amazonaws.com/input/web_site+data_sorting_app/RCSUP', 'Surveyors - Ubuntu', this)"
+                        class="sub-nav-item">
                         <i class="bi bi-ubuntu mr-2"></i> Ubuntu
                     </button>
                 </div>
             </nav>
 
             <div class="sidebar-footer p-8 mt-auto border-t border-gray-800/50 bg-[#0d121d]">
-                <a href="{% url 'logout' %}" class="flex items-center gap-3 text-gray-400 hover:text-red-400 transition-colors duration-300 font-bold text-sm">
+                <a href="{% url 'logout' %}"
+                    class="flex items-center gap-3 text-gray-400 hover:text-red-400 transition-colors duration-300 font-bold text-sm">
                     <i class="bi bi-box-arrow-left text-lg"></i>
                     <span>Sign Out</span>
                 </a>
             </div>
         </aside>
-        {% endcache %}
+
 
         <!-- Main Content Area -->
         <main class="main-content">
-            <div id="loader" class="loader"><div class="loader-bar"></div></div>
+            <div onclick="closeMobileOverlay()" class="mobile-back-btn">
+                <i class="bi bi-chevron-left"></i>
+                <span>Back to Menu</span>
+            </div>
+            <div id="loader" class="loader">
+                <div class="loader-bar"></div>
+            </div>
+
 
             <!-- Welcome Screen -->
             <div id="welcome-screen" class="screen-container welcome-screen active">
                 <img src="{% static 'Media/Base/HanuAi-logo.png' %}" alt="HanuAi" class="bg-watermark">
-                <div class="relative z-10 text-center opacity-40">
-                    <p class="text-sm uppercase tracking-[0.3em] font-light">Internal Operations Hub</p>
-                    <p class="mt-4 text-xs">Select a tool from the sidebar to begin</p>
+                <div class="relative z-10 text-center opacity-80">
+                    <p class="hub-text uppercase tracking-[0.3em] font-light">Internal Operations Hub</p>
+                    <p class="sub-text mt-4">Select a tool from the sidebar to begin</p>
                 </div>
             </div>
 
@@ -380,11 +625,13 @@
             <div id="validation-screen" class="screen-container validation-screen">
                 <div class="verification-card">
                     <div class="mb-6 text-center">
-                        <div class="w-16 h-16 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center mx-auto mb-4">
+                        <div
+                            class="w-16 h-16 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center mx-auto mb-4">
                             <i class="bi bi-shield-lock text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">Employee Verification</h3>
-                        <p class="text-gray-400 text-sm">Please verify your identity to access <span id="pending-tool-name" class="text-blue-400 font-bold">this tool</span></p>
+                        <p class="text-gray-400 text-sm">Please verify your identity to access <span
+                                id="pending-tool-name" class="text-blue-400 font-bold">this tool</span></p>
                     </div>
 
                     <form id="verify-form" onsubmit="handleVerify(event)">
@@ -394,7 +641,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Mobile Number</label>
-                            <input type="tel" id="user-mobile" class="form-input" placeholder="10-digit mobile" pattern="[0-9]{10}" required>
+                            <input type="tel" id="user-mobile" class="form-input" placeholder="10-digit mobile"
+                                pattern="[0-9]{10}" required>
                         </div>
                         <div id="verify-message" class="form-message hidden"></div>
                         <button type="submit" id="verify-btn" class="verify-btn mt-4">
@@ -402,8 +650,9 @@
                             <i class="bi bi-arrow-right-short text-xl"></i>
                         </button>
                     </form>
-                    
-                    <button onclick="showScreen('welcome-screen')" class="w-full mt-4 text-xs text-gray-500 hover:text-gray-300 transition-colors">
+
+                    <button onclick="showScreen('welcome-screen')"
+                        class="w-full mt-4 text-xs text-gray-500 hover:text-gray-300 transition-colors">
                         Cancel and return
                     </button>
                 </div>
@@ -417,50 +666,118 @@
     </div>
 
     <script>
-        let isVerified = {% if is_verified %}true{% else %}false{% endif %};
+        let isVerified = false; // Always start as unverified to force validation every time
         let pendingToolUrl = "";
+
         let pendingToolName = "";
 
         function showScreen(screenId) {
-            document.querySelectorAll('.screen-container').forEach(s => {
-                s.classList.remove('active');
-                setTimeout(() => { if(!s.classList.contains('active')) s.style.display = 'none'; }, 500);
-            });
+            const screens = document.querySelectorAll('.screen-container');
             const target = document.getElementById(screenId);
-            target.style.display = 'flex';
-            if(screenId === 'iframe-screen') target.style.display = 'block';
-            setTimeout(() => target.classList.add('active'), 50);
+
+            screens.forEach(s => {
+                s.classList.remove('active');
+                // Ensure other screens hide after their transition
+                if (s !== target) {
+                    setTimeout(() => {
+                        if (!s.classList.contains('active')) s.style.display = 'none';
+                    }, 500);
+                }
+            });
+
+            target.style.display = (screenId === 'iframe-screen') ? 'block' : 'flex';
+
+            // Special handling for mobile overlay
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector('.dashboard-sidebar');
+                if (screenId === 'welcome-screen') {
+                    sidebar.classList.remove('collapsed');
+                } else {
+                    // Automatically collapse sidebar to show form/tool area
+                    sidebar.classList.add('collapsed');
+                }
+            }
+
+            // Short delay to ensure display: flex is painted before opacity transition starts
+            setTimeout(() => {
+                target.classList.add('active');
+            }, 50);
         }
+
+
+        function closeMobileOverlay() {
+            showScreen('welcome-screen');
+        }
+
 
         function loadTool(url, name, btn) {
             // Update active state in sidebar
             document.querySelectorAll('.nav-item, .sub-nav-item').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+            if (btn) btn.classList.add('active');
 
-            if (!isVerified) {
+            const isAttendance = url.includes('/attendance/generate/');
+
+            if (!isVerified && !isAttendance) {
                 pendingToolUrl = url;
                 pendingToolName = name;
                 document.getElementById('pending-tool-name').textContent = name;
+
+                // Reset form fields and state
+                document.getElementById('user-name').value = '';
+                document.getElementById('user-mobile').value = '';
+                const msg = document.getElementById('verify-message');
+                msg.className = 'form-message hidden';
+                msg.textContent = '';
+                const vBtn = document.getElementById('verify-btn');
+                vBtn.disabled = false;
+                vBtn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-xl"></i>';
+
                 showScreen('validation-screen');
                 return;
             }
 
-            // If verified, load tool
+            // Check if URL is external (starts with http) or specifically the attendance link
+            if (url.startsWith('http') || url.includes('/attendance/generate/')) {
+                window.open(url, '_blank');
+                // Stay on welcome screen or current screen instead of showing empty iframe
+                if (document.getElementById('welcome-screen').classList.contains('active') === false) {
+                    showScreen('welcome-screen');
+                }
+                // Reset verification state so the NEXT click requires validation again
+                isVerified = false;
+                return;
+            }
+
+
+            // If verified and internal, load tool in iframe
             const iframe = document.getElementById('tool-iframe');
             const loader = document.getElementById('loader');
-            
+
             loader.style.display = 'block';
             iframe.src = url;
-            
+
             iframe.onload = () => {
                 loader.style.display = 'none';
             };
 
             showScreen('iframe-screen');
+
+            // Reset verification state so the NEXT click requires validation again
+            isVerified = false;
         }
+
 
         async function handleVerify(e) {
             e.preventDefault();
+
+            // Open a blank window reference immediately (direct user gesture) to avoid pop-up blockers
+            // Now includes the attendance link since it needs to open in a new tab
+            let newToolWindow = null;
+            if (pendingToolUrl && (pendingToolUrl.startsWith('http') || pendingToolUrl.includes('/attendance/generate/'))) {
+                newToolWindow = window.open('about:blank', '_blank');
+            }
+
+
             const name = document.getElementById('user-name').value;
             const mobile = document.getElementById('user-mobile').value;
             const msg = document.getElementById('verify-message');
@@ -484,11 +801,19 @@
                     msg.textContent = '✓ Verification successful! Loading...';
                     msg.className = 'form-message message-success';
                     msg.classList.remove('hidden');
-                    
-                    setTimeout(() => {
+
+                    // If it was an external tool, the new window is already open
+                    if (newToolWindow) {
+                        newToolWindow.location.href = pendingToolUrl;
+                        // Return to welcome screen on the main dashboard
+                        showScreen('welcome-screen');
+                        isVerified = false; // Reset for next tool
+                    } else {
+                        // Internal tool loader
                         loadTool(pendingToolUrl, pendingToolName);
-                    }, 1000);
+                    }
                 } else {
+                    if (newToolWindow) newToolWindow.close();
                     msg.textContent = result.message || '✗ Verification failed.';
                     msg.className = 'form-message message-error';
                     msg.classList.remove('hidden');
@@ -496,6 +821,7 @@
                     btn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-xl"></i>';
                 }
             } catch (error) {
+                if (newToolWindow) newToolWindow.close();
                 msg.textContent = '✗ Error connecting to server.';
                 msg.className = 'form-message message-error';
                 msg.classList.remove('hidden');
@@ -507,7 +833,7 @@
         function toggleSurveyors() {
             const submenu = document.getElementById('surveyors-submenu');
             const chevron = document.getElementById('surveyors-chevron');
-            
+
             if (submenu.classList.contains('hidden')) {
                 submenu.classList.remove('hidden');
                 chevron.style.transform = 'rotate(180deg)';
@@ -516,6 +842,21 @@
                 chevron.style.transform = 'rotate(0deg)';
             }
         }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const icon = document.getElementById('toggle-icon');
+            const isCollapsed = sidebar.classList.toggle('collapsed');
+
+            if (isCollapsed) {
+                icon.className = 'bi bi-chevron-right';
+                // Close submenu if open
+                document.getElementById('surveyors-submenu').classList.add('hidden');
+            } else {
+                icon.className = 'bi bi-chevron-left';
+            }
+        }
+
 
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
@@ -527,4 +868,5 @@
         }
     </script>
 </body>
+
 </html>
