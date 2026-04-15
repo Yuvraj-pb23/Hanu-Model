@@ -763,8 +763,11 @@
                 return;
             }
 
-            // Check if URL is external (starts with http) or specifically the attendance link
-            if (url.startsWith('http') || url.includes('/attendance/generate/')) {
+            // Check if URL is external or requires opening in a new tab
+            const newTabUrls = ['/attendance/generate/', '/rsa-model/'];
+            const needsNewTab = url.startsWith('http') || newTabUrls.some(u => url.includes(u));
+
+            if (needsNewTab) {
                 window.open(url, '_blank');
                 // Stay on welcome screen or current screen instead of showing empty iframe
                 if (document.getElementById('welcome-screen').classList.contains('active') === false) {
@@ -794,10 +797,13 @@
             e.preventDefault();
 
             // Open a blank window reference immediately (direct user gesture) to avoid pop-up blockers
-            // Now includes the attendance link since it needs to open in a new tab
             let newToolWindow = null;
-            if (pendingToolUrl && (pendingToolUrl.startsWith('http') || pendingToolUrl.includes('/attendance/generate/'))) {
-                newToolWindow = window.open('about:blank', '_blank');
+            if (pendingToolUrl) {
+                const newTabUrls = ['/attendance/generate/', '/rsa-model/'];
+                const needsNewTab = pendingToolUrl.startsWith('http') || newTabUrls.some(u => pendingToolUrl.includes(u));
+                if (needsNewTab) {
+                    newToolWindow = window.open('about:blank', '_blank');
+                }
             }
 
 

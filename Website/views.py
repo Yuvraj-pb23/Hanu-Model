@@ -22,6 +22,10 @@ import logging
 import tempfile
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
+import google.generativeai as genai
+import PIL.Image
+import pandas as pd
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -897,6 +901,35 @@ def validate_employee_api(request):
 
 
 
+@csrf_exempt
+def process_rsa_upload(request):
+    if request.method == 'POST':
+        files = request.FILES.getlist('files[]')
+        if not files:
+            return JsonResponse({'success': False, 'message': 'No files uploaded.'})
+
+        image_paths = []
+        temp_dir = tempfile.mkdtemp()
+        
+        try:
+            for f in files:
+                file_path = os.path.join(temp_dir, f.name)
+                with open(file_path, 'wb+') as destination:
+                    for chunk in f.chunks():
+                        destination.write(chunk)
+                image_paths.append(file_path)
+
+            from .test3 import process_uploaded_images
+            results = process_uploaded_images(image_paths)
+            return JsonResponse({'success': True, 'data': results})
+        except Exception as e:
+            logger.error(f"Error processing RSA: {str(e)}")
+            return JsonResponse({'success': False, 'message': str(e)})
+        finally:
+            import shutil
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return JsonResponse({'success': False, 'message': 'Invalid request.'})
 
 
 # Custom Error Handlers

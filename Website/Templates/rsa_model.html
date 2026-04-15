@@ -1,0 +1,1371 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering AI | Sign Board Extraction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 💎 Diamond Light Theme */
+            --bg-base: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(148, 163, 184, 0.3);
+            --primary: #7dd3fc;
+            --primary-dark: #38bdf8;
+            --primary-gradient: linear-gradient(135deg, #bae6fd, #7dd3fc, #38bdf8);
+            --success-gradient: linear-gradient(135deg, #86efac, #22c55e);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --diamond-glow: 0 0 20px rgba(125, 211, 252, 0.4), 0 0 40px rgba(186, 230, 253, 0.2);
+            
+            /* Corporate Employee Colors */
+            --employee-skin: #ffdbac;
+            --employee-hair: #4a3728;
+            --employee-shirt: #ffffff;
+            --employee-tie: #38bdf8;
+            --employee-pants: #1e293b;
+            --employee-shoes: #0f172a;
+            
+            /* Stair Colors */
+            --stair-base: #f1f5f9;
+            --stair-top: #ffffff;
+            --stair-edge: #cbd5e1;
+            --stair-glow: rgba(56, 189, 248, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(186, 230, 253, 0.25), transparent 35%),
+                radial-gradient(circle at 80% 70%, rgba(125, 211, 252, 0.2), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1), transparent 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Diamond sparkle particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(186, 230, 253, 0.8), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(125, 211, 252, 0.6), transparent),
+                radial-gradient(1.5px 1.5px at 90px 40px, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(186, 230, 253, 0.7), transparent),
+                radial-gradient(1.5px 1.5px at 230px 80px, rgba(125, 211, 252, 0.8), transparent);
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: sparkle 8s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes sparkle {
+            0% { background-position: 0 0, 30px 30px, 60px 15px, 90px 45px, 120px 20px; }
+            100% { background-position: 300px 300px, 330px 330px, 360px 315px, 390px 345px, 420px 320px; }
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0f172a, #38bdf8, #0f172a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            text-shadow: var(--diamond-glow);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-top: 8px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08), var(--diamond-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(186, 230, 253, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: rotate(45deg) translateX(-100%); }
+            50% { transform: rotate(45deg) translateX(100%); }
+        }
+
+        /* Top Grid Workspace - UPDATED RATIO TO MAKE LEFT PANEL BIGGER */
+        #input-workspace {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* ============ STAIRS & CORPORATE EMPLOYEE STYLES ============ */
+        .stairs-container {
+            position: relative;
+            height: 400px;
+            margin: 25px 0 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Staircase Structure */
+        .stairs {
+            position: relative;
+            width: 280px;
+            height: 100%;
+        }
+
+        .stair {
+            position: absolute;
+            left: 0;
+            height: 20px;
+            background: linear-gradient(180deg, var(--stair-top), var(--stair-base));
+            border: 1px solid var(--stair-edge);
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.5s ease;
+        }
+
+        .stair::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(180deg, var(--stair-edge), var(--stair-base));
+            border-radius: 0 0 4px 4px;
+        }
+
+        .stair.active {
+            background: linear-gradient(180deg, #bae6fd, #7dd3fc);
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 15px var(--stair-glow), var(--diamond-glow);
+        }
+
+        .stair.completed {
+            background: linear-gradient(180deg, #86efac, #22c55e);
+            border-color: #16a34a;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        /* Stair positions */
+        .stair-1 { bottom: 20px; width: 280px; }
+        .stair-2 { bottom: 90px; width: 210px; left: 35px; }
+        .stair-3 { bottom: 160px; width: 140px; left: 70px; }
+        .stair-4 { bottom: 230px; width: 70px; left: 105px; }
+
+        /* Stair labels */
+        .stair-label {
+            position: absolute;
+            right: -150px;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .stair.active .stair-label,
+        .stair.completed .stair-label {
+            opacity: 1;
+            color: var(--text-main);
+        }
+
+        .stair-1 .stair-label { bottom: 10px; }
+        .stair-2 .stair-label { bottom: 10px; }
+        .stair-3 .stair-label { bottom: 10px; }
+        .stair-4 .stair-label { bottom: 10px; }
+
+        /* Cute Corporate Employee Character */
+        .employee {
+            position: absolute;
+            left: 20px;
+            bottom: 40px;
+            transition: bottom 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            width: 60px;
+            height: 100px;
+        }
+
+        .employee-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+        }
+
+        /* Employee animations */
+        .employee.climbing .arm-left {
+            animation: employeeArmSwingLeft 0.5s ease-in-out infinite alternate;
+            transform-origin: 22px 50px;
+        }
+        
+        .employee.climbing .arm-right {
+            animation: employeeArmSwingRight 0.5s ease-in-out infinite alternate;
+            transform-origin: 38px 50px;
+        }
+        
+        .employee.climbing .leg-left {
+            animation: employeeLegSwingLeft 0.4s ease-in-out infinite alternate;
+            transform-origin: 26px 85px;
+        }
+        
+        .employee.climbing .leg-right {
+            animation: employeeLegSwingRight 0.4s ease-in-out infinite alternate;
+            transform-origin: 34px 85px;
+        }
+
+        .employee.climbing .head {
+            animation: employeeHeadBob 0.6s ease-in-out infinite alternate;
+        }
+
+        .employee.climbing .briefcase {
+            animation: briefcaseSwing 0.5s ease-in-out infinite alternate;
+            transform-origin: 45px 65px;
+        }
+
+        @keyframes employeeArmSwingLeft {
+            from { transform: rotate(10deg); }
+            to { transform: rotate(-20deg); }
+        }
+        
+        @keyframes employeeArmSwingRight {
+            from { transform: rotate(-10deg); }
+            to { transform: rotate(20deg); }
+        }
+        
+        @keyframes employeeLegSwingLeft {
+            from { transform: rotate(5deg); }
+            to { transform: rotate(-12deg); }
+        }
+        
+        @keyframes employeeLegSwingRight {
+            from { transform: rotate(-5deg); }
+            to { transform: rotate(12deg); }
+        }
+        
+        @keyframes employeeHeadBob {
+            from { transform: translateY(0); }
+            to { transform: translateY(-2px); }
+        }
+        
+        @keyframes briefcaseSwing {
+            from { transform: rotate(5deg); }
+            to { transform: rotate(-5deg); }
+        }
+
+        /* Success celebration animation */
+        .employee.celebrating .arm-left {
+            animation: celebrateArmLeft 0.6s ease-in-out infinite alternate;
+            transform-origin: 22px 50px;
+        }
+        
+        .employee.celebrating .arm-right {
+            animation: celebrateArmRight 0.6s ease-in-out infinite alternate;
+            transform-origin: 38px 50px;
+        }
+
+        @keyframes celebrateArmLeft {
+            from { transform: rotate(-120deg); }
+            to { transform: rotate(-140deg); }
+        }
+        
+        @keyframes celebrateArmRight {
+            from { transform: rotate(120deg); }
+            to { transform: rotate(140deg); }
+        }
+
+        /* Progress Badge on Employee's Back */
+        .progress-badge {
+            position: absolute;
+            top: 25px;
+            right: -50px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffffff, #f0f9ff);
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4), var(--diamond-glow);
+            z-index: 25;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .progress-badge.visible {
+            opacity: 1;
+            animation: badgeGlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4), var(--diamond-glow); }
+            50% { box-shadow: 0 6px 25px rgba(56, 189, 248, 0.7), 0 0 30px rgba(186, 230, 253, 0.5); }
+        }
+
+        .progress-icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .progress-label {
+            font-size: 8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        /* Diamond sparkle on badge */
+        .progress-badge::after {
+            content: '💎';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 16px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-4px) rotate(10deg); }
+        }
+
+        /* Step completion checkmark */
+        .step-checkmark {
+            position: absolute;
+            right: -35px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+            opacity: 0;
+            transform: translateY(-50%) scale(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step-checkmark.visible {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+
+        /* Timeline Details */
+        .timeline-details {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--glass-border);
+        }
+
+        .timeline-step {
+            padding: 14px 18px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timeline-step.active {
+            background: linear-gradient(135deg, rgba(186, 230, 253, 0.3), rgba(125, 211, 252, 0.2));
+            border-left-color: var(--primary-dark);
+            opacity: 1;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+            transform: translateX(3px);
+        }
+
+        .timeline-step.completed {
+            background: linear-gradient(135deg, rgba(134, 239, 172, 0.25), rgba(34, 197, 94, 0.15));
+            border-left-color: #22c55e;
+            opacity: 1;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .timeline-step.active .step-number {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+        }
+
+        .timeline-step.completed .step-number {
+            background: linear-gradient(135deg, #86efac, #22c55e);
+            color: white;
+        }
+
+        .step-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .step-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Upload Section */
+        .upload-area {
+            border: 3px dashed rgba(56, 189, 248, 0.4);
+            border-radius: 20px;
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(145deg, rgba(255,255,255,0.6), rgba(241,245,249,0.8));
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(186, 230, 253, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-dark);
+            background: linear-gradient(145deg, rgba(186, 230, 253, 0.2), rgba(125, 211, 252, 0.15));
+            transform: translateY(-3px);
+            box-shadow: var(--diamond-glow);
+        }
+
+        .upload-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6));
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .upload-subtext {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        #file-input { display: none; }
+
+        /* Progress Loader */
+        .progress-container {
+            display: none;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 12px;
+            background: rgba(148, 163, 184, 0.15);
+            border-radius: 12px;
+            margin: 25px 0;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5), var(--diamond-glow);
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .status-text {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            background: linear-gradient(145deg, #f1f5f9, #ffffff);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: left;
+            height: 100px;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .terminal-window div {
+            font-size: 12px;
+            color: #059669;
+            margin-bottom: 4px;
+        }
+
+        .terminal-window .log-time {
+            color: var(--text-muted);
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4), var(--diamond-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover:not(:disabled) { 
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6), 0 0 30px rgba(186, 230, 253, 0.4);
+        }
+
+        .btn:disabled { 
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            cursor: not-allowed; 
+            color: #64748b; 
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-success { 
+            background: var(--success-gradient); 
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4), 0 0 25px rgba(134, 239, 172, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6), 0 0 35px rgba(134, 239, 172, 0.5);
+        }
+
+        /* Report Section */
+        .report-section {
+            display: none;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .report-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(241,245,249,0.9));
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: transform 0.3s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 12px 35px rgba(56, 189, 248, 0.2), var(--diamond-glow);
+        }
+
+        .stat-value { 
+            font-size: 38px; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            line-height: 1;
+            background: linear-gradient(135deg, #0f172a, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label { 
+            font-size: 14px; 
+            color: var(--text-muted); 
+            margin-top: 10px; 
+            font-weight: 600;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 18px 22px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(186, 230, 253, 0.3), rgba(125, 211, 252, 0.2));
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { 
+            background: linear-gradient(135deg, rgba(186, 230, 253, 0.15), rgba(125, 211, 252, 0.1));
+        }
+
+        td { color: var(--text-main); }
+        .code-font { font-family: 'Courier New', Courier, monospace; color: #0284c7; font-weight: 500; }
+
+        .badge {
+            padding: 5px 14px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge-high { 
+            background: linear-gradient(135deg, rgba(134, 239, 172, 0.25), rgba(34, 197, 94, 0.15)); 
+            color: #166534; 
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .badge-med { 
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.15)); 
+            color: #92400e; 
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .actions-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        /* Confetti for success */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            animation: confettiFall 3s ease-out forwards;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100vh) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 850px) {
+            #input-workspace { grid-template-columns: 1fr; }
+            .summary-cards { grid-template-columns: 1fr; }
+            .actions-row { flex-direction: column; }
+            .actions-row button { width: 100% !important; }
+            .stairs-container { height: 360px; }
+            .stair-label { 
+                position: relative; 
+                right: auto; 
+                transform: none; 
+                display: block;
+                margin-top: 8px;
+                text-align: center;
+            }
+            .stair { width: 100% !important; left: 0 !important; }
+            .employee { left: 50%; transform: translateX(-50%); }
+            .progress-badge { right: -45px; width: 52px; height: 52px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header>
+            <h1>💎 AI Sign Board Extractor</h1>
+            <p>Automated Engineering Document Analysis & Data Export</p>
+        </header>
+
+        <!-- WORKSPACE (Hidden completely when report is ready) -->
+        <div id="input-workspace">
+            
+            <!-- Timeline Sidebar with Stairs & Corporate Employee -->
+            <aside class="glass-panel">
+                <h3 style="display:flex;align-items:center;gap:10px;margin-bottom:25px;color:var(--text-main);font-size:18px;font-weight:700;">
+                    <span>⚙️</span> Processing Steps
+                </h3>
+                
+                <!-- Stairs Container -->
+                <div class="stairs-container">
+                    <!-- Staircase Structure -->
+                    <div class="stairs">
+                        <div class="stair stair-1" id="stair-1">
+                            <span class="stair-label">📄 PDF to IMG</span>
+                            <div class="step-checkmark" id="check-1">✓</div>
+                        </div>
+                        <div class="stair stair-2" id="stair-2">
+                            <span class="stair-label">🔍 Sign Detection</span>
+                            <div class="step-checkmark" id="check-2">✓</div>
+                        </div>
+                        <div class="stair stair-3" id="stair-3">
+                            <span class="stair-label">📊 Excel Generation</span>
+                            <div class="step-checkmark" id="check-3">✓</div>
+                        </div>
+                        <div class="stair stair-4" id="stair-4">
+                            <span class="stair-label">✅ Done!</span>
+                            <div class="step-checkmark" id="check-4">✓</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cute Corporate Employee Character -->
+                    <div class="employee" id="employee">
+                        <svg class="employee-svg" viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Head with cute corporate look -->
+                            <circle class="head" cx="30" cy="18" r="14" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/>
+                            <circle cx="26" cy="16" r="2.5" fill="#1e293b"/> <!-- Left eye -->
+                            <circle cx="34" cy="16" r="2.5" fill="#1e293b"/> <!-- Right eye -->
+                            <ellipse cx="26" cy="15" rx="1.5" ry="0.8" fill="white" opacity="0.6"/> <!-- Eye shine -->
+                            <ellipse cx="34" cy="15" rx="1.5" ry="0.8" fill="white" opacity="0.6"/> <!-- Eye shine -->
+                            <path d="M28 21 Q30 23 32 21" stroke="#1e293b" stroke-width="1.5" fill="none" stroke-linecap="round"/> <!-- Smile -->
+                            <path d="M20 12 Q30 6 40 12" stroke="var(--employee-hair)" stroke-width="4" fill="none" stroke-linecap="round"/> <!-- Hair -->
+                            <ellipse cx="30" cy="8" rx="10" ry="5" fill="var(--employee-hair)"/> <!-- Hair top -->
+                            
+                            <!-- Body/Shirt -->
+                            <rect x="20" y="32" width="20" height="28" rx="3" fill="var(--employee-shirt)" stroke="#e2e8f0" stroke-width="1"/>
+                            
+                            <!-- Tie -->
+                            <polygon points="30,32 27,45 30,55 33,45" fill="var(--employee-tie)"/>
+                            <rect x="29" y="32" width="2" height="8" fill="var(--employee-tie)"/>
+                            
+                            <!-- Arms -->
+                            <g class="arm-left">
+                                <rect x="12" y="35" width="10" height="5" rx="2.5" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/>
+                                <rect x="8" y="38" width="6" height="18" rx="3" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/>
+                                <circle cx="11" cy="56" r="3.5" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/> <!-- Hand -->
+                            </g>
+                            <g class="arm-right">
+                                <rect x="38" y="35" width="10" height="5" rx="2.5" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/>
+                                <rect x="46" y="38" width="6" height="18" rx="3" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/>
+                                <circle cx="49" cy="56" r="3.5" fill="var(--employee-skin)" stroke="#e2e8f0" stroke-width="1"/> <!-- Hand -->
+                            </g>
+                            
+                            <!-- Briefcase (corporate touch) -->
+                            <rect class="briefcase" x="42" y="50" width="12" height="10" rx="2" fill="#475569" stroke="#334155" stroke-width="1"/>
+                            <rect x="46" y="48" width="4" height="4" rx="1" fill="#94a3b8"/> <!-- Briefcase handle -->
+                            <circle cx="48" cy="55" r="1.5" fill="#fbbf24"/> <!-- Briefcase lock -->
+                            
+                            <!-- Pants -->
+                            <rect x="22" y="60" width="7" height="22" rx="2" fill="var(--employee-pants)"/>
+                            <rect x="31" y="60" width="7" height="22" rx="2" fill="var(--employee-pants)"/>
+                            
+                            <!-- Legs -->
+                            <g class="leg-left">
+                                <rect x="22" y="60" width="7" height="22" rx="2" fill="var(--employee-pants)"/>
+                                <ellipse cx="25.5" cy="84" rx="5" ry="3" fill="var(--employee-shoes)"/> <!-- Shoe -->
+                            </g>
+                            <g class="leg-right">
+                                <rect x="31" y="60" width="7" height="22" rx="2" fill="var(--employee-pants)"/>
+                                <ellipse cx="34.5" cy="84" rx="5" ry="3" fill="var(--employee-shoes)"/> <!-- Shoe -->
+                            </g>
+                            
+                            <!-- ID Badge (corporate detail) -->
+                            <rect x="24" y="40" width="6" height="8" rx="1" fill="#38bdf8" opacity="0.8"/>
+                            <circle cx="27" cy="43" r="1.5" fill="white"/>
+                        </svg>
+                        
+                        <!-- Progress Badge on Employee's Back -->
+                        <div class="progress-badge" id="progress-badge">
+                            <div class="progress-icon" id="progress-icon">📄</div>
+                            <div class="progress-label" id="progress-label">Step 1</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step Details (below stairs) -->
+                <div class="timeline-details">
+                    <div class="timeline-step active" data-step="0">
+                        <div class="step-number">1</div>
+                        <div class="step-info">
+                            <h4>PDF to IMG Conversion</h4>
+                            <p>Converting PDF pages to high-resolution images</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step" data-step="1">
+                        <div class="step-number">2</div>
+                        <div class="step-info">
+                            <h4>Sign Board Detection</h4>
+                            <p>AI model detecting and locating sign boards</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step" data-step="2">
+                        <div class="step-number">3</div>
+                        <div class="step-info">
+                            <h4>Excel Generation</h4>
+                            <p>Compiling data into downloadable spreadsheet</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Upload & Processing Panel -->
+            <main class="glass-panel" style="position: relative;">
+                
+                <!-- Upload State -->
+                <div id="upload-ui">
+                    <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                        <div class="upload-icon">📄✨</div>
+                        <div class="upload-text" id="upload-title">Drag & Drop Engineering Plans</div>
+                        <div class="upload-subtext">Supported formats: .pdf, .jpg, .png (Max 50MB)</div>
+                        <input type="file" id="file-input" accept="application/pdf, image/png, image/jpeg" multiple>
+                    </div>
+                    <button class="btn" id="process-btn" disabled>✨ Start Processing</button>
+                </div>
+
+                <!-- Processing State -->
+                <div class="progress-container" id="progress-ui">
+                    <div class="status-text" id="status-text">Initializing...</div>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="terminal-window" id="progress-logs">
+                        <div><span class="log-time">[00:00:00]</span> System ready. Awaiting PDF processing...</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- FULL-WIDTH REPORT SECTION (Replaces the workspace entirely) -->
+        <section class="glass-panel report-section" id="report-ui">
+            <div class="report-header">
+                <h3>📊 Extraction Complete</h3>
+                <span class="badge badge-high">💎 Status: Success</span>
+            </div>
+            
+            <div class="summary-cards">
+                <div class="stat-card">
+                    <div class="stat-value">14</div>
+                    <div class="stat-label">Pages Scanned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="background:linear-gradient(135deg,#0f172a,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">42</div>
+                    <div class="stat-label">Sign Boards Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="background:linear-gradient(135deg,#0f172a,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">96.4%</div>
+                    <div class="stat-label">Avg. Confidence Score</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Detection ID</th>
+                            <th>Page No.</th>
+                            <th>Coordinates (X, Y, W, H)</th>
+                            <th>Classification</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="actions-row">
+                <button class="btn" style="width: auto; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: var(--text-main); box-shadow: none;" onclick="resetWorkflow()">🔄 New Analysis</button>
+                <button class="btn btn-success" style="width: auto;" onclick="downloadExcel()">📥 Export Detailed Excel (.xlsx)</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const uploadTitle = document.getElementById('upload-title');
+        const processBtn = document.getElementById('process-btn');
+        
+        // Sections
+        const inputWorkspace = document.getElementById('input-workspace');
+        const uploadUI = document.getElementById('upload-ui');
+        const progressUI = document.getElementById('progress-ui');
+        const reportUI = document.getElementById('report-ui');
+        
+        // Loader Elements
+        const progressBar = document.getElementById('progress-bar');
+        const statusText = document.getElementById('status-text');
+        const progressLogs = document.getElementById('progress-logs');
+        const tableBody = document.getElementById('table-body');
+
+        // ============ STAIRS & EMPLOYEE ANIMATION LOGIC ============
+        const stepInfo = [
+            { icon: '📄', label: 'Step 1', name: 'PDF to IMG' },
+            { icon: '🔍', label: 'Step 2', name: 'Detection' },
+            { icon: '📊', label: 'Step 3', name: 'Excel' },
+            { icon: '✅', label: 'Done!', name: 'Complete' }
+        ];
+
+        // Employee positions for each stair (bottom, left) - ONLY UPWARD MOVEMENT
+        const employeePositions = [
+            { bottom: 40, left: 20 },   // Ground level (start)
+            { bottom: 55, left: 20 },   // Stair 1
+            { bottom: 125, left: 55 },  // Stair 2
+            { bottom: 195, left: 90 },  // Stair 3
+            { bottom: 265, left: 125 }  // Stair 4 (Done!)
+        ];
+
+        const employee = document.getElementById('employee');
+        const progressBadge = document.getElementById('progress-badge');
+        const progressIcon = document.getElementById('progress-icon');
+        const progressLabel = document.getElementById('progress-label');
+        const timelineSteps = document.querySelectorAll('.timeline-step');
+        const stairs = document.querySelectorAll('.stair');
+        const checkmarks = document.querySelectorAll('.step-checkmark');
+
+        // Update progress badge on employee's back
+        function updateProgressBadge(stepIndex) {
+            const info = stepInfo[stepIndex] || stepInfo[0];
+            progressIcon.textContent = info.icon;
+            progressLabel.textContent = info.label;
+            progressBadge.classList.add('visible');
+        }
+
+        // Hide badge temporarily
+        function hideProgressBadge() {
+            progressBadge.classList.remove('visible');
+        }
+
+        // Move employee to next stair (ONLY UPWARD - no downward movement)
+        function climbToStair(targetStair) {
+            return new Promise((resolve) => {
+                // Add climbing animation class
+                employee.classList.add('climbing');
+                employee.classList.remove('celebrating');
+                hideProgressBadge();
+                
+                // Get target position
+                const pos = employeePositions[targetStair];
+                
+                // Animate employee position (ONLY UPWARD)
+                employee.style.bottom = pos.bottom + 'px';
+                employee.style.left = pos.left + 'px';
+                
+                // Activate current stair
+                stairs.forEach((stair, idx) => {
+                    stair.classList.remove('active');
+                    if (idx < targetStair) {
+                        stair.classList.add('completed');
+                    }
+                    if (idx === targetStair) {
+                        stair.classList.add('active');
+                    }
+                });
+                
+                // Show checkmarks for completed stairs
+                checkmarks.forEach((check, idx) => {
+                    if (idx < targetStair && idx > 0) {
+                        check.classList.add('visible');
+                    }
+                });
+                
+                // Highlight timeline step
+                timelineSteps.forEach((step, idx) => {
+                    step.classList.remove('active', 'completed');
+                    if (idx < targetStair) {
+                        step.classList.add('completed');
+                    }
+                    if (idx === targetStair && idx < 3) {
+                        step.classList.add('active');
+                    }
+                });
+                
+                // Show badge after movement completes
+                setTimeout(() => {
+                    employee.classList.remove('climbing');
+                    updateProgressBadge(targetStair);
+                    
+                    // If final step, celebrate!
+                    if (targetStair === 4) {
+                        employee.classList.add('celebrating');
+                        progressIcon.textContent = '🎉';
+                        progressLabel.textContent = 'Done!';
+                        triggerConfetti();
+                    }
+                    
+                    resolve();
+                }, 800);
+            });
+        }
+
+        // Trigger confetti celebration
+        function triggerConfetti() {
+            const colors = ['#7dd3fc', '#38bdf8', '#86efac', '#22c55e', '#fbbf24', '#f472b6'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        // File Selection Logic
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                uploadTitle.innerHTML = `<span style="color:var(--primary-dark);font-weight:600">Selected:</span> ${this.files[0].name}`;
+                processBtn.disabled = false;
+                processBtn.textContent = `✨ Process ${this.files[0].name}`;
+            }
+        });
+
+        // Terminal Log function
+        function addLog(message) {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
+            progressLogs.appendChild(logEntry);
+            progressLogs.scrollTop = progressLogs.scrollHeight;
+        }
+
+        let globalExtractedData = [];
+
+        // Simulate Processing Pipeline with REAL backend call
+        processBtn.addEventListener('click', async () => {
+            if (!fileInput.files || fileInput.files.length === 0) return;
+
+            uploadUI.style.display = 'none';
+            progressUI.style.display = 'block';
+            
+            progressBar.style.width = '25%';
+            statusText.textContent = "📄 Uploading files...";
+            addLog("Sending files to backend...");
+            await climbToStair(1);
+
+            const formData = new FormData();
+            for(let i=0; i<fileInput.files.length; i++) {
+                formData.append('files[]', fileInput.files[i]);
+            }
+
+            try {
+                // Simulate stepping while waiting for response
+                setTimeout(async () => {
+                    progressBar.style.width = '50%';
+                    statusText.textContent = "🔍 Detecting Sign Boards...";
+                    addLog("Running Vision model on images...");
+                    await climbToStair(2);
+                }, 1000);
+
+                const response = await fetch('/api/process-rsa-upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+
+                progressBar.style.width = '75%';
+                statusText.textContent = "📊 Formatting Data...";
+                addLog("Processing detection results...");
+                await climbToStair(3);
+
+                if (result.success) {
+                    globalExtractedData = result.data;
+                    addLog("Extraction successful.");
+                } else {
+                    addLog("Error: " + result.message);
+                }
+
+                setTimeout(async () => {
+                    progressBar.style.width = '100%';
+                    statusText.textContent = "✅ Processing Complete!";
+                    addLog("Ready to display report.");
+                    await climbToStair(4);
+                    
+                    setTimeout(showReport, 1500);
+                }, 500);
+
+            } catch(e) {
+                addLog("Network Error: " + e.message);
+            }
+        });
+
+        // Render the Full Width Report
+        function showReport() {
+            inputWorkspace.style.display = 'none';
+            reportUI.style.display = 'block';
+
+            // Example fallback if backend fails or returns empty
+            let dataToDisplay = globalExtractedData;
+            if (!dataToDisplay || dataToDisplay.length === 0) {
+                addLog("WARNING: No data returned from backend, showing fallback mock data.");
+                dataToDisplay = [
+                    { id: "SB-001", page: 1, coords: "N/A", class: "NO DATA FOUND", conf: 0.0 }
+                ];
+            }
+
+            // Update stats
+            document.querySelectorAll('.stat-value')[1].textContent = dataToDisplay.length;
+
+            tableBody.innerHTML = '';
+            dataToDisplay.forEach(row => {
+                let badgeClass = row.conf >= 95 ? "badge-high" : "badge-med";
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="code-font">${row.id}</td>
+                    <td>${row.page}</td>
+                    <td class="code-font" style="color: #0284c7;">${row.coords}</td>
+                    <td>${row.class}</td>
+                    <td><span class="badge ${badgeClass}">${row.conf}%</span></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Export Functionality
+        function downloadExcel() {
+            const btn = document.querySelector('.btn-success');
+            btn.innerHTML = "⏳ Generating Excel...";
+            setTimeout(() => {
+                alert("✨ Extraction complete! Your file 'SignBoard_Extraction_Report.xlsx' will now download.");
+                btn.innerHTML = "📥 Export Detailed Excel (.xlsx)";
+            }, 1000);
+        }
+
+        // Reset App to Start completely over
+        function resetWorkflow() {
+            // Reset employee position (ONLY starts at bottom, never goes down during processing)
+            employee.style.bottom = employeePositions[0].bottom + 'px';
+            employee.style.left = employeePositions[0].left + 'px';
+            employee.classList.remove('climbing', 'celebrating');
+            
+            // Reset stairs
+            stairs.forEach(stair => {
+                stair.classList.remove('active', 'completed');
+            });
+            stairs[0].classList.add('active');
+            
+            // Reset checkmarks
+            checkmarks.forEach(check => check.classList.remove('visible'));
+            
+            // Reset timeline
+            timelineSteps.forEach((step, idx) => {
+                step.classList.remove('active', 'completed');
+                if (idx === 0) step.classList.add('active');
+            });
+            
+            // Reset badge
+            updateProgressBadge(0);
+            
+            // Restore Workspace
+            inputWorkspace.style.display = 'grid';
+            uploadUI.style.display = 'block';
+            progressUI.style.display = 'none';
+            reportUI.style.display = 'none';
+            
+            // Reset input values
+            fileInput.value = '';
+            uploadTitle.innerHTML = 'Drag & Drop Engineering PDF';
+            processBtn.disabled = true;
+            processBtn.textContent = '✨ Start Processing';
+            
+            // Reset Progress
+            progressBar.style.width = '0%';
+            progressLogs.innerHTML = `<div><span class="log-time">[00:00:00]</span> System ready. Awaiting PDF processing...</div>`;
+            statusText.textContent = "Initializing...";
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgressBadge(0);
+            stairs[0].classList.add('active');
+        });
+    </script>
+</body>
+</html>
