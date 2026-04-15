@@ -27,7 +27,10 @@ urlpatterns = [
     path('api/process-rsa-upload/', views.process_rsa_upload, name='process_rsa_upload'),
     path('attendance/generate/', views.generate_attendance_link, name='generate_attendance_link'),    
     
-    path('create/', views.create_blog, name='create_blog'),
+    path('create_blog/', views.create_blog, name='create_blog'),
+    path('create/', views.login_view, name='create_login'),
+    path('admin-hub/', views.admin_hub, name='admin_hub'),
+    path('upload-gallery/', views.upload_gallery, name='upload_gallery'),
     path('resource/', views.resources, name='resources'),
     path('blogs/<slug:slug>/', views.blog_detail, name='blog_detail'),
 ]

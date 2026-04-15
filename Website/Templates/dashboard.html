@@ -253,7 +253,8 @@
         .welcome-screen {
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-top: 30px;
         }
 
         /* Validation Screen */
@@ -265,16 +266,29 @@
         }
 
         .hub-text {
-            font-size: 22px;
-            letter-spacing: 0.3em;
-            font-weight: 600;
+            font-size: 28px;
+            letter-spacing: 0.4em;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
         }
 
         .sub-text {
-            font-size: 16px;
-            color: #9ca3af;
-            font-weight: 600;
-            letter-spacing: 0.2px;
+            font-size: 14px;
+            color: #a2a9b7;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header-accent {
+            width: 40px;
+            height: 2px;
+            background: #2563eb;
+            margin: 13px auto;
+            border-radius: 2px;
         }
 
         /* Iframe Screen */
@@ -371,24 +385,26 @@
 
         .bg-watermark {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             pointer-events: none;
-            opacity: 0.3;
-            width: 80%;
-            max-width: 1200px;
+            opacity: 0.15;
+            width: 70%;
+            max-width: 1000px;
             z-index: 1;
-            transform: scale(1);
-            animation: fadeIn 1.5s ease-out;
+            animation: watermarkFadeIn 1.5s ease-out;
         }
 
-        @keyframes fadeIn {
+        @keyframes watermarkFadeIn {
             from {
                 opacity: 0;
-                transform: scale(1.1);
+                transform: translate(-50%, -45%) scale(1.05);
             }
 
             to {
-                opacity: 0.3;
-                transform: scale(1);
+                opacity: 0.15;
+                transform: translate(-50%, -50%) scale(1);
             }
         }
 
@@ -586,8 +602,7 @@
                     </div>
                     <span class="nav-label">Quality Analysis</span>
                 </button>
-                <button onclick="loadTool('{% url 'rsa_model' %}', 'RSA Model', this)"
-                    class="nav-item group">
+                <button onclick="loadTool('{% url 'rsa_model' %}', 'RSA Model', this)" class="nav-item group">
                     <div
                         class="nav-icon bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-white">
                         <i class="bi bi-shield-shaded"></i>
@@ -642,9 +657,10 @@
             <!-- Welcome Screen -->
             <div id="welcome-screen" class="screen-container welcome-screen active">
                 <img src="{% static 'Media/Base/HanuAi-logo.png' %}" alt="HanuAi" class="bg-watermark">
-                <div class="relative z-10 text-center opacity-80">
-                    <p class="hub-text uppercase tracking-[0.3em] font-light">Internal Operations Hub</p>
-                    <p class="sub-text mt-4">Select a tool from the sidebar to begin</p>
+                <div class="relative z-10 text-center">
+                    <h1 class="hub-text uppercase">Operations Hub</h1>
+                    <div class="header-accent"></div>
+                    <p class="sub-text">Select a tool from the sidebar to begin</p>
                 </div>
             </div>
 
@@ -693,7 +709,7 @@
     </div>
 
     <script>
-        let isVerified = {% if is_verified %}true{% else %}false{% endif %}; // Respect session verification state
+        let isVerified = {% if is_verified %}true{% else %} false{% endif %}; // Respect session verification state
         let pendingToolUrl = "";
 
         let pendingToolName = "";

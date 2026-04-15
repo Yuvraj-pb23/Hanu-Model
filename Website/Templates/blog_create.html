@@ -25,7 +25,7 @@
     box-shadow: 0 8px 40px 0 rgba(13,110,253,0.13), 0 1.5px 8px 0 rgba(0,0,0,0.18);
     width: 100%;
     padding: 56px 32px 40px 32px;
-    margin: 100px 0;
+    margin: 54px 0;
     background: rgba(0,0,0,0.97);
     backdrop-filter: blur(16px);
     border-radius: 24px;
@@ -144,6 +144,26 @@
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
   }
+  
+  .btn-back {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff !important;
+    padding: 0.85rem 1.5rem;
+    border-radius: 16px;
+    font-size: 1.13rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
   .blog-btn {
     background: linear-gradient(90deg, #0d6efd 0%, #2563eb 100%) !important;
     color: #fff !important;
@@ -234,7 +254,7 @@
   }
 </style>
 
-<div class="max-w-7xl mx-auto px-6 py-12 mt-40">
+<div class="max-w-7xl mx-auto px-6 py-12">
   <div class="presence rounded-3xl">
     
     <header class="mb-8 flex flex-col md:flex-row justify-between items-center">
@@ -243,10 +263,13 @@
         <p class="text-sm blog-desc">Create and manage your blog posts</p>
       </div>
 
-      <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="blog-btn">Logout</button>
-      </form>
+      <div class="flex gap-4 items-center">
+        <a href="{% url 'admin_hub' %}" class="btn-back"><i class="bi bi-arrow-left"></i> Hub</a>
+        <form action="{% url 'logout' %}" method="post" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="blog-btn">Logout</button>
+        </form>
+      </div>
     </header>
 
     {% if message %}
@@ -266,9 +289,8 @@
     <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
     
     <section id="blogListSection">
-      <div class="flex justify-between items-center mb-6">
+      <div class="mb-6">
         <h2 class="text-xl font-semibold">Blogs</h2>
-        <button onclick="showEditor()" class="btn-new-post">+ New Post</button>
       </div>
 
       {% if blogs %}
@@ -297,9 +319,14 @@
       {% endif %}
     </section>
 
-    <section id="blogEditorSection" class="{% if not blog_to_edit %}hidden{% endif %}">
-      <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
-        <h2 class="text-2xl font-semibold mb-6">{% if blog_to_edit %}Edit Blog{% else %}Create Blog{% endif %}</h2>
+    <section class="flex flex-col h-full">
+      <div class="flex justify-end mb-6">
+        <button onclick="showEditor()" class="btn-new-post">+ New Post</button>
+      </div>
+      
+      <div id="blogEditorSection" class="{% if not blog_to_edit %}hidden{% endif %}">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6">
+          <h2 class="text-2xl font-semibold mb-6">{% if blog_to_edit %}Edit Blog{% else %}Create Blog{% endif %}</h2>
 
         <form method="POST" enctype="multipart/form-data" class="blog-form">
           {% csrf_token %}
@@ -396,6 +423,7 @@
             </button>
           </div>
         </form>
+        </div>
       </div>
     </section>
   </main>

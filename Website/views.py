@@ -250,15 +250,15 @@ def login_view(request):
             request.session["user_email_simple"] = STATIC_USER["email"]
             request.session["user_role_simple"] = STATIC_USER["role"]
 
-            # redirect to 'next' if exists, else to create_blog URL
-            next_url = request.GET.get("next") or reverse("create_blog")
+            # redirect to 'next' if exists, else to admin_hub URL
+            next_url = request.GET.get("next") or reverse("admin_hub")
             return redirect(next_url)
         else:
             messages.error(request, "Invalid email or password.")
 
-    # If already logged in, forward to create_blog
+    # If already logged in, forward to admin_hub
     if request.session.get("is_authenticated_simple"):
-        return redirect(reverse("create_blog"))
+        return redirect(reverse("admin_hub"))
 
     return render(request, "login.html")
 
@@ -272,7 +272,7 @@ def logout_view(request):
     request.session.pop("user_role_simple", None)
     request.session.pop("is_verified_employee", None)
     request.session.pop("verified_mobile", None)
-    return redirect("employee")
+    return redirect("login")
 
 
 def _require_blogger_session(request):
@@ -281,7 +281,7 @@ def _require_blogger_session(request):
     """
     if not request.session.get("is_authenticated_simple"):
         # Not logged in -> redirect to login with next param
-        return False, redirect(f"/login/?next=/create_blog/")
+        return False, redirect(f"/login/?next=/admin-hub/")
     if request.session.get("user_role_simple") != "blogger":
         # Logged in but not blogger -> forbidden or redirect as you wish
         return False, HttpResponseForbidden("Access denied.")
@@ -623,6 +623,63 @@ def create_blog(request):
         "blog_create.html",
         {"message": message, "blogs": blogs, "blog_to_edit": blog_to_edit},
     )
+
+def admin_hub(request):
+    ok, resp = _require_blogger_session(request)
+    if not ok:
+        return resp
+    return render(request, "admin_hub.html")
+
+def upload_gallery(request):
+    ok, resp = _require_blogger_session(request)
+    if not ok:
+        return resp
+        
+    gallery_path = os.path.join(settings.BASE_DIR, "Website", "Static", "Media", "Gallery", "Images")
+    os.makedirs(gallery_path, exist_ok=True)
+    message = None
+    
+    if request.method == "POST":
+        if "delete_image" in request.POST:
+            image_name = request.POST.get("delete_image")
+            clean_name = os.path.basename(image_name)
+            file_path = os.path.join(gallery_path, clean_name)
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                    message = f"🗑️ Deleted {clean_name}"
+                except Exception as e:
+                    message = f"❌ Error deleting file: {e}"
+                    
+        elif request.FILES.getlist("gallery_images"):
+            images = request.FILES.getlist("gallery_images")
+            uploaded_count = 0
+            for image in images:
+                clean_filename = os.path.basename(image.name)
+                # Ensure no spaces or weird characters if necessary, but leaving as is for now
+                file_path = os.path.join(gallery_path, clean_filename)
+                with open(file_path, 'wb+') as destination:
+                    for chunk in image.chunks():
+                        destination.write(chunk)
+                uploaded_count += 1
+            if uploaded_count > 0:
+                message = f"✅ Successfully uploaded {uploaded_count} image(s)."
+
+    # Get existing images
+    images = []
+    if os.path.exists(gallery_path):
+        for filename in os.listdir(gallery_path):
+            if filename.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".webp")):
+                images.append({
+                    "url": f"Media/Gallery/Images/{filename}",
+                    "name": filename
+                })
+                
+    # Sort images newest modified first
+    images.sort(key=lambda x: os.path.getmtime(os.path.join(gallery_path, x["name"])), reverse=True)
+
+    return render(request, "upload_gallery.html", {"images": images, "message": message})
+
 
 
 def resources(request):
