@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %} {% load static %} {% block title %} Employee Portal -
+{% extends "base.html" %} {% load static %} {% block title %} Employee Portal -
 HanuAi {% endblock %} {% block content %}
 <div class="flex items-center justify-center px-4 py-12 relative employee-bg">
   <!-- Attendance/Business Login Overlay -->
@@ -104,6 +104,19 @@ HanuAi {% endblock %} {% block content %}
             <i class="bi bi-arrow-right"></i>
           </div>
         </button>
+        <button data-url="{% url 'rsa_model' %}" data-title="RSA Model"
+          class="overlay-card overlay-card-orange action-btn">
+          <div class="card-icon">
+            <i class="bi bi-shield-shaded"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">RSA Model</h3>
+            <p class="card-description">Road Safety Analysis</p>
+          </div>
+          <div class="card-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </button>
 
         <button data-title="Surveyors" class="overlay-card overlay-card-pink action-btn">
           <div class="card-icon">
@@ -129,65 +142,45 @@ HanuAi {% endblock %} {% block content %}
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(28, 32, 39, 0.96);
+      background: rgba(10, 15, 26, 0.94);
       z-index: 1001;
       align-items: center;
       justify-content: center;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      backdrop-filter: blur(10px);
     ">
-    <div class="overlay-modal form-modal">
-      <!-- Close Button -->
-      <button class="form-close-btn" id="close-form-btn" aria-label="Close">
-        <i class="bi bi-x-lg"></i>
-      </button>
-
-      <!-- Form Header with Icon -->
-      <div class="form-header">
-        <div class="form-icon-wrapper">
-          <i class="bi bi-shield-check"></i>
+    <div class="verification-card">
+      <div class="mb-5 text-center">
+        <div class="flex items-center justify-center mb-3">
+          <div class="w-14 h-14 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center">
+            <i class="bi bi-shield-lock text-3xl"></i>
+          </div>
         </div>
-        <div class="form-header-text">
-          <h2 class="form-title" id="form-title">Employee Verification</h2>
-          <p class="form-subtitle" id="form-subtitle">Please provide your details to continue</p>
-        </div>
+        <h3 class="text-xl font-bold text-white mb-1" id="form-title">Employee Verification</h3>
+        <p class="text-gray-400 text-xs" id="form-subtitle">Please verify your identity to continue</p>
       </div>
 
-      <form id="download-form" class="download-form">
-        <div class="form-group">
-          <label for="user-name" class="form-label">
-            <i class="bi bi-person-fill"></i>
-            Full Name
-          </label>
-          <div class="input-wrapper">
-            <input type="text" id="user-name" name="name" class="form-input" placeholder="Enter your full name"
-              required />
-            <i class="bi bi-person input-icon"></i>
-          </div>
+      <form id="download-form">
+        <div class="form-group-minimal">
+          <label class="form-label-minimal">Full Name</label>
+          <input type="text" id="user-name" class="form-input-minimal" placeholder="Your full name" required />
         </div>
-        <div class="form-group">
-          <label for="user-mobile" class="form-label">
-            <i class="bi bi-phone-fill"></i>
-            Mobile Number
-          </label>
-          <div class="input-wrapper">
-            <input type="tel" id="user-mobile" name="mobile" class="form-input"
-              placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required />
-            <i class="bi bi-phone input-icon"></i>
-          </div>
+        <div class="form-group-minimal">
+          <label class="form-label-minimal">Mobile Number</label>
+          <input type="tel" id="user-mobile" class="form-input-minimal" placeholder="10-digit mobile" pattern="[0-9]{10}"
+            required />
         </div>
-        <div id="form-message" class="form-message" style="display: none;"></div>
-        <div class="form-actions">
-          <button type="button" id="cancel-download" class="form-btn form-btn-cancel">
-            <i class="bi bi-x-circle"></i>
-            <span>Cancel</span>
-          </button>
-          <button type="submit" id="submit-download" class="form-btn form-btn-submit">
-            <i class="bi bi-check-circle"></i>
-            <span>Continue</span>
-          </button>
-        </div>
+        <div id="form-message" class="form-message hidden"></div>
+        <button type="submit" id="submit-download" class="verify-btn-minimal mt-4">
+          <span>Verify Identity</span>
+          <i class="bi bi-arrow-right-short text-xl"></i>
+        </button>
       </form>
+
+      <button id="cancel-download"
+        class="w-full mt-4 text-xs text-gray-500 hover:text-gray-300 transition-colors bg-transparent border-none cursor-pointer text-center block">
+        Cancel and return
+      </button>
     </div>
   </div>
 
@@ -276,9 +269,17 @@ HanuAi {% endblock %} {% block content %}
   let targetUrl = "";
   let actionTitle = "";
 
-  document.getElementById("yes-btn").addEventListener("click", function () {
-    // Redirect to dashboard immediately
-    window.location.href = "{% url 'employee_dashboard' %}";
+  document.getElementById("yes-btn").addEventListener("click", function (e) {
+    e.preventDefault();
+    targetUrl = "{% url 'employee_dashboard' %}";
+    actionTitle = "Employee Dashboard";
+
+    // Update form title and subtitle
+    document.getElementById("form-title").textContent = actionTitle;
+    document.getElementById("form-subtitle").textContent = "Please verify your mobile number to access the dashboard";
+
+    // Show validation form
+    document.getElementById("download-form-overlay").style.display = "flex";
   });
 
   // Close overlay when clicking outside the modal
@@ -295,14 +296,7 @@ HanuAi {% endblock %} {% block content %}
     document.getElementById("attendance-overlay").style.display = "none";
   });
 
-  // Close form overlay with close button
-  document.getElementById("close-form-btn").addEventListener("click", function () {
-    document.getElementById("download-form-overlay").style.display = "none";
-    document.getElementById("download-form").reset();
-    document.getElementById("form-message").style.display = "none";
-    document.getElementById("submit-download").disabled = false;
-    document.getElementById("submit-download").innerHTML = '<i class="bi bi-check-circle"></i><span>Continue</span>';
-  });
+
 
   document.getElementById("no-btn").addEventListener("click", function () {
     window.location.href = '{% url "contact" %}#contact-form';
@@ -335,9 +329,9 @@ HanuAi {% endblock %} {% block content %}
   document.getElementById("cancel-download").addEventListener("click", function () {
     document.getElementById("download-form-overlay").style.display = "none";
     document.getElementById("download-form").reset();
-    document.getElementById("form-message").style.display = "none";
+    document.getElementById("form-message").classList.add("hidden");
     document.getElementById("submit-download").disabled = false;
-    document.getElementById("submit-download").textContent = "Continue";
+    document.getElementById("submit-download").innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-2xl"></i>';
   });
 
   // Close form overlay when clicking outside
@@ -345,9 +339,9 @@ HanuAi {% endblock %} {% block content %}
     if (e.target === this) {
       this.style.display = "none";
       document.getElementById("download-form").reset();
-      document.getElementById("form-message").style.display = "none";
+      document.getElementById("form-message").classList.add("hidden");
       document.getElementById("submit-download").disabled = false;
-      document.getElementById("submit-download").textContent = "Continue";
+      document.getElementById("submit-download").innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-2xl"></i>';
     }
   });
 
@@ -363,7 +357,7 @@ HanuAi {% endblock %} {% block content %}
     // Disable submit button and show loading
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i><span>Verifying...</span>';
-    messageDiv.style.display = "none";
+    messageDiv.classList.add("hidden");
 
     try {
       // Call the validation API
@@ -382,42 +376,42 @@ HanuAi {% endblock %} {% block content %}
         // Show success message
         messageDiv.textContent = "✓ Verified! Redirecting...";
         messageDiv.className = "form-message form-message-success";
-        messageDiv.style.display = "block";
+        messageDiv.classList.remove("hidden");
 
         // Wait a moment then proceed
         setTimeout(() => {
           // Hide form overlay
           document.getElementById("download-form-overlay").style.display = "none";
 
-          // Redirect to dashboard
-          window.location.href = "{% url 'employee_dashboard' %}";
+          // Redirect to target URL (dashboard or specific tool)
+          window.location.href = targetUrl || "{% url 'employee_dashboard' %}";
 
           // Reset form
           document.getElementById("download-form").reset();
-          messageDiv.style.display = "none";
+          messageDiv.classList.add("hidden");
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="bi bi-check-circle"></i><span>Continue</span>';
+          submitBtn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-2xl"></i>';
         }, 1000);
       } else {
         // Show error message
         messageDiv.textContent = result.message || "✗ Mobile number not recognized. Only HanuAi employees can access.";
         messageDiv.className = "form-message form-message-error";
-        messageDiv.style.display = "block";
+        messageDiv.classList.remove("hidden");
 
         // Re-enable button
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="bi bi-check-circle"></i><span>Continue</span>';
+        submitBtn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-2xl"></i>';
       }
 
     } catch (error) {
       console.error("Validation error:", error);
       messageDiv.textContent = "✗ Unable to verify mobile number. Please try again.";
       messageDiv.className = "form-message form-message-error";
-      messageDiv.style.display = "block";
+      messageDiv.classList.remove("hidden");
 
       // Re-enable button
       submitBtn.disabled = false;
-      submitBtn.textContent = "Continue";
+      submitBtn.innerHTML = '<span>Verify Identity</span><i class="bi bi-arrow-right-short text-2xl"></i>';
     }
   });
 
@@ -458,6 +452,141 @@ HanuAi {% endblock %} {% block content %}
 </script>
 
 <style>
+  /* Premium Verification Card Styling */
+  .verification-card {
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.25rem;
+    padding: 2rem 1.75rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1002;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .form-group-minimal {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-label-minimal {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #9ca3af;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: "Manrope", sans-serif;
+  }
+
+  .form-input-minimal {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    color: white;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.95rem;
+  }
+
+  .form-input-minimal:focus {
+    border-color: #2563eb;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .verify-btn-minimal {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-family: "Manrope", sans-serif;
+    margin-top: 1.5rem;
+  }
+
+  .verify-btn-minimal:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.5);
+    filter: brightness(1.1);
+  }
+
+  .verify-btn-minimal:active {
+    transform: translateY(-1px);
+  }
+
+  .verify-btn-minimal:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .form-message {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    text-align: center;
+    font-family: "Manrope", sans-serif;
+    font-weight: 600;
+  }
+
+  .form-message.hidden {
+    display: none;
+  }
+
+  .form-message-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .form-message-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+  }
+
+  /* Mobile optimization for new card */
+  @media (max-width: 640px) {
+    .verification-card {
+      padding: 2rem 1.5rem;
+      margin: 1rem;
+      border-radius: 1.5rem;
+    }
+
+    .verify-btn-minimal {
+      padding: 1rem;
+      font-size: 1rem;
+    }
+  }
+
   /* Mobile Responsive Styles */
   @media (max-width: 768px) {
 
@@ -1943,7 +2072,7 @@ HanuAi {% endblock %} {% block content %}
     max-width: 600px;
     min-width: 320px;
     width: 100%;
-    margin: 45px 90px 0;
+    margin: 60px 90px 25px;
     transition:
       box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
       transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),

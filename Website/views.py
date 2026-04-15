@@ -214,6 +214,13 @@ def employee_dashboard(request):
     return render(request, "dashboard.html", {"is_verified": is_verified})
 
 
+def rsa_model(request):
+    """
+    Renders the RSA Model tool.
+    """
+    return render(request, "rsa_model.html")
+
+
 STATIC_USER = {
     "email": "hanuai@blog.com",
     "password": "!@#$%^&*()",  # keep it safe; for prod use env vars
@@ -830,9 +837,10 @@ def validate_employee_api(request):
         try:
             data = json.loads(request.body)
             mobile = data.get("mobile", "").strip()
+            name = data.get("name", "").strip().lower()
 
-            if not mobile:
-                return JsonResponse({"success": False, "message": "Mobile number is required."})
+            if not mobile or not name:
+                return JsonResponse({"success": False, "message": "Both Name and Mobile number are required."})
 
             # Example external API Endpoint
             # Replace 'https://example.com/api/users' with your actual API endpoint URL
@@ -852,18 +860,21 @@ def validate_employee_api(request):
                         employee_list = api_data['employees']
                         
                         if isinstance(employee_list, list):
-                            # Verify if the mobile number exists in the API response
-                            # We use str() to ensure both are strings before comparing
-                            user_exists = any(str(user.get("phone", "")) == mobile for user in employee_list)
+                            # Verify if BOTH mobile number and name match the API records
+                            user_match = any(
+                                str(user.get("phone", "")) == mobile and 
+                                str(user.get("name", "")).strip().lower() == name 
+                                for user in employee_list
+                            )
                             
-                            if user_exists:
+                            if user_match:
                                 request.session['is_verified_employee'] = True
                                 request.session['verified_mobile'] = mobile
                                 return JsonResponse({"success": True, "message": "Verification successful."})
                             else:
                                 return JsonResponse({
                                     "success": False, 
-                                    "message": "✗ Mobile number not recognized. Only HanuAi employees can access."
+                                    "message": "✗ Identity not recognized. Please ensure Name and Mobile match official records."
                                 })
                         else:
                             return JsonResponse({"success": False, "message": "Unexpected format: 'employees' is not a list."})
@@ -883,6 +894,9 @@ def validate_employee_api(request):
             return JsonResponse({"success": False, "message": "Invalid JSON data received."}, status=400)
             
     return JsonResponse({"success": False, "message": "Invalid request method."}, status=405)
+
+
+
 
 
 # Custom Error Handlers

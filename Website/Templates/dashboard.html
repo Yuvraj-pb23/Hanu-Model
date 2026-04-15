@@ -214,6 +214,23 @@
             background-color: #0a0f1a;
         }
 
+        /* Dotted background matching the main website */
+        .main-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.12) 2px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -5px -5px;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image: radial-gradient(circle, transparent 20%, black 80%);
+            mask-image: radial-gradient(circle, transparent 20%, black 80%);
+        }
+
         /* Screen States */
         .screen-container {
             width: 100%;
@@ -256,6 +273,8 @@
         .sub-text {
             font-size: 16px;
             color: #9ca3af;
+            font-weight: 600;
+            letter-spacing: 0.2px;
         }
 
         /* Iframe Screen */
@@ -356,7 +375,7 @@
             opacity: 0.3;
             width: 80%;
             max-width: 1200px;
-            z-index: 0;
+            z-index: 1;
             transform: scale(1);
             animation: fadeIn 1.5s ease-out;
         }
@@ -567,6 +586,14 @@
                     </div>
                     <span class="nav-label">Quality Analysis</span>
                 </button>
+                <button onclick="loadTool('{% url 'rsa_model' %}', 'RSA Model', this)"
+                    class="nav-item group">
+                    <div
+                        class="nav-icon bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-white">
+                        <i class="bi bi-shield-shaded"></i>
+                    </div>
+                    <span class="nav-label">RSA Model</span>
+                </button>
 
                 <button onclick="toggleSurveyors()" class="nav-item group w-full text-left">
                     <div class="nav-icon bg-pink-500/10 text-pink-400 group-hover:bg-pink-500 group-hover:text-white">
@@ -666,7 +693,7 @@
     </div>
 
     <script>
-        let isVerified = false; // Always start as unverified to force validation every time
+        let isVerified = {% if is_verified %}true{% else %}false{% endif %}; // Respect session verification state
         let pendingToolUrl = "";
 
         let pendingToolName = "";
@@ -710,7 +737,7 @@
         }
 
 
-        function loadTool(url, name, btn) {
+        function loadTool(url, name, btn = null) {
             // Update active state in sidebar
             document.querySelectorAll('.nav-item, .sub-nav-item').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
@@ -743,8 +770,6 @@
                 if (document.getElementById('welcome-screen').classList.contains('active') === false) {
                     showScreen('welcome-screen');
                 }
-                // Reset verification state so the NEXT click requires validation again
-                isVerified = false;
                 return;
             }
 
@@ -762,8 +787,6 @@
 
             showScreen('iframe-screen');
 
-            // Reset verification state so the NEXT click requires validation again
-            isVerified = false;
         }
 
 
@@ -807,7 +830,6 @@
                         newToolWindow.location.href = pendingToolUrl;
                         // Return to welcome screen on the main dashboard
                         showScreen('welcome-screen');
-                        isVerified = false; // Reset for next tool
                     } else {
                         // Internal tool loader
                         loadTool(pendingToolUrl, pendingToolName);
