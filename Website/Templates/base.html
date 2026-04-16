@@ -16,7 +16,7 @@
   <meta name="keywords"
     content="AI road inspection, smart infrastructure, road maintenance AI, RoadAthena, HanuAI, road safety technology, AI infrastructure solutions">
   <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}" />
-  
+
 
   <title>{% block title %}My Site{% endblock %}</title>
 
@@ -93,7 +93,6 @@
         display: flex !important;
         align-items: center;
         justify-content: center;
-        padding: 8px;
         margin-right: 4px;
       }
 
@@ -209,44 +208,12 @@
       }
     }
 
-    #mobile-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      /* full width */
-      height: 100vh;
-      /* full height */
-      background-color: rgba(10, 15, 26, 0.95);
-      /* semi-transparent overlay */
-      z-index: 1000;
-      display: none;
-      /* hidden by default */
-      flex-direction: column;
-      padding: 0 2rem;
-      /* space for close button / status bar */
-      transition: opacity 0.3s ease;
-    }
 
-    #mobile-menu.open {
-      display: flex;
-      opacity: 1;
-    }
-
-    #mobile-menu-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 2rem;
-      color: white;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-    }
   </style>
 </head>
 
-<body class="min-h-screen text-base-content {% if request.resolver_match.url_name == 'home' %}scroll-lock{% endif %}" id="water-body">
+<body class="min-h-screen text-base-content {% if request.resolver_match.url_name == 'home' %}scroll-lock{% endif %}"
+  id="water-body">
   {% if request.resolver_match.url_name == 'home' %}
   <!-- Preloader Overlay (Homepage only) -->
   <div id="preloader-overlay"
@@ -257,7 +224,7 @@
   {% endif %}
   <div class="services-carousel-container min-h-screen">
 
-    <nav class="navbar glass-nav text-white px-6 lg:px-12 py-4"
+    <nav class="navbar glass-nav text-white px-4 lg:px-12 py-4"
       style="font-family: 'Manrope', Helvetica, Arial, sans-serif">
       <div class="nav-spacer"></div>
       <div class="nav-spacer"></div>
@@ -336,13 +303,14 @@
     </nav>
 
     <!-- Mobile Menu (hidden by default) -->
-    <div id="mobile-menu" data-open="false" class="fixed top-0 left-0 h-full w-[280px] bg-blue-950 z-[100]
+    <div id="mobile-menu" data-open="false" class="fixed top-0 left-0 h-full w-[280px] bg-[#0a0f1a] shadow-2xl z-[100]
          transition-transform duration-300 ease-in-out
+         flex flex-col
          -translate-x-full
          lg:hidden">
       <button id="mobile-menu-close" class="absolute top-6 right-4 text-white text-3xl"
         aria-label="Close menu">&times;</button>
-      <ul class="mt-20 space-y-6 px-7 text-left">
+      <ul class="mt-20 space-y-6 px-4 text-left">
         <li><a href="{% url 'home' %}"
             class="block text-white text-2xl font-bold py-4 {% if request.resolver_match.url_name == 'home' %}bg-blue-800 rounded{% endif %}">Home</a>
         </li>
@@ -374,7 +342,7 @@
     {% load cache %}
     {% cache 3600 footer_v2 %}
     <footer class="bg-[#0a0f1a] text-gray-400"
-      style="padding-top: 2rem; padding-bottom: 2rem; padding-left: 5rem; padding-right: 5rem; position: relative; z-index: 2;">
+      style="padding-top: 2rem; padding-bottom: 2rem; padding-left: 2rem; padding-right: 2rem; position: relative; z-index: 2;">
       <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
 
         <!-- Company Info -->
@@ -719,12 +687,14 @@
     const mobileMenu = document.getElementById('mobile-menu');
 
     openBtn.addEventListener('click', () => {
-      mobileMenu.classList.add('open');
+      mobileMenu.classList.remove('-translate-x-full');
+      mobileMenu.classList.add('translate-x-0');
       document.body.style.overflow = 'hidden'; // prevent background scroll
     });
 
     closeBtn.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
+      mobileMenu.classList.remove('translate-x-0');
+      mobileMenu.classList.add('-translate-x-full');
       document.body.style.overflow = '';
     });
   });
@@ -844,7 +814,7 @@
         overlay.style.display = 'none';
         // Keep logo hidden after morph
         logo.style.display = 'none';
-        
+
         // Unlock scroll after page is ready
         document.documentElement.classList.remove('scroll-lock');
         document.body.classList.remove('scroll-lock');
@@ -853,10 +823,10 @@
   });
 
   // 🛡️ SCROLL GUARD: Prevents double scrollbars by keeping html hidden
-  (function() {
+  (function () {
     const guard = () => {
       if (document.documentElement.style.overflow !== 'hidden' && !document.documentElement.classList.contains('scroll-lock')) {
-          // document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+        // document.documentElement.style.setProperty('overflow', 'hidden', 'important');
       }
     };
     setInterval(guard, 1000);
@@ -890,22 +860,22 @@
   window.updateNavHandler();
 </script>
 
-    <!-- Service Worker Registration -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => {
-              // Successfully registered locally
-            })
-            .catch(err => {
-              // Registration failed silently for security
-            });
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          // Successfully registered locally
+        })
+        .catch(err => {
+          // Registration failed silently for security
         });
-      }
-    </script>
+    });
+  }
+</script>
 
-    <!-- Scroll to Top Button Script -->
+<!-- Scroll to Top Button Script -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const scrollBtn = document.getElementById('scrollToTopBtn');
@@ -940,7 +910,7 @@
         ticking = true;
       }
     };
-    
+
     window.addEventListener('scroll', scrollHandler);
     document.body.addEventListener('scroll', scrollHandler);
 

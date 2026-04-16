@@ -488,7 +488,7 @@ Home{%endblock %} {% block content %}
 </style>
 
 <!-- Presence Section -->
-<section id="impact" class="  relative bg-white py-10 overflow-hidden">
+<section id="impact" class="  relative bg-white overflow-hidden">
   <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
     <div class="presence">
       <div class="section-title">
@@ -506,7 +506,7 @@ Home{%endblock %} {% block content %}
       </div>
       <div class="flex flex-row justify-center items-center w-full presence-map-wrapper"
         style="min-height: 800px; padding: 1.3rem 0">
-        <div class="flex flex-col gap-3 items-end pr-4" style="flex: 1; max-width: 175px">
+        <div class="flex flex-col gap-3 items-end" style="flex: 1; max-width: 155px">
           <div class="glowbutton state-card group" role="button" tabindex="0"
             data-map="{% static 'Media/presence/india/Jammu & Kashmir.png' %}">
             <p class="text-xl font-semibold">Jammu & Kashmir</p>
@@ -662,7 +662,7 @@ Home{%endblock %} {% block content %}
 
     <!-- Services Section -->
     <div class=" ">
-      <div class="flex justify-center items-center w-full py-8">
+      <div class="flex justify-center items-center w-full">
         <div class="services flex gap-12 flex-wrap justify-center max-w-[920px]">
           <div class="section-title">
             <h2>Our <span>Services </span></h2>
@@ -870,7 +870,7 @@ Home{%endblock %} {% block content %}
     </div>
 
     <!-- Awards Section -->
-    <div class="  presence">
+    <div class="awards-pres presence">
       <div class="section-title">
         <h2 class="awards-animated-heading">
           <span>Recognized </span>for Commitment
@@ -978,7 +978,7 @@ Home{%endblock %} {% block content %}
     }
 
     * h2 {
-      font-size: 2rem !important;
+      font-size: 1.6rem !important;
     }
 
     * p {
@@ -986,11 +986,32 @@ Home{%endblock %} {% block content %}
     }
 
     .serv-section {
-      padding: 1.5rem 1rem;
+      padding: 1rem 0.5rem;
     }
 
     .services {
-      gap : 0rem !important;
+      gap: 0.5rem !important;
+    }
+
+    .service-card {
+      width: 280px !important;
+      height: 280px !important;
+      margin: 0 auto;
+    }
+
+    .service-card .title,
+    .service-card .title strong {
+      font-size: 1.1rem !important;
+    }
+
+    .service-card .card-footer {
+      font-size: 0.85rem !important;
+    }
+
+    .service-card svg.w-16 {
+      width: 3rem !important;
+      height: 3rem !important;
+      margin-bottom: 0.5rem;
     }
 
     .awards-grid {
@@ -1228,7 +1249,7 @@ Home{%endblock %} {% block content %}
   }
 
   #impact .section-title p {
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
     font-weight: 500;
     margin-top: 0.8rem;
     line-height: 1.3;
@@ -1452,6 +1473,10 @@ Home{%endblock %} {% block content %}
     .presence-map-wrapper {
       flex-wrap: wrap;
       gap: 5px;
+    }
+
+    .awards-pres {
+      margin-top: 25px !important;
     }
 
     /* LEFT state column */

@@ -30,7 +30,7 @@ About{%endblock %} {% block content %}
     gap: 2rem;
     justify-content: center;
     /* align-items: stretch; */
-    max-width: 85%;
+    max-width: 100%;
     margin: auto;
     position: relative;
   }
@@ -403,12 +403,11 @@ About{%endblock %} {% block content %}
     box-shadow: 0 8px 32px 0 rgba(37, 99, 235, 0.10);
     border-radius: 1.2rem;
     border: 1.5px solid #e0f2ff;
-    padding: 0.3rem 1.5rem;
     display: flex;
     gap: 1.7rem;
     align-items: center;
     /* min-width: 180px; */
-    max-width: 350px;
+    max-width: 458px;
     justify-content: space-between;
   }
 
@@ -449,7 +448,23 @@ About{%endblock %} {% block content %}
     }
 
     .leadership-card {
-      height: 420px;
+      width: 290px;
+      height: 390px;
+      min-height: 340px;
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .leadership-name {
+      font-size: 1.25rem !important;
+      margin-top: 1rem !important;
+    }
+
+    .leadership-role {
+      font-size: 1.05rem !important;
+    }
+
+    .presence h3 {
+      font-size: 1.6rem;
     }
 
     .section {
@@ -459,27 +474,37 @@ About{%endblock %} {% block content %}
     .leadership-row {
       flex-direction: column;
       flex-wrap: wrap;
-    }
-
-    .leadership-card {
-      margin: auto;
+      gap: 1rem;
     }
 
     .feature-grid {
       grid-template-columns: repeat(1, 1fr) !important;
+      gap: 1rem;
     }
 
     .feature-card {
-      max-height: 300px;
-      padding: 1rem 0 !important;
+      min-height: auto !important;
+      padding: 1.2rem 1rem !important;
     }
 
     .feature-card h3 {
-      font-size: 1.8rem !important;
+      font-size: 1.15rem !important;
+    }
+
+    .feature-card .feature-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-card .feature-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
     }
 
     .feature-card p {
-      padding: 1rem;
+      padding: 0.5rem;
+      font-size: 0.9rem !important;
     }
 
     .testimonial-section {
@@ -508,10 +533,21 @@ About{%endblock %} {% block content %}
 
   @media (max-width: 600px) {
     .about-right-stats {
-      padding: 1rem 0.5rem 0.8rem 0.5rem;
-      gap: 1.2rem;
+      padding: 0.8rem 0.5rem;
+      gap: 0.5rem;
       min-width: 0;
+      width: 85vw;
       max-width: 98vw;
+      border-radius: 1rem;
+      height: 5rem;
+    }
+
+    .about-right-stats .stat-value {
+      font-size: 1.25rem !important;
+    }
+
+    .about-right-stats .stat-label {
+      font-size: 0.75rem !important;
     }
 
     .about-right-img-box img {
@@ -571,6 +607,10 @@ About{%endblock %} {% block content %}
       text-align: center;
     }
 
+    .title h3 {
+      font-size: 1.6rem !important;
+    }
+
     section h3 {
       font-size: 2.4rem !important;
     }
@@ -579,11 +619,15 @@ About{%endblock %} {% block content %}
       font-size: 1.2rem !important;
     }
 
+    .title p {
+      font-size: 1.1rem !important;
+    }
+
 
   }
 
   .title p {
-    font-size: 1.4rem !important;
+    font-size: 1.4rem;
     font-weight: 600;
     margin-top: 0.8rem;
     line-height: 1.3;
@@ -845,7 +889,8 @@ About{%endblock %} {% block content %}
       <div class="line rightl"></div>
 
       <div class="flex items-center justify-center gap-3 text-white text-xl mb-3">
-        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors" style="font-family: 'Manrope', sans-serif; font-weight: 600;">
+        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors"
+          style="font-family: 'Manrope', sans-serif; font-weight: 600;">
           Home
         </a>
         <span class="text-blue-400 text-2xl">›</span>
@@ -1064,46 +1109,44 @@ About{%endblock %} {% block content %}
       </div>
     </div>
     <!-- Bottom tagline/CTA -->
-    <div class="mt-4 bg-gray-100 backdrop-blur-md p-8 rounded-2xl border border-gray-700/50 shadow-xl">
-      <!-- Modern Testimonial Grid -->
-      <div class="testimonial-section">
-        <!-- Testimonial 1 -->
-        <div class="testimonial-card">
-          <div class="testimonial-quote">&#10077;</div>
-          <div class="testimonial-text">In the next two years, AI will transform everything — from road surveys to
-            construction works and beyond.</div>
-          <div class="testimonial-footer">
-            <div class="testimonial-avatar">PK</div>
-            <div class="testimonial-meta">
-              <div class="testimonial-name">Prerna Kalra</div>
-              <div class="testimonial-role">Co-Founder</div>
-            </div>
+    <!-- Modern Testimonial Grid -->
+    <div class="testimonial-section">
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card">
+        <div class="testimonial-quote">&#10077;</div>
+        <div class="testimonial-text">In the next two years, AI will transform everything — from road surveys to
+          construction works and beyond.</div>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">PK</div>
+          <div class="testimonial-meta">
+            <div class="testimonial-name">Prerna Kalra</div>
+            <div class="testimonial-role">Co-Founder</div>
           </div>
         </div>
-        <!-- Testimonial 2 -->
-        <div class="testimonial-card">
-          <div class="testimonial-quote">&#10077;</div>
-          <div class="testimonial-text">Smarter Roads Start with RoadAthena. Empowering cities, contractors, and
-            transport agencies with future-ready road technology.</div>
-          <div class="testimonial-footer">
-            <div class="testimonial-avatar">MS</div>
-            <div class="testimonial-meta">
-              <div class="testimonial-name">Manav Singal</div>
-              <div class="testimonial-role">Co-Founder</div>
-            </div>
+      </div>
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card">
+        <div class="testimonial-quote">&#10077;</div>
+        <div class="testimonial-text">Smarter Roads Start with RoadAthena. Empowering cities, contractors, and
+          transport agencies with future-ready road technology.</div>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">MS</div>
+          <div class="testimonial-meta">
+            <div class="testimonial-name">Manav Singal</div>
+            <div class="testimonial-role">Co-Founder</div>
           </div>
         </div>
-        <!-- Testimonial 3 -->
-        <div class="testimonial-card">
-          <div class="testimonial-quote">&#10077;</div>
-          <div class="testimonial-text">Roads are for growth and we are proud to contribute in the growth story of the
-            Nations.</div>
-          <div class="testimonial-footer">
-            <div class="testimonial-avatar">RS</div>
-            <div class="testimonial-meta">
-              <div class="testimonial-name">Rahul Kalra</div>
-              <div class="testimonial-role">Chief Growth Office</div>
-            </div>
+      </div>
+      <!-- Testimonial 3 -->
+      <div class="testimonial-card">
+        <div class="testimonial-quote">&#10077;</div>
+        <div class="testimonial-text">Roads are for growth and we are proud to contribute in the growth story of the
+          Nations.</div>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">RS</div>
+          <div class="testimonial-meta">
+            <div class="testimonial-name">Rahul Kalra</div>
+            <div class="testimonial-role">Chief Growth Office</div>
           </div>
         </div>
       </div>
@@ -1173,7 +1216,6 @@ About{%endblock %} {% block content %}
         <div class="award-card-white gujrat">
           <img src="{% static 'Media/partners/Gujrat State Road-logo.png' %}" alt="Startup Punjab"
             style="max-width: 150px; max-height:90px; object-fit: contain" />
-        </div>
       </div>
     </div>
   </div>

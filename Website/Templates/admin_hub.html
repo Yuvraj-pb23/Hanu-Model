@@ -16,7 +16,7 @@
   .hub-header {
     text-align: center;
     margin-bottom: 60px;
-    animation: fadeInDown 0.8s cubic-bezier(.39,.575,.565,1.000);
+    animation: fadeInDown 0.8s cubic-bezier(.39, .575, .565, 1.000);
   }
 
   .hub-header h1 {
@@ -28,6 +28,16 @@
     background: linear-gradient(to right, #60a5fa, #3b82f6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  @media (max-width: 768px) {
+    .hub-header h1 {
+      font-size: 1.6rem !important;
+    }
+
+    .hub-header p {
+      font-size: 1.1rem !important;
+    }
   }
 
   .hub-header p {
@@ -58,7 +68,7 @@
     cursor: pointer;
     text-decoration: none;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: fadeInUp 1s cubic-bezier(.39,.575,.565,1.000);
+    animation: fadeInUp 1s cubic-bezier(.39, .575, .565, 1.000);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
 
@@ -132,23 +142,42 @@
   }
 
   @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-40px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 768px) {
-    .hub-header h1 { font-size: 2.2rem; }
-    .hub-container { padding-top: 120px; }
+    .hub-header h1 {
+      font-size: 2.2rem;
+    }
+
+    .hub-container {
+      padding-top: 120px;
+    }
   }
 </style>
 
 <div class="hub-container">
-  
+
   <div class="logout-container">
     <a href="{% url 'logout' %}" class="logout-btn">
       <i class="bi bi-box-arrow-right"></i> Logout
@@ -161,14 +190,15 @@
   </div>
 
   <div class="cards-wrapper">
-    
+
     <!-- Create Blog Card -->
     <a href="{% url 'create_blog' %}" class="hub-card">
       <div class="card-icon">
         <i class="bi bi-journal-text"></i>
       </div>
       <h2 class="card-title">Manage Blogs</h2>
-      <p class="card-desc">Create new insightful posts, edit existing blogs, and manage categories for your audience.</p>
+      <p class="card-desc">Create new insightful posts, edit existing blogs, and manage categories for your audience.
+      </p>
     </a>
 
     <!-- Upload Gallery Card -->

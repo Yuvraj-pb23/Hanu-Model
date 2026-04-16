@@ -389,7 +389,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            opacity: 0.15;
+            opacity: 0.22;
             width: 70%;
             max-width: 1000px;
             z-index: 1;
@@ -403,7 +403,7 @@
             }
 
             to {
-                opacity: 0.15;
+                opacity: 0.22;
                 transform: translate(-50%, -50%) scale(1);
             }
         }
@@ -634,7 +634,7 @@
             </nav>
 
             <div class="sidebar-footer p-8 mt-auto border-t border-gray-800/50 bg-[#0d121d]">
-                <a href="{% url 'logout' %}"
+                <a href="{% url 'home' %}"
                     class="flex items-center gap-3 text-gray-400 hover:text-red-400 transition-colors duration-300 font-bold text-sm">
                     <i class="bi bi-box-arrow-left text-lg"></i>
                     <span>Sign Out</span>
