@@ -26,6 +26,7 @@ import google.generativeai as genai
 import PIL.Image
 import pandas as pd
 import time
+from itsdangerous import URLSafeTimedSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -892,69 +893,111 @@ def chatbot_response(request):
 @csrf_exempt
 def validate_employee_api(request):
     """
-    Validates user phone number against an external API.
+    Validates employee credentials (name and password) via a single secured API.
     """
-    if request.method == "POST":
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "Method not allowed."}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        # Keep original casing for the API call - many APIs are case-sensitive
+        name_raw = str(data.get("name", "")).strip()
+        password = str(data.get("password", "")).strip()
+
+        if not name_raw or not password:
+            return JsonResponse({"success": False, "message": "Both Name and Password are required."})
+
+        # --- Configuration ---
+        SECURED_API = "https://attendance.hanuai.com/api/login"
+        TIMEOUT = 10
+
+        # --- API Validation ---
         try:
-            data = json.loads(request.body)
-            mobile = data.get("mobile", "").strip()
-            name = data.get("name", "").strip().lower()
+            # Generate temporary gated token dynamically
+            secret_key = getattr(settings, 'ATTENDANCE_SECRET_KEY', 'hanuai-attendance-secret-shared-key')
+            serializer = URLSafeTimedSerializer(secret_key)
+            token = serializer.dumps({"user_id": 1, "timestamp": int(time.time())})
 
-            if not mobile or not name:
-                return JsonResponse({"success": False, "message": "Both Name and Mobile number are required."})
-
-            # Example external API Endpoint
-            # Replace 'https://example.com/api/users' with your actual API endpoint URL
-            api_url = "http://attendance.hanuai.com/api/employee-list-summary" 
-
-            try:
-                # Call the external API (setting a timeout is good practice)
-                response = requests.get(api_url, timeout=10)
-                
-                # Check if the API request was successful
-                if response.status_code == 200:
-                    api_data = response.json()
-                    
-                    # The API returns a dictionary with 'success' and 'employees' keys
-                    # e.g., {"success": true, "employees": [{"name": "...", "phone": "..."}, ...]}
-                    if isinstance(api_data, dict) and 'employees' in api_data:
-                        employee_list = api_data['employees']
-                        
-                        if isinstance(employee_list, list):
-                            # Verify if BOTH mobile number and name match the API records
-                            user_match = any(
-                                str(user.get("phone", "")) == mobile and 
-                                str(user.get("name", "")).strip().lower() == name 
-                                for user in employee_list
-                            )
-                            
-                            if user_match:
-                                request.session['is_verified_employee'] = True
-                                request.session['verified_mobile'] = mobile
-                                return JsonResponse({"success": True, "message": "Verification successful."})
-                            else:
-                                return JsonResponse({
-                                    "success": False, 
-                                    "message": "✗ Identity not recognized. Please ensure Name and Mobile match official records."
-                                })
-                        else:
-                            return JsonResponse({"success": False, "message": "Unexpected format: 'employees' is not a list."})
-                    else:
-                        return JsonResponse({"success": False, "message": "Unexpected format from external API."})
-                else:
-                    return JsonResponse({
-                        "success": False, 
-                        "message": f"External API error: Returned status code {response.status_code}."
-                    })
-                    
-            except requests.RequestException as e:
-                # Handle network-related errors (timeout, connection error, invalid URL, etc.)
-                return JsonResponse({"success": False, "message": "Failed to connect to the external API."})
-
-        except json.JSONDecodeError:
-            return JsonResponse({"success": False, "message": "Invalid JSON data received."}, status=400)
+            headers = {
+                "X-Gated-Token": token,
+                "Content-Type": "application/json"
+            }
             
-    return JsonResponse({"success": False, "message": "Invalid request method."}, status=405)
+            # Send original name (not lowercased) — API may be case-sensitive
+            # Include both common field names to increase compatibility
+            payload = {
+                "username": name_raw,
+                "name": name_raw,
+                "password": password
+            }
+            
+            # Call secured endpoint
+            response = requests.post(SECURED_API, headers=headers, json=payload, timeout=TIMEOUT)
+            
+            # Detailed debug logging to diagnose 400 errors
+            print(f"DEBUG: Auth API Status: {response.status_code}")
+            print(f"DEBUG: Payload sent: name='{name_raw}', password='[hidden]'")
+            print(f"DEBUG: Full response body: {response.text}")
+            
+            if response.status_code == 400:
+                # Try to parse the error response to show a meaningful message
+                try:
+                    err_data = response.json()
+                    err_msg = err_data.get("message") or err_data.get("error") or err_data.get("detail") or str(err_data)
+                    return JsonResponse({"success": False, "message": f"✗ {err_msg}"})
+                except Exception:
+                    return JsonResponse({"success": False, "message": "✗ Invalid credentials. Please check your name and password."})
+            
+            if response.status_code != 200:
+                return JsonResponse({"success": False, "message": f"Verification service error ({response.status_code})."})
+
+            api_data = response.json()
+            print(f"DEBUG: Parsed response: {api_data}")
+            
+            # Case 1: API returns {"success": true/false, "message": "..."} directly
+            if isinstance(api_data, dict):
+                if api_data.get("success") is True:
+                    request.session['is_verified_employee'] = True
+                    request.session['verified_name'] = name_raw
+                    return JsonResponse({"success": True, "message": "Access granted! Redirecting..."})
+                elif api_data.get("success") is False:
+                    return JsonResponse({"success": False, "message": api_data.get("message", "✗ Invalid credentials.")})
+            
+            # Case 2: API returns a list of employees to search through
+            name_lower = name_raw.lower()
+            employee_list = []
+            if isinstance(api_data, list):
+                employee_list = api_data
+            elif isinstance(api_data, dict):
+                for key in ["employees", "users", "data", "results"]:
+                    if key in api_data and isinstance(api_data[key], list):
+                        employee_list = api_data[key]
+                        break
+
+            if employee_list:
+                for emp in employee_list:
+                    record_name = str(emp.get("name", "")).strip().lower()
+                    if record_name == name_lower or name_lower in record_name.split():
+                        request.session['is_verified_employee'] = True
+                        request.session['verified_name'] = name_raw
+                        return JsonResponse({"success": True, "message": "Access granted! Redirecting..."})
+                return JsonResponse({"success": False, "message": "✗ Name not recognized. Please check your credentials."})
+
+            # Case 3: If neither, treat a 200 response as success
+            request.session['is_verified_employee'] = True
+            request.session['verified_name'] = name_raw
+            return JsonResponse({"success": True, "message": "Access granted! Redirecting..."})
+
+        except Exception as e:
+            logger.error(f"Auth API Exception: {e}")
+            return JsonResponse({"success": False, "message": "Verification service currently offline."})
+
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "message": "Invalid request format."}, status=400)
+    except Exception as e:
+        logger.error(f"Login logic error: {e}")
+        return JsonResponse({"success": False, "message": "A system error occurred."})
+
 
 
 

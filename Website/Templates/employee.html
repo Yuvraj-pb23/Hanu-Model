@@ -166,9 +166,13 @@ HanuAi {% endblock %} {% block content %}
           <input type="text" id="user-name" class="form-input-minimal" placeholder="Your full name" required />
         </div>
         <div class="form-group-minimal">
-          <label class="form-label-minimal">Mobile Number</label>
-          <input type="tel" id="user-mobile" class="form-input-minimal" placeholder="10-digit mobile" pattern="[0-9]{10}"
-            required />
+          <label class="form-label-minimal">Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="user-password" class="form-input-minimal password-field" placeholder="Enter your password" required />
+            <button type="button" id="toggle-password" class="password-eye-btn" aria-label="Toggle password visibility">
+              <i class="bi bi-eye" id="eye-icon"></i>
+            </button>
+          </div>
         </div>
         <div id="form-message" class="form-message hidden"></div>
         <button type="submit" id="submit-download" class="verify-btn-minimal mt-4">
@@ -269,6 +273,15 @@ HanuAi {% endblock %} {% block content %}
   let targetUrl = "";
   let actionTitle = "";
 
+  // Password visibility toggle
+  document.getElementById("toggle-password").addEventListener("click", function () {
+    const passwordInput = document.getElementById("user-password");
+    const eyeIcon = document.getElementById("eye-icon");
+    const isHidden = passwordInput.type === "password";
+    passwordInput.type = isHidden ? "text" : "password";
+    eyeIcon.className = isHidden ? "bi bi-eye-slash" : "bi bi-eye";
+  });
+
   document.getElementById("yes-btn").addEventListener("click", function (e) {
     e.preventDefault();
     targetUrl = "{% url 'employee_dashboard' %}";
@@ -276,7 +289,7 @@ HanuAi {% endblock %} {% block content %}
 
     // Update form title and subtitle
     document.getElementById("form-title").textContent = actionTitle;
-    document.getElementById("form-subtitle").textContent = "Please verify your mobile number to access the dashboard";
+    document.getElementById("form-subtitle").textContent = "Please verify your password to access the dashboard";
 
     // Show validation form
     document.getElementById("download-form-overlay").style.display = "flex";
@@ -318,7 +331,7 @@ HanuAi {% endblock %} {% block content %}
 
       // Update form title and subtitle
       document.getElementById("form-title").textContent = actionTitle;
-      document.getElementById("form-subtitle").textContent = "Please verify your identity to access " + actionTitle;
+      document.getElementById("form-subtitle").textContent = "Please verify your password to access " + actionTitle;
 
       // Show validation form
       document.getElementById("download-form-overlay").style.display = "flex";
@@ -350,7 +363,7 @@ HanuAi {% endblock %} {% block content %}
     e.preventDefault();
 
     const name = document.getElementById("user-name").value;
-    const mobile = document.getElementById("user-mobile").value;
+    const password = document.getElementById("user-password").value;
     const messageDiv = document.getElementById("form-message");
     const submitBtn = document.getElementById("submit-download");
 
@@ -367,7 +380,7 @@ HanuAi {% endblock %} {% block content %}
           'Content-Type': 'application/json',
           // 'X-CSRFToken': getCookie('csrftoken') // Uncomment if not using @csrf_exempt in Django
         },
-        body: JSON.stringify({ name: name, mobile: mobile })
+        body: JSON.stringify({ name: name, password: password })
       });
 
       const result = await response.json();
@@ -394,7 +407,7 @@ HanuAi {% endblock %} {% block content %}
         }, 1000);
       } else {
         // Show error message
-        messageDiv.textContent = result.message || "✗ Mobile number not recognized. Only HanuAi employees can access.";
+        messageDiv.textContent = result.message || "✗ Credentials not recognized. Please check your name and password.";
         messageDiv.className = "form-message form-message-error";
         messageDiv.classList.remove("hidden");
 
@@ -405,7 +418,7 @@ HanuAi {% endblock %} {% block content %}
 
     } catch (error) {
       console.error("Validation error:", error);
-      messageDiv.textContent = "✗ Unable to verify mobile number. Please try again.";
+      messageDiv.textContent = "✗ Unable to verify credentials. Please try again.";
       messageDiv.className = "form-message form-message-error";
       messageDiv.classList.remove("hidden");
 
@@ -511,6 +524,44 @@ HanuAi {% endblock %} {% block content %}
     background: rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
     transform: translateY(-1px);
+  }
+
+  /* Password wrapper with eye icon */
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-field {
+    padding-right: 3rem !important; /* ensure space for the eye icon */
+  }
+
+  .password-eye-btn {
+    position: absolute;
+    right: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    font-size: 1.1rem;
+    transition: color 0.2s ease, transform 0.15s ease;
+    z-index: 2;
+  }
+
+  .password-eye-btn:hover {
+    color: #60a5fa;
+    transform: translateY(-50%) scale(1.15);
+  }
+
+  .password-eye-btn:active {
+    transform: translateY(-50%) scale(0.95);
   }
 
   .verify-btn-minimal {
