@@ -125,10 +125,27 @@
             display: none;
         }
 
+        .dashboard-sidebar.collapsed .sidebar-nav {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .dashboard-sidebar.collapsed .sidebar-footer {
+            padding-left: 0;
+            padding-right: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard-sidebar.collapsed .sidebar-footer a {
+            justify-content: center;
+        }
+
         .sidebar-toggle {
             position: absolute;
             right: -12px;
-            top: 32px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 24px;
             height: 24px;
             background: #2563eb;
@@ -145,7 +162,7 @@
 
         .sidebar-toggle:hover {
             background: #1d4ed8;
-            transform: scale(1.1);
+            transform: translateY(-50%) scale(1.1);
         }
 
 
@@ -476,7 +493,6 @@
             .sidebar-toggle {
                 display: flex !important;
                 right: 20px !important;
-                top: 40px !important;
             }
 
             .dashboard-sidebar.collapsed .sidebar-toggle {
@@ -537,6 +553,35 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ── Custom Scrollbar ── */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(180, 180, 190, 0.3) transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(180, 180, 190, 0.3);
+            border-radius: 999px;
+            transition: background 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(180, 180, 190, 0.55);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
         }
     </style>
 </head>
