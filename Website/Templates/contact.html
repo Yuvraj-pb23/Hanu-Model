@@ -648,7 +648,7 @@ Contact{%endblock %} {% block content %}
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    height:94px;
+    height: 94px;
   }
 
   .voice-record-content {
@@ -712,7 +712,7 @@ Contact{%endblock %} {% block content %}
     justify-content: center;
     flex-shrink: 0;
   }
-   
+
 
   .recording-mic-icon:hover {
     background: linear-gradient(135deg, #c2410c, #ea580c);
@@ -1345,11 +1345,18 @@ Contact{%endblock %} {% block content %}
       {% csrf_token %}
 
       <div id="contactSuccessBanner" class="form-success-banner" style="display:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path
+            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+        </svg>
         <span>Your message was sent! We'll get back to you soon.</span>
       </div>
       <div id="contactErrorBanner" class="form-error-banner" style="display:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          <path
+            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+        </svg>
         <span>Something went wrong. Please try again.</span>
       </div>
 
@@ -1360,13 +1367,16 @@ Contact{%endblock %} {% block content %}
         </div>
         <div class="form-group">
           <label class="field-label">Phone</label>
-          <input type="tel" placeholder="+91 98765 43210" class="contact-input" id="phoneInput" name="phone" maxlength="15" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateContactForm();" required />
+          <input type="tel" placeholder="+91 98765 43210" class="contact-input" id="phoneInput" name="phone"
+            maxlength="15" pattern="[0-9]*" inputmode="numeric"
+            oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateContactForm();" required />
         </div>
       </div>
 
       <div class="form-group">
         <label class="field-label">Email Address</label>
-        <input type="email" placeholder="john@example.com" class="contact-input" id="emailInput" name="email" required />
+        <input type="email" placeholder="john@example.com" class="contact-input" id="emailInput" name="email"
+          required />
       </div>
 
       <div class="form-group">
@@ -1388,10 +1398,12 @@ Contact{%endblock %} {% block content %}
           <span class="char-count" id="charCount">0/500</span>
         </div>
         <textarea placeholder="Tell us about your project, question or idea..." class="contact-textarea"
-          id="messageInput" name="message" maxlength="500" oninput="updateCharCount(); validateContactForm()" required></textarea>
+          id="messageInput" name="message" maxlength="500" oninput="updateCharCount(); validateContactForm()"
+          required></textarea>
       </div>
 
-      <button type="button" class="contact-button" id="contactSubmitBtn" onclick="showCaptchaModal('contactForm')" style="margin-top: 0.5rem;" disabled>
+      <button type="button" class="contact-button" id="contactSubmitBtn" onclick="showCaptchaModal('contactForm')"
+        style="margin-top: 0.5rem;" disabled>
         <span class="contact-btn-text-one">SEND MESSAGE</span>
         <span class="contact-btn-text-two">SEND MESSAGE</span>
       </button>
@@ -1422,11 +1434,18 @@ Contact{%endblock %} {% block content %}
       {% csrf_token %}
 
       <div id="voiceSuccessBanner" class="form-success-banner" style="display:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path
+            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+        </svg>
         <span>Your message was sent! We'll get back to you soon.</span>
       </div>
       <div id="voiceErrorBanner" class="form-error-banner" style="display:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          <path
+            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+        </svg>
         <span>Something went wrong. Please try again.</span>
       </div>
 
@@ -1437,7 +1456,9 @@ Contact{%endblock %} {% block content %}
         </div>
         <div class="form-group">
           <label class="field-label">Phone</label>
-          <input type="tel" placeholder="+91 98765 43210" class="contact-input" id="voicePhoneInput" name="phone" maxlength="15" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateVoiceForm();" required />
+          <input type="tel" placeholder="+91 98765 43210" class="contact-input" id="voicePhoneInput" name="phone"
+            maxlength="15" pattern="[0-9]*" inputmode="numeric"
+            oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateVoiceForm();" required />
         </div>
       </div>
 
@@ -1471,7 +1492,7 @@ Contact{%endblock %} {% block content %}
 
           <p class="voice-hint">Click the mic icon to record</p>
         </div>
-        
+
         <button type="button" class="recording-mic-icon" id="startRecordingBtn">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
             <path
@@ -1484,13 +1505,15 @@ Contact{%endblock %} {% block content %}
       <div class="form-group">
         <div class="textarea-header">
           <label class="field-label">Message</label>
-          <span id="detectedLangLabel" style="display: none; font-family: var(--font); font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.6);">
+          <span id="detectedLangLabel"
+            style="display: none; font-family: var(--font); font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.6);">
             Detected: <span id="detectedLangText" style="color: #fb923c;">—</span>
           </span>
           <span class="char-count" id="voiceCharCount">0/500</span>
         </div>
         <textarea placeholder="Tell us about your project or question..." class="contact-textarea"
-          id="voiceMessageTextarea" name="voice_message_text" maxlength="500" oninput="updateVoiceCharCount(); syncVoiceMessage(); validateVoiceForm()" required></textarea>
+          id="voiceMessageTextarea" name="voice_message_text" maxlength="500"
+          oninput="updateVoiceCharCount(); syncVoiceMessage(); validateVoiceForm()" required></textarea>
       </div>
 
       <div class="audio-info-box" id="langInfoBox" style="display: none;">
@@ -1509,7 +1532,8 @@ Contact{%endblock %} {% block content %}
       <input type="hidden" name="message" id="voiceMessageInput" value="" />
       <input type="hidden" name="subject" value="Voice Message" />
 
-      <button type="button" class="voice-submit-btn" id="voiceSubmitBtn" onclick="showCaptchaModal('voiceForm')" style="margin-top: 0.5rem;" disabled>
+      <button type="button" class="voice-submit-btn" id="voiceSubmitBtn" onclick="showCaptchaModal('voiceForm')"
+        style="margin-top: 0.5rem;" disabled>
         <span class="voice-btn-text-one">SEND MESSAGE</span>
         <span class="voice-btn-text-two">SEND MESSAGE</span>
       </button>
@@ -1524,7 +1548,7 @@ Contact{%endblock %} {% block content %}
 <div class="sphere-contact-section">
   <!-- Rotating Globe -->
   <div class="sphere-container">
-    <img src="{% static 'Media/Contact/sphere3.png' %}" alt="3D Sphere" class="rotating-sphere" />
+    <img src="{% static 'Media/Contact/Rotating_sphere.webp' %}" alt="HanuAi rotating sphere" class="rotating-sphere" />
 
     <!-- Tooltip Nodes -->
     <div class="tooltip-node" data-product="RoadAtthena" style="top: 25%; left: 35%">
@@ -1749,14 +1773,14 @@ Contact{%endblock %} {% block content %}
     const phone = document.getElementById('phoneInput').value.trim();
     const message = document.getElementById('messageInput').value.trim();
     const submitBtn = document.getElementById('contactSubmitBtn');
-    
+
     // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidEmail = emailRegex.test(email);
-    
+
     // Phone validation - must be between 7 and 15 digits
     const isValidPhone = phone.length >= 7 && phone.length <= 15;
-    
+
     if (name && isValidEmail && isValidPhone && message) {
       submitBtn.disabled = false;
       submitBtn.style.opacity = '1';
@@ -1775,14 +1799,14 @@ Contact{%endblock %} {% block content %}
     const phone = document.getElementById('voicePhoneInput').value.trim();
     const message = document.getElementById('voiceMessageTextarea').value.trim();
     const submitBtn = document.getElementById('voiceSubmitBtn');
-    
+
     // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidEmail = emailRegex.test(email);
-    
+
     // Phone validation - must be between 7 and 15 digits
     const isValidPhone = phone.length >= 7 && phone.length <= 15;
-    
+
     if (name && isValidEmail && isValidPhone && message) {
       submitBtn.disabled = false;
       submitBtn.style.opacity = '1';
@@ -1795,11 +1819,11 @@ Contact{%endblock %} {% block content %}
   }
 
   // Add event listeners for validation
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Contact form validation
     document.getElementById('nameInput').addEventListener('input', validateContactForm);
     document.getElementById('emailInput').addEventListener('input', validateContactForm);
-    
+
     // Voice form validation
     document.getElementById('voiceNameInput').addEventListener('input', validateVoiceForm);
     document.getElementById('voiceEmailInput').addEventListener('input', validateVoiceForm);
@@ -1824,7 +1848,7 @@ Contact{%endblock %} {% block content %}
   function verifyCaptcha() {
     const captchaInput = document.getElementById('captchaInput').value;
     const captchaKey = document.getElementById('captchaKey').value;
-    
+
     if (!captchaInput.trim()) {
       document.getElementById('captchaError').textContent = 'Please enter the captcha code.';
       document.getElementById('captchaError').style.display = 'block';
@@ -1833,36 +1857,36 @@ Contact{%endblock %} {% block content %}
 
     // Add captcha fields to the form
     const form = document.getElementById(currentFormId);
-    
+
     // Remove any existing captcha fields
     const existingCaptcha = form.querySelector('input[name="captcha"]');
     const existingKey = form.querySelector('input[name="captcha_key"]');
     if (existingCaptcha) existingCaptcha.remove();
     if (existingKey) existingKey.remove();
-    
+
     // Add new captcha fields
     const captchaField = document.createElement('input');
     captchaField.type = 'hidden';
     captchaField.name = 'captcha';
     captchaField.value = captchaInput;
     form.appendChild(captchaField);
-    
+
     const keyField = document.createElement('input');
     keyField.type = 'hidden';
     keyField.name = 'captcha_key';
     keyField.value = captchaKey;
     form.appendChild(keyField);
-    
+
     // Close modal and submit the form
     closeCaptchaModal();
     form.submit();
   }
 
   // Allow Enter key to submit captcha
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const captchaInput = document.getElementById('captchaInput');
     if (captchaInput) {
-      captchaInput.addEventListener('keypress', function(e) {
+      captchaInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
           e.preventDefault();
           verifyCaptcha();
@@ -1999,7 +2023,7 @@ Contact{%endblock %} {% block content %}
           // Populate the message textarea (editable) with translated text
           voiceMessageTextarea.value = data.text;
           voiceMessageInput.value = data.text;
-          
+
           // Update character count
           updateVoiceCharCount();
 
@@ -2008,7 +2032,7 @@ Contact{%endblock %} {% block content %}
           startRecordingBtn.disabled = false;
           voiceHint.textContent = "Click the mic icon to record";
           voiceTimerDisplay.textContent = "0:00";
-          
+
           voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
             dot.style.animation = '';
             dot.style.background = 'rgba(255,255,255,0.2)';
@@ -2020,13 +2044,13 @@ Contact{%endblock %} {% block content %}
         } else {
           console.error("Transcription failed:", data.message);
           alert("Could not transcribe the audio. Please try again.");
-          
+
           // Reset processing state on error
           startRecordingBtn.classList.remove("processing");
           startRecordingBtn.disabled = false;
           voiceHint.textContent = "Click the mic icon to record";
           voiceTimerDisplay.textContent = "0:00";
-          
+
           voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
             dot.style.animation = '';
             dot.style.background = 'rgba(255,255,255,0.2)';
@@ -2038,13 +2062,13 @@ Contact{%endblock %} {% block content %}
       } catch (error) {
         console.error("Error sending audio:", error);
         alert("An error occurred while uploading.");
-        
+
         // Reset processing state on error
         startRecordingBtn.classList.remove("processing");
         startRecordingBtn.disabled = false;
         voiceHint.textContent = "Click the mic icon to record";
         voiceTimerDisplay.textContent = "0:00";
-        
+
         voiceWaveform.querySelectorAll('.voice-waveform-dot').forEach(dot => {
           dot.style.animation = '';
           dot.style.background = 'rgba(255,255,255,0.2)';
@@ -2061,16 +2085,16 @@ Contact{%endblock %} {% block content %}
     const urlParams = new URLSearchParams(window.location.search);
     const formType = urlParams.get('form');
     const status = urlParams.get('status');
-    
+
     if (status && formType) {
-      const submitBtn = formType === 'contact' 
+      const submitBtn = formType === 'contact'
         ? document.getElementById('contactSubmitBtn')
         : document.getElementById('voiceSubmitBtn');
-      
+
       if (submitBtn) {
         const btnTextOne = submitBtn.querySelector('.contact-btn-text-one, .voice-btn-text-one');
         const btnTextTwo = submitBtn.querySelector('.contact-btn-text-two, .voice-btn-text-two');
-        
+
         if (status === 'success') {
           // Show "SENT" for success
           btnTextOne.textContent = 'SENT';
@@ -2083,14 +2107,14 @@ Contact{%endblock %} {% block content %}
             ? document.getElementById('contactSuccessBanner')
             : document.getElementById('voiceSuccessBanner');
           if (successBanner) successBanner.style.display = 'flex';
-          
+
           setTimeout(() => {
             btnTextOne.textContent = 'SEND MESSAGE';
             btnTextTwo.textContent = 'SEND MESSAGE';
             submitBtn.style.background = '';
             submitBtn.disabled = false;
             if (successBanner) successBanner.style.display = 'none';
-            
+
             // Clear URL parameters
             window.history.replaceState({}, document.title, window.location.pathname);
           }, 6000);
@@ -2106,14 +2130,14 @@ Contact{%endblock %} {% block content %}
             ? document.getElementById('contactErrorBanner')
             : document.getElementById('voiceErrorBanner');
           if (errorBanner) errorBanner.style.display = 'flex';
-          
+
           setTimeout(() => {
             btnTextOne.textContent = 'SEND MESSAGE';
             btnTextTwo.textContent = 'SEND MESSAGE';
             submitBtn.style.background = '';
             submitBtn.disabled = false;
             if (errorBanner) errorBanner.style.display = 'none';
-            
+
             // Clear URL parameters
             window.history.replaceState({}, document.title, window.location.pathname);
           }, 10000);
@@ -2167,8 +2191,15 @@ Contact{%endblock %} {% block content %}
   }
 
   @keyframes bannerFadeIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 
@@ -2183,7 +2214,8 @@ Contact{%endblock %} {% block content %}
     <div class="captcha-modal-body">
       <img src="{{ captcha_image }}" alt="captcha" id="captchaImage" class="captcha-modal-image">
       <input type="hidden" id="captchaKey" value="{{ captcha_key }}">
-      <input type="text" id="captchaInput" class="captcha-modal-input" placeholder="Enter the code above" autocomplete="off">
+      <input type="text" id="captchaInput" class="captcha-modal-input" placeholder="Enter the code above"
+        autocomplete="off">
       <p class="captcha-error" id="captchaError" style="display: none;">Incorrect captcha. Please try again.</p>
     </div>
     <div class="captcha-modal-footer">
@@ -2231,6 +2263,7 @@ Contact{%endblock %} {% block content %}
       opacity: 0;
       transform: translateY(-30px) scale(0.95);
     }
+
     to {
       opacity: 1;
       transform: translateY(0) scale(1);

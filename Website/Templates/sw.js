@@ -1,7 +1,7 @@
 const CACHE_NAME = 'hanuai-v1';
 const STATIC_ASSETS = [
-    '/static/assets/img/HanuAi-logo.png',
-    '/static/Media/Base/HanuAi-logo.png',
+    '/static/assets/img/HanuAi-logo.webp',
+    '/static/Media/Base/HanuAi-logo.webp',
     // We will dynamically add more or let the install event handle them
 ];
 

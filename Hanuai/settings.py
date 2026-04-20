@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-_k6@9nh9w2p^&^24#-o-g-@32*p$w#xpdn!h7kc&b*#^5gl#p0"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG =True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1','hanuai.com','www.hanuai.com',]
 
@@ -86,7 +86,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Hanuai.wsgi.application"
-NPM_BIN_PATH = r"/usr/bin/npm"
+NPM_BIN_PATH = r"C:/Program Files/nodejs/npm.cmd"
 #"C:/Program Files/nodejs/npm.cmd"  --for windows--
 
 

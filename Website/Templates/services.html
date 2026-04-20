@@ -16,7 +16,8 @@
       <div class="line rightl"></div>
 
       <div class="flex items-center justify-center gap-3 text-white text-xl mb-3">
-        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors" style="font-family: 'Manrope', sans-serif; font-weight: 600;">
+        <a href="{% url 'home' %}" class="hover:text-blue-400 transition-colors"
+          style="font-family: 'Manrope', sans-serif; font-weight: 600;">
           Home
         </a>
 
@@ -34,15 +35,17 @@
 </div>
 
 <!-- Service Cards Section -->
- <section class="services-section" style="padding: 10px 80px 50px;">
+<section class="services-section" style="padding: 10px 80px 50px;">
   <div class="services-grid">
     <!-- Service 1: Web Development -->
     <a href="{% url 'webDev' %}" class="service-card">
-      <div class="service-background" style="background-image: url('{% static "Media/Webdev1.jpg" %}');"></div>
+      <div class="service-background" style="background-image: url('{% static "Media/Web_Development.webp" %}');">
+      </div>
       <div class="service-content">
         <h3 class="service-title">Custom Web Development Solutions</h3>
         <p class="service-description">
-          Custom web applications and solutions built with modern technologies to enhance your digital presence and user experience.
+          Custom web applications and solutions built with modern technologies to enhance your digital presence and user
+          experience.
         </p>
       </div>
       <div class="service-arrow">
@@ -54,11 +57,13 @@
 
     <!-- Service 2: Computer Vision -->
     <a href="{% url 'compVision' %}" class="service-card">
-      <div class="service-background" style="background-image: url('{% static "Media/Computer Vision.jpg" %}');"></div>
+      <div class="service-background" style="background-image: url('{% static "Media/Computer_Vision.webp" %}');">
+      </div>
       <div class="service-content">
         <h3 class="service-title">Advanced Computer Vision Solutions</h3>
         <p class="service-description">
-          Advanced image and video analysis solutions powered by AI to extract insights and automate visual recognition tasks.
+          Advanced image and video analysis solutions powered by AI to extract insights and automate visual recognition
+          tasks.
         </p>
       </div>
       <div class="service-arrow">
@@ -70,11 +75,12 @@
 
     <!-- Service 3: AI Chatbots -->
     <a href="{% url 'aiChat' %}" class="service-card">
-      <div class="service-background" style="background-image: url('{% static "Media/Chatbotimg.jpg" %}');"></div>
+      <div class="service-background" style="background-image: url('{% static "Media/Ai_Chatbot.webp" %}');"></div>
       <div class="service-content">
         <h3 class="service-title">Intelligent AI Chatbot Systems</h3>
         <p class="service-description">
-          Intelligent virtual assistants that provide 24/7 customer support and automate interactions to enhance user engagement.
+          Intelligent virtual assistants that provide 24/7 customer support and automate interactions to enhance user
+          engagement.
         </p>
       </div>
       <div class="service-arrow">
@@ -86,11 +92,12 @@
 
     <!-- Service 4: GIS & Data Intelligence -->
     <a href="{% url 'gis' %}" class="service-card">
-      <div class="service-background" style="background-image: url('{% static "Media/GIS.jpg" %}');"></div>
+      <div class="service-background" style="background-image: url('{% static "Media/GIS.webp" %}');"></div>
       <div class="service-content">
         <h3 class="service-title">GIS & Data Intelligence Analytics</h3>
         <p class="service-description">
-          Geographic information systems and data analytics solutions to unlock spatial insights and drive data-driven decisions.
+          Geographic information systems and data analytics solutions to unlock spatial insights and drive data-driven
+          decisions.
         </p>
       </div>
       <div class="service-arrow">
