@@ -29,3 +29,4 @@ itsdangerous
 faster-whisper
 cachetools
 django-simple-captcha
+google-generativeai

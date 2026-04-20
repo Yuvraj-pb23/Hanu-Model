@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import logging
-import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-_k6@9nh9w2p^&^24#-o-g-@32*p$w#xpdn!h7kc&b*#^5gl#p0"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1','hanuai.com','www.hanuai.com',]
 
@@ -88,7 +86,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Hanuai.wsgi.application"
-NPM_BIN_PATH = r"C:/Program Files/nodejs/npm.cmd"
+NPM_BIN_PATH = r"/usr/bin/npm"
 #"C:/Program Files/nodejs/npm.cmd"  --for windows--
 
 
@@ -176,106 +174,23 @@ DEFAULT_FROM_EMAIL = 'HanuAI <info@hanuai.com>'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# ---------------------------------------------------------------------------
-# Logging — view-level INFO to console + rotating file
-# ---------------------------------------------------------------------------
-LOGS_DIR = BASE_DIR / 'logs'
-LOGS_DIR.mkdir(exist_ok=True)
-
 '''
+# Logging to see errors when DEBUG=False
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '[{asctime}] {levelname} {name} — {message}',
-            'style': '{',
-            'datefmt': '%Y-%m-%d %H:%M:%S',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'formatters': {
-        'verbose': {
-            'format': '[{asctime}] {levelname} {name} — {message}',
-            'style': '{',
-            'datefmt': '%Y-%m-%d %H:%M:%S',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-        'file': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGS_DIR / 'django.log',
-            'maxBytes': 5 * 1024 * 1024,  # 5 MB per file
-            'backupCount': 3,
-            'formatter': 'verbose',
-            'formatter': 'verbose',
-        },
-        'file': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGS_DIR / 'django.log',
-            'maxBytes': 5 * 1024 * 1024,  # 5 MB per file
-            'backupCount': 3,
-            'formatter': 'verbose',
         },
     },
     'loggers': {
-        # Django internals — warnings and above
-        # Django internals — warnings and above
         'django': {
-            'handlers': ['console', 'file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        # Django request/response cycle — errors
-        'django.request': {
-            'handlers': ['console', 'file'],
-            'handlers': ['console', 'file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        # Django request/response cycle — errors
-        'django.request': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'ERROR',
-            'propagate': False,
-        },
-        # Our views — full INFO so every [VIEW] line is visible
-        'Website.views': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        # Root catch-all
-        '': {
-            'handlers': ['console', 'file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        # Our views — full INFO so every [VIEW] line is visible
-        'Website.views': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        # Root catch-all
-        '': {
-            'handlers': ['console', 'file'],
-            'level': 'WARNING',
         },
     },
 }
+
 '''
 ATTENDANCE_SECRET_KEY = os.getenv('ATTENDANCE_SECRET_KEY', 'hanuai-attendance-secret-shared-key')
-DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB
